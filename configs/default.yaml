@@ -1,0 +1,55 @@
+# Default configuration for onet OSR pipeline
+# Override via python -c or env vars
+
+# Backbone
+backbone: Bioclip-2.5-vith14  # ViT-H/14
+fallback: Bioclip-2-vitl14    # ViT-L/14 (frozen, fast)
+
+# Fine-tuning (LoRA)
+ft:
+  rank: 16
+  alpha: 32
+  top_k_blocks: 12
+  arcface_margin: 0.2
+  genus_aux_weight: 0.3
+  lora_scale: 0.7  # WiSE-FT interpolation (0=frozen, 1=full)
+  heavy_aug: false  # enable for shift-robust retrain
+
+# Scoring (v20 multi-encoder blend)
+scoring:
+  lam: 4.0            # taxon text discriminative weight
+  cmax_weight: 2.0    # class-max similarity weight
+  encoder_weights:
+    ft: 1.0
+    cap: 1.0
+    L: 0.5
+  coral_weight: 0.3   # CORAL channel weight (0=disabled)
+  genus_fallback: true
+  genus_margin_threshold: 0.05
+
+# Unseen route
+unseen:
+  temperatures: [0.05, 0.5]  # DBNorm tc/tr
+  encoder: ctftbig           # ctft_big (contrastive FT)
+  fallback_encoder: L        # frozen ViT-L
+  dbnorm: true
+
+# TTA
+tta:
+  horizontal_flip: true
+  multi_crop_scales: []  # [0.8, 1.0] if enabled
+  num_crops: 5
+
+# Data
+data:
+  train_images: 99979
+  seen_classes: 5795
+  total_classes: 17393
+  splits_dir: data/dl/splits/
+
+# Paths
+paths:
+  embeddings_dir: outputs/
+  predictions_dir: outputs/
+  submissions_dir: submissions/
+  data_dir: data/dl/

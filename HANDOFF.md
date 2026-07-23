@@ -88,10 +88,14 @@ resolve these novel species even when handed the family.
 | **prompt ensembling** (8 generic templates) | 22.00 vs 26.62 — dilutes BioCLIP's species-tuned text |
 | multi-crop TTA on one ensemble member | 0.6% of predictions changed — too diluted |
 | DBNorm temperature re-sweeps | flat |
+| **general-purpose backbone swap (SigLIP2 SO400M-384)** | pseudo-unseen top-1 **5.13** vs BioCLIP-2.5-H **21.53**, identical prompts/queries/DBNorm. Baseline is *frozen-H @ taxctx* — the correct frozen-vs-frozen comparator (deployed unseen route is 27.8; `alone_h` @ bare taxon is 23.38). Common-name prompts *worse* (4.23) → not a scientific-name confound. Fusing the leg in: +0.09 (noise) / −1.16. BioCLIP's domain pretraining dominates — `research/unseen_backbone.py`. Side note: taxctx 21.53 < bare taxon 23.38 on the **frozen** leg — same effect as the common-name/prompt-ens deaths; the +0.56 taxctx gain was on the fine-tuned ctftbig leg only. |
 
 ---
 
 ## 5. KEY FILES
+
+Live docs: `HANDOFF.md` · `COMPETITION_RULES.md` · `CLAUDE.md` · `README.md`.  
+Stale history lives under `archive/legacy/` — **ignore unless excavating**.
 
 - `builders/build_v33_sinkhorn.py` — **current best (47.78%)**, transductive
 - `builders/build_v31_strict_singlepipeline.py` — 47.69%, **strictly per-image** (compliance fallback)
@@ -109,21 +113,26 @@ resolve these novel species even when handed the family.
 
 ## 6. SINGLE-PIPELINE COMPLIANCE
 
+**Official rules (cached):** `COMPETITION_RULES.md` · live:
+https://www.codabench.org/competitions/16815/ · **3 submissions/day · 30 total.**
+
 All submissions: one uniform rule over all 35,665 images, one argmax over the full 17,393-class
 space, **no folder-oracle routing** (`tf`/`uf` used only to enumerate images + print diagnostics).
+Rules explicitly forbid using `splits/*.pkl` to know seen vs unseen or to restrict candidates.
 
 Two tiers available:
 - **v31 (47.69%) — strictly per-image independent.** Every batch statistic frozen into a constant
   (per-member `zc` mean/std, per-class `dbnorm` bias, gate z-norm scalars, rank→absolute `THR`).
   Verified **0/35,665 predictions differ** from the transductive build — zero accuracy cost.
-  Identity used: `log_softmax(S/tc,dim=0) == S/tc − logsumexp(S/tc,dim=0)`.
+  Identity used: `log_softmax(S/tc,dim=0) == S/tc − logsumexp(S/tc,dim=0)`. **Safest compliance.**
 - **v33 (47.78%) — transductive.** Sinkhorn couples predictions across the eval batch.
 
 ⚠️ Notes: the `dbnorm(dim=0)` term is **load-bearing** — dropping it costs −1.60 on unseen; freeze,
 never drop. `seen_frac=0.72` was tuned on leaderboard feedback (no per-image leakage, but if rules
 forbid leaderboard-fitted hyperparameters, recalibrate on the train-derived holdout).
-No competition rules doc exists in the repo — **transduction was never formally verified as allowed**,
-though every submission from 45.19% onward was already mildly transductive and scored fine.
+**Rules confirm:** external data OK (disclose); BioCLIP OK; fish-specific third-party models **banned**.
+**Transduction (Sinkhorn) is not mentioned** in the rules — scored fine so far, but not formally
+blessed. If challenged, fall back to v31.
 
 ---
 
@@ -148,15 +157,18 @@ Pipeline/gate/routing/augmentation levers are **exhausted** (gate efficiency 90.
 ~5pt to 53% is entirely model quality, and **`b` (unseen) is the binding constraint** — 43.65% of
 the score at only ~15.9%.
 
-1. **Stronger fine-grained image–text backbone** than BioCLIP-2.5 ViT-H. This is the highest-value
-   remaining move. Benchmark candidates on the pseudo-unseen holdout (`research/unseen_*.py` harness)
-   before committing GPU time. Note the task forbids unseen training images, so the unseen route will
-   always be zero-shot — it lives or dies on backbone quality.
+1. **Stronger fine-grained image–text backbone** than BioCLIP-2.5 ViT-H. Still the highest-value
+   remaining move, but **narrowed**: general-purpose CLIPs look dead (n=1, 4× gap — SigLIP2 SO400M
+   5.13 vs BioCLIP 21.53, see §4). Prioritise *biology-pretrained* dual encoders.
+   Benchmark on the pseudo-unseen proxy (`research/unseen_backbone.py --model ... --tag ...`,
+   ~1 min/model, both encoders cached) before committing GPU time. The task forbids unseen training
+   images, so the unseen route is always zero-shot — it lives or dies on backbone quality.
 2. **Richer discriminative descriptions** for unseen classes (provided ones tested weak at 12.25).
-   If external text is permitted, sourcing better morphological descriptions could lift `b`.
-3. **Sinkhorn refinements** (if transduction allowed): apply over the FULL label space rather than
-   just the routed-unseen subset; joint gate+Sinkhorn optimization. Real gain was small (+0.09) so
-   expect modest returns.
+   **External text is permitted** (Codabench terms — disclose in transparency statement). Primary
+   remaining lever now that §8 item 1 (backbone swap) is closed at BioCLIP-2.5 ViT-H frontier.
+3. **Sinkhorn refinements** (gray zone — not banned, not blessed): apply over the FULL label space
+   rather than just the routed-unseen subset; joint gate+Sinkhorn optimization. Real gain was small
+   (+0.09) so expect modest returns. Prefer v31 if organizers push back.
 4. Cheap leftovers: `v32_strict_f76` (+0.08), retrain remaining ensemble members with `--shift_aug`
    (~+0.1-0.3 each, diminishing).
 

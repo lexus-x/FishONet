@@ -1,0 +1,34 @@
+---
+description: CV4Ecology Codabench competition rules — never violate these
+alwaysApply: true
+---
+
+# Competition rules (mandatory)
+
+Full text: `COMPETITION_RULES.md`. Live source: https://www.codabench.org/competitions/16815/
+
+## Never do
+
+1. **Folder-oracle routing** — do not use `splits/test.pkl` / `splits/unseen.pkl` to decide seen vs unseen or to shrink the candidate class set. One uniform rule; argmax over the full 17,393-class space.
+2. **Fish-specific third-party models** — no models/datasets trained specifically for fish species recognition (e.g. CaesiumSG/sg-fish-bioclip-v2, ReefNet/finetuned-bioclip). BioCLIP / general biology models are OK.
+3. **Test-label fishing** — no reverse-engineering the eval server or manual labelling of eval images.
+4. **Undisclosed external data** — external text/data is allowed but must be logged for the transparency statement.
+
+## Always do
+
+- Prefer single-pipeline compliance (HANDOFF §6).
+- If transduction is questioned: use `builders/build_v31_strict_singlepipeline.py` (47.69%), not Sinkhorn v33.
+- Respect submission quota: **3/day · 30 total**.
+- When model/data eligibility is unclear: stop and ask organizers (`cv4e.workshop@gmail.com`) before using it.
+
+## Allowed (already confirmed)
+
+- BioCLIP and variants, CLIP/SigLIP/DINO, general LLMs/VLMs
+- External morphological/taxonomy text with disclosure
+- Fine-tuning BioCLIP on the **provided** training images
+
+## Repo hygiene
+
+- Live docs only: `HANDOFF.md`, `COMPETITION_RULES.md`, `CLAUDE.md`, `README.md`.
+- Do **not** read or cite `archive/legacy/` unless the user asks to excavate history.
+- Active builders are **only** `build_v33_sinkhorn.py` and `build_v31_strict_singlepipeline.py`.

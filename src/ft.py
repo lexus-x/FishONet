@@ -164,26 +164,45 @@ def extract(args):
         print(f'WiSE-FT lora_scale (alpha) = {al}')
     files = list(pickle.load(open(f'data/dl/splits/{args.extract}.pkl', 'rb')))
     imgidx = index_images('data/dl/images')
-    feats, kept, buf, bufn, miss = [], [], [], [], 0
+    # squash view (resize whole image to square) matches the wide-aspect training aug -> use for
+    # shift_aug models so inference framing matches training. RES inferred from preprocess crop size.
+    RES = 224
+    for t in getattr(preprocess, 'transforms', []):
+        if t.__class__.__name__ == 'CenterCrop':
+            RES = t.size[0] if isinstance(t.size, (tuple, list)) else t.size
+    mean = (0.48145466, 0.4578275, 0.40821073); std = (0.26862954, 0.26130258, 0.27577711)
+    squash_tf = T.Compose([T.Resize((RES, RES), interpolation=T.InterpolationMode.BICUBIC),
+                           T.ToTensor(), T.Normalize(mean, std)])
+    feats, kept, buf, buf2, bufn, miss = [], [], [], [], [], 0
+    def enc(x):
+        with torch.autocast('cuda', dtype=torch.bfloat16):
+            f = model.encode_image(x).float()
+        return f / f.norm(dim=-1, keepdim=True)
     def flush():
         if not buf: return
         x = torch.stack(buf).to(DEV)
-        with torch.autocast('cuda', dtype=torch.bfloat16):
-            f = model.encode_image(x).float(); f = f / f.norm(dim=-1, keepdim=True)
-            if args.hflip:
-                f2 = model.encode_image(torch.flip(x, dims=[-1])).float(); f2 = f2 / f2.norm(dim=-1, keepdim=True)
-                f = f + f2; f = f / f.norm(dim=-1, keepdim=True)
-        feats.append(f.cpu().float()); kept.extend(bufn); buf.clear(); bufn.clear()
+        f = enc(x)
+        if args.hflip: f = f + enc(torch.flip(x, dims=[-1]))
+        if args.squash_tta:
+            x2 = torch.stack(buf2).to(DEV)
+            f = f + enc(x2)
+            if args.hflip: f = f + enc(torch.flip(x2, dims=[-1]))
+        f = f / f.norm(dim=-1, keepdim=True)
+        feats.append(f.cpu().float()); kept.extend(bufn); buf.clear(); buf2.clear(); bufn.clear()
     for i, fn in enumerate(files):
         p = imgidx.get(fn)
         if p is None: miss += 1; continue
-        try: buf.append(preprocess(Image.open(p).convert('RGB'))); bufn.append(fn)
+        try:
+            img = Image.open(p).convert('RGB')
+            buf.append(preprocess(img))
+            if args.squash_tta: buf2.append(squash_tf(img))
+            bufn.append(fn)
         except Exception: miss += 1; continue
         if len(buf) >= args.bs: flush()
         if i % 5000 == 0: print(f'{args.extract} {i}/{len(files)} miss={miss}', flush=True)
     flush()
     torch.save({'files': kept, 'feats': torch.cat(feats)}, args.out)
-    print('saved', args.out, 'n=', len(kept), 'dim=', feats[0].shape[1], 'hflip=', args.hflip)
+    print('saved', args.out, 'n=', len(kept), 'dim=', feats[0].shape[1], 'hflip=', args.hflip, 'squash_tta=', args.squash_tta)
 
 # ----------------------------- train ----------------------------
 def train(args):
@@ -209,10 +228,22 @@ def train(args):
     Wg = nn.Linear(DIM, G).to(DEV) if G > 0 else None
 
     mean = (0.48145466, 0.4578275, 0.40821073); std = (0.26862954, 0.26130258, 0.27577711)
-    train_tf = T.Compose([
-        T.RandomResizedCrop(224, scale=(0.5, 1.0), interpolation=T.InterpolationMode.BICUBIC),
-        T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
-        T.ToTensor(), T.Normalize(mean, std)])
+    if args.shift_aug:
+        # shift-matched aug: test images are elongated (shift_diag aspect p90 2.12 vs train 1.91).
+        # Default RandomResizedCrop ratio (0.75,1.33) never simulates that; widen ratio+scale so the
+        # model learns squashed/elongated framing. RandomResizedCrop squashes the crop to 224^2, so a
+        # wide ratio IS the aspect-distortion augmentation that matches the squash-view inference.
+        train_tf = T.Compose([
+            T.RandomResizedCrop(224, scale=(0.35, 1.0), ratio=(0.5, 2.0),
+                                interpolation=T.InterpolationMode.BICUBIC),
+            T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
+            T.ToTensor(), T.Normalize(mean, std)])
+        print('SHIFT-MATCHED aug: RandomResizedCrop scale(0.35,1.0) ratio(0.5,2.0)', flush=True)
+    else:
+        train_tf = T.Compose([
+            T.RandomResizedCrop(224, scale=(0.5, 1.0), interpolation=T.InterpolationMode.BICUBIC),
+            T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
+            T.ToTensor(), T.Normalize(mean, std)])
 
     freq = torch.zeros(C)
     for fn, si, gy in D['train']: freq[si] += 1
@@ -280,6 +311,8 @@ def main():
     ap.add_argument('--out', default='outputs/ft_lora.pt'); ap.add_argument('--ckpt', default='outputs/ft_lora.pt')
     ap.add_argument('--extract', default=''); ap.add_argument('--hflip', type=int, default=1)
     ap.add_argument('--lora_scale', type=float, default=1.0)  # WiSE-FT alpha for extract
+    ap.add_argument('--shift_aug', type=int, default=0)  # 1 = test-shift-matched wide-aspect aug
+    ap.add_argument('--squash_tta', type=int, default=0)  # 1 = add squash-view TTA at extract (match shift_aug)
     args = ap.parse_args()
     os.makedirs('outputs', exist_ok=True)
     if args.extract: extract(args)

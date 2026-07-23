@@ -1,0 +1,25 @@
+{
+  "hardroute_results": [
+    {
+      "signal": "seenmax(ensemble)",
+      "thr_frac": 0.55,
+      "route_acc": 89.06514644622803,
+      "seen": 83.18725824356079,
+      "unseen": 21.527178585529327,
+      "overall": 56.30346351265907
+    },
+    {
+      "signal": "energy(ensemble)",
+      "thr_frac": 0.5,
+      "route_acc": 88.80429267883301,
+      "seen": 82.52992033958435,
+      "unseen": 21.095773577690125,
+      "overall": 55.744632351398465
+    }
+  ],
+  "reference_smooth_gate": {
+    "seen": 88.98533582687378,
+    "unseen": 4.055220261216164,
+    "overall": 51.955805440247055
+  }
+}

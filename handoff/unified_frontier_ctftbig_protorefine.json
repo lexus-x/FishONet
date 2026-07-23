@@ -1,0 +1,804 @@
+{
+  "baseline_oracle_seen": 88.12573552131653,
+  "baseline_se": 0.296963152062129,
+  "n_seen_q": 11866,
+  "n_unseen_q": 2318,
+  "pop_unseen_share": 16.342357586012408,
+  "stage1_configs": [
+    {
+      "alpha": 0.0,
+      "nov_q": 0.5,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.12573552131653,
+      "delta": 0.0,
+      "se": 0.296963152062129,
+      "churn_pct": 0.0,
+      "gated_n": 0,
+      "contam_pct": NaN
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.3,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.025282319984398782,
+      "gated_n": 4060,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.3,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.025282319984398782,
+      "gated_n": 2754,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.5,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.04213719803374261,
+      "gated_n": 6260,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.5,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.14259171485901,
+      "delta": 0.01685619354248047,
+      "se": 0.296963152062129,
+      "churn_pct": 0.025282319984398782,
+      "gated_n": 4040,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.7,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.04213719803374261,
+      "gated_n": 7054,
+      "contam_pct": 0.014176353579387069
+    },
+    {
+      "alpha": 0.15,
+      "nov_q": 0.7,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.14259171485901,
+      "delta": 0.01685619354248047,
+      "se": 0.296963152062129,
+      "churn_pct": 0.025282319984398782,
+      "gated_n": 4252,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.3,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.11730742454529,
+      "delta": -0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.050564639968797565,
+      "gated_n": 4060,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.3,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.0758469570428133,
+      "gated_n": 2754,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.5,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.050564639968797565,
+      "gated_n": 6260,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.5,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.13416361808777,
+      "delta": 0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.05899207899346948,
+      "gated_n": 4040,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.7,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.12573552131653,
+      "delta": 0.0,
+      "se": 0.296963152062129,
+      "churn_pct": 0.05899207899346948,
+      "gated_n": 7054,
+      "contam_pct": 0.014176353579387069
+    },
+    {
+      "alpha": 0.3,
+      "nov_q": 0.7,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.14259171485901,
+      "delta": 0.01685619354248047,
+      "se": 0.296963152062129,
+      "churn_pct": 0.06741951801814139,
+      "gated_n": 4252,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.3,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.10045719146729,
+      "delta": -0.025278329849243164,
+      "se": 0.296963152062129,
+      "churn_pct": 0.09270183509215713,
+      "gated_n": 4060,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.3,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.14259171485901,
+      "delta": 0.01685619354248047,
+      "se": 0.296963152062129,
+      "churn_pct": 0.13483903603628278,
+      "gated_n": 2754,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.5,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.12573552131653,
+      "delta": 0.0,
+      "se": 0.296963152062129,
+      "churn_pct": 0.09270183509215713,
+      "gated_n": 6260,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.5,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.15944790840149,
+      "delta": 0.03371238708496094,
+      "se": 0.296963152062129,
+      "churn_pct": 0.10955671314150095,
+      "gated_n": 4040,
+      "contam_pct": 0.0
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.7,
+      "conf_q": 0.5,
+      "min_count": 2,
+      "oracle_seen": 88.11730742454529,
+      "delta": -0.008428096771240234,
+      "se": 0.296963152062129,
+      "churn_pct": 0.10112927993759513,
+      "gated_n": 7054,
+      "contam_pct": 0.014176353579387069
+    },
+    {
+      "alpha": 0.5,
+      "nov_q": 0.7,
+      "conf_q": 0.7,
+      "min_count": 2,
+      "oracle_seen": 88.16787600517273,
+      "delta": 0.04214048385620117,
+      "se": 0.296963152062129,
+      "churn_pct": 0.13483903603628278,
+      "gated_n": 4252,
+      "contam_pct": 0.0
+    }
+  ],
+  "stage1_best": {
+    "alpha": 0.5,
+    "nov_q": 0.7,
+    "conf_q": 0.7,
+    "min_count": 2,
+    "oracle_seen": 88.16787600517273,
+    "delta": 0.04214048385620117,
+    "se": 0.296963152062129,
+    "churn_pct": 0.13483903603628278,
+    "gated_n": 4252,
+    "contam_pct": 0.0
+  },
+  "stage2_secondary_conflated": {
+    "config": [
+      0.5,
+      0.7,
+      0.7
+    ],
+    "baseline_best": {
+      "label": "baseline",
+      "w_text": 0.5,
+      "gamma": 10,
+      "seen": 80.26293516159058,
+      "unseen": 25.15099346637726,
+      "overall_5644": 56.23412858247757
+    },
+    "protorefine_best": {
+      "label": "protorefine_best",
+      "w_text": 0.5,
+      "gamma": 10,
+      "seen": 80.22080063819885,
+      "unseen": 25.10785162448883,
+      "overall_5644": 56.19155486822128
+    },
+    "rows_baseline": [
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 0,
+        "seen": 88.47969174385071,
+        "unseen": 0.0,
+        "overall_5644": 49.902546143531794
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 1,
+        "seen": 88.47969174385071,
+        "unseen": 0.0,
+        "overall_5644": 49.902546143531794
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 2,
+        "seen": 88.47969174385071,
+        "unseen": 0.04314063990022987,
+        "overall_5644": 49.9213554625283
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 3,
+        "seen": 88.47969174385071,
+        "unseen": 0.47454703599214554,
+        "overall_5644": 50.10944865122437
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 5,
+        "seen": 88.0414605140686,
+        "unseen": 6.212252005934715,
+        "overall_5644": 52.36392560452223
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 7,
+        "seen": 85.60593128204346,
+        "unseen": 17.428818345069885,
+        "overall_5644": 55.880710041522974
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 10,
+        "seen": 74.70925450325012,
+        "unseen": 27.221745252609253,
+        "overall_5644": 54.0047004699707
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 15,
+        "seen": 7.83751904964447,
+        "unseen": 28.04141640663147,
+        "overall_5644": 16.6464182972908
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 20,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.25,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 0,
+        "seen": 88.85892629623413,
+        "unseen": 0.0,
+        "overall_5644": 50.116434431076044
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 1,
+        "seen": 88.85892629623413,
+        "unseen": 0.0,
+        "overall_5644": 50.116434431076044
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 2,
+        "seen": 88.85892629623413,
+        "unseen": 0.0,
+        "overall_5644": 50.116434431076044
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 3,
+        "seen": 88.85892629623413,
+        "unseen": 0.04314063990022987,
+        "overall_5644": 50.13524375007255
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 5,
+        "seen": 88.76622319221497,
+        "unseen": 2.6747196912765503,
+        "overall_5644": 51.23032766580582
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 7,
+        "seen": 87.55267262458801,
+        "unseen": 11.087144166231155,
+        "overall_5644": 54.21370221674442
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 10,
+        "seen": 80.26293516159058,
+        "unseen": 25.15099346637726,
+        "overall_5644": 56.23412858247757
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 15,
+        "seen": 25.720545649528503,
+        "unseen": 28.04141640663147,
+        "overall_5644": 26.732445299625397
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 20,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 0.5,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 0,
+        "seen": 89.29715156555176,
+        "unseen": 0.0,
+        "overall_5644": 50.36359348297119
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 1,
+        "seen": 89.29715156555176,
+        "unseen": 0.0,
+        "overall_5644": 50.36359348297119
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 2,
+        "seen": 89.29715156555176,
+        "unseen": 0.0,
+        "overall_5644": 50.36359348297119
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 3,
+        "seen": 89.29715156555176,
+        "unseen": 0.0,
+        "overall_5644": 50.36359348297119
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 5,
+        "seen": 89.29715156555176,
+        "unseen": 0.12942191679030657,
+        "overall_5644": 50.42002143869176
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 7,
+        "seen": 89.16231393814087,
+        "unseen": 2.7610009536147118,
+        "overall_5644": 51.491341476887456
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 10,
+        "seen": 86.81105971336365,
+        "unseen": 16.60914570093155,
+        "overall_5644": 56.20302520394325
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 15,
+        "seen": 64.18337821960449,
+        "unseen": 27.955135703086853,
+        "overall_5644": 48.3878644824028
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 20,
+        "seen": 0.28653296176344156,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.387662143725903
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "baseline",
+        "w_text": 1.0,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      }
+    ],
+    "rows_protorefine": [
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 0,
+        "seen": 88.44597935676575,
+        "unseen": 0.0,
+        "overall_5644": 49.88353235721588
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 1,
+        "seen": 88.44597935676575,
+        "unseen": 0.0,
+        "overall_5644": 49.88353235721588
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 2,
+        "seen": 88.44597935676575,
+        "unseen": 0.04314063990022987,
+        "overall_5644": 49.90234167621238
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 3,
+        "seen": 88.44597935676575,
+        "unseen": 0.47454703599214554,
+        "overall_5644": 50.09043486490845
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 5,
+        "seen": 87.99932599067688,
+        "unseen": 6.169111654162407,
+        "overall_5644": 52.321352539956564
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 7,
+        "seen": 85.57222485542297,
+        "unseen": 17.428818345069885,
+        "overall_5644": 55.86169961690902
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 10,
+        "seen": 74.70082640647888,
+        "unseen": 27.221745252609253,
+        "overall_5644": 53.99994702339172
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 15,
+        "seen": 8.225180953741074,
+        "unseen": 28.04141640663147,
+        "overall_5644": 16.865059611201286
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 20,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.25,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 0,
+        "seen": 88.84207010269165,
+        "unseen": 0.0,
+        "overall_5644": 50.10692753791809
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 1,
+        "seen": 88.84207010269165,
+        "unseen": 0.0,
+        "overall_5644": 50.10692753791809
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 2,
+        "seen": 88.84207010269165,
+        "unseen": 0.0,
+        "overall_5644": 50.10692753791809
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 3,
+        "seen": 88.84207010269165,
+        "unseen": 0.04314063990022987,
+        "overall_5644": 50.12573685691459
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 5,
+        "seen": 88.74936699867249,
+        "unseen": 2.6747196912765503,
+        "overall_5644": 51.220820772647855
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 7,
+        "seen": 87.52738833427429,
+        "unseen": 11.173425614833832,
+        "overall_5644": 54.23706058859825
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 10,
+        "seen": 80.22080063819885,
+        "unseen": 25.10785162448883,
+        "overall_5644": 56.19155486822128
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 15,
+        "seen": 26.18405520915985,
+        "unseen": 28.04141640663147,
+        "overall_5644": 26.99386469125748
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 20,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 0.5,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 0,
+        "seen": 89.22130465507507,
+        "unseen": 0.0,
+        "overall_5644": 50.32081582546234
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 1,
+        "seen": 89.22130465507507,
+        "unseen": 0.0,
+        "overall_5644": 50.32081582546234
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 2,
+        "seen": 89.22130465507507,
+        "unseen": 0.0,
+        "overall_5644": 50.32081582546234
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 3,
+        "seen": 89.22130465507507,
+        "unseen": 0.0,
+        "overall_5644": 50.32081582546234
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 5,
+        "seen": 89.22130465507507,
+        "unseen": 0.08628127980045974,
+        "overall_5644": 50.35843446345534
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 7,
+        "seen": 89.08646702766418,
+        "unseen": 2.7610009536147118,
+        "overall_5644": 51.448563819378606
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 10,
+        "seen": 86.75206303596497,
+        "unseen": 16.60914570093155,
+        "overall_5644": 56.169751077890396
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 15,
+        "seen": 64.15809988975525,
+        "unseen": 27.955135703086853,
+        "overall_5644": 48.373607504367826
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 20,
+        "seen": 0.3118152730166912,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.401921367272735
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 30,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      },
+      {
+        "label": "protorefine_best",
+        "w_text": 1.0,
+        "gamma": 50,
+        "seen": 0.0,
+        "unseen": 28.04141640663147,
+        "overall_5644": 12.226057553291321
+      }
+    ]
+  }
+}

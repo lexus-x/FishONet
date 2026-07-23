@@ -99,27 +99,40 @@ def extract(args):
     model = model.to(DEV).eval()
     files = list(pickle.load(open(f'data/dl/splits/{args.extract}.pkl', 'rb')))
     imgidx = index_images('data/dl/images')
-    feats, kept, buf, bufn, miss = [], [], [], [], 0
+    squash_tf = T.Compose([T.Resize((RES, RES), interpolation=T.InterpolationMode.BICUBIC),
+                           T.ToTensor(),
+                           T.Normalize((0.48145466, 0.4578275, 0.40821073),
+                                       (0.26862954, 0.26130258, 0.27577711))])
+    feats, kept, buf, buf2, bufn, miss = [], [], [], [], [], 0
+    def enc(x):
+        with torch.autocast('cuda', dtype=torch.bfloat16):
+            f = model.encode_image(x).float()
+        return f / f.norm(dim=-1, keepdim=True)
     def flush():
         if not buf: return
         x = torch.stack(buf).to(DEV)
-        with torch.autocast('cuda', dtype=torch.bfloat16):
-            f = model.encode_image(x).float(); f = f / f.norm(dim=-1, keepdim=True)
-            if args.hflip:
-                f2 = model.encode_image(torch.flip(x, dims=[-1])).float()
-                f2 = f2 / f2.norm(dim=-1, keepdim=True)
-                f = f + f2; f = f / f.norm(dim=-1, keepdim=True)
-        feats.append(f.cpu().float()); kept.extend(bufn); buf.clear(); bufn.clear()
+        f = enc(x)
+        if args.hflip: f = f + enc(torch.flip(x, dims=[-1]))
+        if args.squash_tta:
+            x2 = torch.stack(buf2).to(DEV)
+            f = f + enc(x2)
+            if args.hflip: f = f + enc(torch.flip(x2, dims=[-1]))
+        f = f / f.norm(dim=-1, keepdim=True)
+        feats.append(f.cpu().float()); kept.extend(bufn); buf.clear(); buf2.clear(); bufn.clear()
     for i, fn in enumerate(files):
         p = imgidx.get(fn)
         if p is None: miss += 1; continue
-        try: buf.append(preprocess(Image.open(p).convert('RGB'))); bufn.append(fn)
+        try:
+            img = Image.open(p).convert('RGB')
+            buf.append(preprocess(img))
+            if args.squash_tta: buf2.append(squash_tf(img))
+            bufn.append(fn)
         except Exception: miss += 1; continue
         if len(buf) >= args.bs: flush()
         if i % 5000 == 0: print(f'{args.extract} {i}/{len(files)} miss={miss}', flush=True)
     flush()
     torch.save({'files': kept, 'feats': torch.cat(feats)}, args.out)
-    print('saved', args.out, 'n=', len(kept), 'dim=', feats[0].shape[1], 'hflip=', args.hflip)
+    print('saved', args.out, 'n=', len(kept), 'dim=', feats[0].shape[1], 'hflip=', args.hflip, 'squash_tta=', args.squash_tta)
 
 # ----------------------------- train ----------------------------
 def train(args):
@@ -143,10 +156,20 @@ def train(args):
     Wg = nn.Linear(DIM, G).to(DEV) if G > 0 and args.gw > 0 else None
 
     mean = (0.48145466, 0.4578275, 0.40821073); std = (0.26862954, 0.26130258, 0.27577711)
-    train_tf = T.Compose([
-        T.RandomResizedCrop(RES, scale=(0.5, 1.0), interpolation=T.InterpolationMode.BICUBIC),
-        T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
-        T.ToTensor(), T.Normalize(mean, std)])
+    if args.shift_aug:
+        # test-shift-matched aug: widen aspect ratio (test fish elongated to 2.12; default RRC ratio
+        # 0.75-1.33 never simulates it). Extract with --squash_tta 1 to match inference framing.
+        train_tf = T.Compose([
+            T.RandomResizedCrop(RES, scale=(0.35, 1.0), ratio=(0.5, 2.0),
+                                interpolation=T.InterpolationMode.BICUBIC),
+            T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
+            T.ToTensor(), T.Normalize(mean, std)])
+        print('SHIFT-MATCHED aug: RandomResizedCrop scale(0.35,1.0) ratio(0.5,2.0)', flush=True)
+    else:
+        train_tf = T.Compose([
+            T.RandomResizedCrop(RES, scale=(0.5, 1.0), interpolation=T.InterpolationMode.BICUBIC),
+            T.RandomHorizontalFlip(), T.ColorJitter(0.2, 0.2, 0.2),
+            T.ToTensor(), T.Normalize(mean, std)])
 
     freq = torch.zeros(C)
     for fn, si, gy in D['train']: freq[si] += 1
@@ -239,6 +262,8 @@ def main():
     ap.add_argument('--ckpt', default='outputs/fullft336.pt')
     ap.add_argument('--extract', default='')
     ap.add_argument('--hflip', type=int, default=1)
+    ap.add_argument('--shift_aug', type=int, default=0)   # 1 = test-shift-matched wide-aspect aug
+    ap.add_argument('--squash_tta', type=int, default=0)  # 1 = add squash-view TTA (match shift_aug)
     args = ap.parse_args()
     os.makedirs('outputs', exist_ok=True)
     if args.extract:

@@ -30,8 +30,22 @@ data/dl/images/ (99,979 .jpg)
 | v20 real test seen (probe) | 79.70% |
 | Frozen baseline (ViT-L NCM) | ~75% |
 | Full-network FT 336px | 82.77% (training in progress) |
+| **v21 unified_ctftbig_ext holdout** (single pipeline, w_text=0.5 gamma=30) | seen=85.10% unseen=20.10% **overall=56.76%** |
+| **v21 unified_ctftbig_ext REAL** (Codabench, 2026-07-21) | seen=71.60% unseen=11.10% **overall=45.19%** |
 
-**Key problem:** ~8% train→test distribution shift gap (87.94% holdout vs 79.70% real).
+**Key problem:** holdout badly overestimates the real single-pipeline score, worse than the old
+v20 gap. v21 real-vs-holdout: seen -13.5pt, unseen -9.0pt, overall -11.6pt. Two separable causes
+(see `notes/playbook.md` for the full diagnostic math):
+1. **Novelty-gate miscalibration**: real seen-image mis-route rate to the unseen head is ~19.4%,
+   vs ~4.9% implied by the holdout simulation -- **3.9x worse**. The gate is far more trigger-happy
+   on real photos than on the pseudo-unseen (rarest-20%-of-seen-classes) holdout proxy.
+2. **Zero-shot ceiling gap**: conditional accuracy on images correctly routed to the unseen head is
+   ~13.9% real vs ~28.3% holdout oracle -- **~0.5x**. True unseen species (zero training images) are
+   harder to zero-shot-match via text than the pseudo-unseen holdout (which still has a few images)
+   suggests.
+Next lever to try: lower gamma (less aggressive novelty penalty) -- given seen is 56% of the real
+population and its real mis-route cost is worse than modeled, the gate is probably over-tuned
+toward unseen recall relative to what actually pays off in the real world.
 
 ## Key Techniques
 
@@ -76,33 +90,34 @@ python src/predict_v20_multienc.py --real
 # Output: outputs/prediction_v20_real.json, submission_v20_*.zip
 ```
 
-Or use the bundled runner:
-```bash
-bash scripts/run_pipeline.sh
-```
-
 ## Layout
 
 ```
 onet/
-├── src/                    # pipeline scripts (60+)
+├── src/                    # current pipeline scripts (27) -- embed/FT/predict
 │   ├── ft.py              # LoRA fine-tuning (seen head)
 │   ├── ft_cap.py          # Caption encoder FT
 │   ├── ft_robust.py       # Shift-robust FT (heavy aug)
 │   ├── contrastive_ft.py  # CTFT for unseen text matching
 │   ├── embed.py           # Frozen embedding extraction
 │   ├── build_text_embeddings.py
-│   ├── predict_v20_multienc.py  # Current best predictor
-│   └── validate.py        # Local validation harness
+│   ├── predict_v20_multienc.py     # v20 predictor
+│   ├── unified_holdout*.py         # v21 single-pipeline holdout eval harnesses (current)
+│   ├── validate.py, validate_gate.py
+│   └── archive/            # superseded scripts (v15/v18/v19 eras, cyc_* research branch,
+│                            #   one-off sweeps/probes) -- kept for history, not maintained
+├── builders/                # scripts that build a final submission zip (build_v21_unified_*.py)
+├── experiments/              # diagnostics/verification scripts still in active use
+├── archive/                  # superseded root-level one-offs + stale-path shell scripts
 ├── configs/               # YAML configs (WIP)
-├── data/dl/               # dataset (gitignored)
+├── data/dl/                # dataset (gitignored)
 │   ├── images/ (99,979 .jpg)
 │   ├── label_train.json, descriptions.json
 │   └── splits/ (train.pkl, test.pkl, unseen.pkl)
-├── outputs/               # embeddings, predictions, submissions
-├── submissions/           # final submission files
-├── notes/playbook.md      # research strategy
-├── Leah's work/           # family/species taxonomy mapping
-├── scripts/               # setup + run helpers
-├── MEMORY.md              # operating rules
-└── environment.yml        # conda environment
+├── outputs/                # embeddings, predictions, submissions (flat, path-referenced by name)
+├── submissions/             # final submission files
+├── notes/playbook.md       # research strategy
+├── Leah's work/            # family/species taxonomy mapping
+├── scripts/                # setup + run helpers (setup_env.sh, gated_embed.sh, v2c_pipeline.sh)
+├── MEMORY.md               # operating rules
+└── environment.yml         # conda environment

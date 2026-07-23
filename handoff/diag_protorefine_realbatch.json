@@ -1,0 +1,42 @@
+{
+  "n_total": 35665,
+  "config": {
+    "alpha": 0.5,
+    "nov_q": 0.7,
+    "conf_q": 0.7
+  },
+  "novelty_mean": 0.3990274667739868,
+  "novelty_median": 0.43576401472091675,
+  "novelty_p90": 0.6757789850234985,
+  "churn_pct": 0.445815222337842,
+  "gated_n": 10692,
+  "gated_pct": 29.978970979952333,
+  "eligible_classes": 549,
+  "total_seen_classes": 5795,
+  "band_stats": [
+    {
+      "band": "low(likely-seen)",
+      "lo": 0.0,
+      "hi": 0.33,
+      "n": 13319,
+      "churn_n": 16,
+      "churn_pct_of_band": 0.12012913882423605
+    },
+    {
+      "band": "mid(borderline)",
+      "lo": 0.33,
+      "hi": 0.66,
+      "n": 17949,
+      "churn_n": 102,
+      "churn_pct_of_band": 0.5682767842219623
+    },
+    {
+      "band": "high(likely-unseen)",
+      "lo": 0.66,
+      "hi": 1.01,
+      "n": 4397,
+      "churn_n": 41,
+      "churn_pct_of_band": 0.9324539458721856
+    }
+  ]
+}

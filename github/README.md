@@ -123,12 +123,10 @@ cd fishonet && python -m http.server 8000
 2. **Settings → Pages → Source: Deploy from a branch**, select `main` and `/ (root)`.
 3. Update the page URL at the top of this README.
 
-## Licence
+## License & Intellectual Property
 
-Code and page: MIT (see `LICENSE`).
+Copyright (c) 2026 Lalith Sai (lexus-x). All Rights Reserved. **This work is proprietary and not open source.**
 
-**The photographs and species descriptions are competition data**, reproduced here in small,
-downscaled form for illustration of the research. They are not covered by the MIT licence and
-remain subject to the original dataset terms and the licences of their contributing photographers
-(iNaturalist / citizen-science imagery, typically CC0 / CC-BY / CC-BY-NC). If you reuse this
-repository, review those terms.
+Unauthorized copying, distribution, modification, commercial use, or reproduction of this codebase, architecture, or research materials is strictly prohibited without explicit written permission.
+
+Third-party biodiversity metadata and reference images from iNaturalist, TreeOfLife-200M, and competition materials remain the property of their respective creators and licensors.

@@ -17,14 +17,12 @@
 
 <nav class="nav">
   <div class="wrap nav-in">
-    <a href="#" class="brand"><span class="dot"></span>FishONet</a>
+    <span class="brand"><span class="dot"></span>FishONet</span>
     <a class="lnk" href="#problem">Problem</a>
     <a class="lnk" href="#how">How it works</a>
-    <a class="lnk" href="#simulator">Simulator</a>
     <a class="lnk" href="#species">Species</a>
     <a class="lnk" href="#results">Results</a>
-    <span class="badge-live">● v83 · 53.697%</span>
-    <a class="ghost" href="#repo">Reproduce</a>
+    <a class="ghost" href="#repo">Get the code</a>
   </div>
 </nav>
 
@@ -181,58 +179,8 @@
   </div>
 </section>
 
-<!-- ══════════ SIMULATOR ══════════ -->
-<section id="simulator">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <p class="eyebrow">Interactive Simulator</p>
-      <h2>The Quota Balance Sandbox.</h2>
-      <p>Drag the quota slider below to explore the empirical trade-off between keeping seen fish (TPR) and ejecting novel fish (TNR). See in real-time why <strong>f = 0.60</strong> is the mathematically optimal operating point.</p>
-    </div>
-
-    <div class="simulator-box rv">
-      <div class="sim-grid">
-        <div class="sim-slider-container">
-          <div style="display:flex;justify-content:space-between;align-items:baseline">
-            <label for="sim-slider">Routing Quota (f): <span id="sim-f-val" style="color:#00D4C6;font-size:1.2rem;font-weight:700">0.60</span></label>
-            <span style="font-family:var(--mono);font-size:.75rem;color:#8DB9BE">Optimal Peak: 0.60</span>
-          </div>
-          <input type="range" id="sim-slider" class="sim-slider" min="0.40" max="0.80" step="0.01" value="0.60">
-          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.6875rem;color:#76A4AA">
-            <span>f = 0.40 (Aggressive Novel)</span>
-            <span>f = 0.60 (Deployed)</span>
-            <span>f = 0.80 (Closed-Set Bias)</span>
-          </div>
-          <p style="font-size:.875rem;color:#CFE5E7;margin-top:.6rem;line-height:1.5">
-            Because a true seen fish is worth ~54% if retained while an unseen fish is worth ~23% if caught, shifting <em>f</em> too low destroys precious seen accuracy, while shifting it too high starves the novel head.
-          </p>
-        </div>
-
-        <div class="sim-stats-grid">
-          <div class="sim-stat highlight">
-            <div class="val" id="sim-score-val" style="color:#00E5D4">53.697%</div>
-            <div class="lbl">Projected Real Score</div>
-          </div>
-          <div class="sim-stat">
-            <div class="val" id="sim-loss-val">5,678</div>
-            <div class="lbl">Misrouted Images</div>
-          </div>
-          <div class="sim-stat">
-            <div class="val" id="sim-tpr-val">89.1%</div>
-            <div class="lbl">Seen Retained (TPR)</div>
-          </div>
-          <div class="sim-stat">
-            <div class="val" id="sim-tnr-val">77.6%</div>
-            <div class="lbl">Novel Ejected (TNR)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════ SPECIES ══════════ -->
-<section id="species" class="soft">
+<section id="species">
   <div class="wrap">
     <div class="sec-head rv">
       <p class="eyebrow">The data</p>

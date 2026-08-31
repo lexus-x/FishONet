@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FishONet</title>
+<meta name="description" content="Recognising 17,393 fish species when 11,598 of them have no training photograph. Real data, real model output, and what actually worked.">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="FishONet — naming the unseen">
+<meta property="og:description" content="Open-set species recognition across 17,393 fish. 53.697% overall.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <span class="brand"><span class="dot"></span>FishONet</span>
+    <a class="lnk" href="#problem">Problem</a>
+    <a class="lnk" href="#how">How it works</a>
+    <a class="lnk" href="#species">Species</a>
+    <a class="lnk" href="#results">Results</a>
+    <a class="ghost" href="#repo">Get the code</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow rv in">CV4Ecology 2026 · Codabench 16815</p>
+      <h1 class="rv in">Naming the fish<br>nobody <span class="hl">photographed.</span></h1>
+      <p class="dek rv in rv-d1">17,393 species. Two thirds of them have <strong>zero</strong> training images — only a name and a written description. Every test photo must be named anyway.</p>
+      <div class="hero-stats rv in rv-d2">
+        <div class="hstat"><div class="k"><span data-to="53.697" data-dp="3">0</span><span class="u">%</span></div><div class="l">Overall accuracy</div></div>
+        <div class="hstat"><div class="k"><span data-to="17393">0</span></div><div class="l">Species</div></div>
+        <div class="hstat"><div class="k"><span data-to="11598">0</span></div><div class="l">With no photo</div></div>
+      </div>
+    </div>
+    <div class="cluster rv in rv-d2" id="cluster"></div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true"><div class="mq-track" id="mqtrack"></div></div>
+
+<!-- ══════════ PROBLEM ══════════ -->
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">The problem</p>
+      <h2>Half the answer sheet has no pictures on it.</h2>
+      <p>The evaluation set mixes both kinds and never tells you which is which. Guessing wrong makes the right answer <em>unreachable</em> — each head can only name species from its own half.</p>
+    </div>
+
+    <div class="split">
+      <div class="pane rv">
+        <div class="pane-h"><span class="n">5,795</span><span class="lab">Seen · 64,259 photographs</span></div>
+        <div class="thumbs" id="have"></div>
+      </div>
+      <div class="pane novel rv rv-d1">
+        <div class="pane-h"><span class="n">11,598</span><span class="lab">Novel · zero photographs</span></div>
+        <div class="ghosts" id="havenot"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ HOW IT WORKS ══════════ -->
+<section id="how" class="soft">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">How the model works</p>
+      <h2>Follow one photograph through the pipeline.</h2>
+      <p>Pick a fish. Every score below is <strong>real output</strong> from the project's own encoders — not a mock-up.</p>
+    </div>
+
+    <div class="picker rv" id="picker"></div>
+
+    <div class="pipe">
+      <div class="steps" role="tablist" aria-label="Pipeline stages">
+        <button class="step" role="tab" aria-selected="true"><span class="si">01</span><span><span class="st">Specimen</span><span class="sd">One photo. No hint about which half it belongs to.</span></span></button>
+        <button class="step" role="tab" aria-selected="false"><span class="si">02</span><span><span class="st">Encode</span><span class="sd">Six vision-language encoders embed it.</span></span></button>
+        <button class="step" role="tab" aria-selected="false"><span class="si">03</span><span><span class="st">Two heads score</span><span class="sd">Each proposes candidates from its own half.</span></span></button>
+        <button class="step" role="tab" aria-selected="false"><span class="si">04</span><span><span class="st">The gate routes</span><span class="sd">A quota, not a threshold — only rank matters.</span></span></button>
+        <button class="step" role="tab" aria-selected="false"><span class="si">05</span><span><span class="st">Name it</span><span class="sd">And what misrouting would have cost.</span></span></button>
+      </div>
+
+      <div class="stage">
+        <!-- 01 -->
+        <div class="panel on">
+          <div class="stage-top">
+            <div class="specimen"><img alt=""><span class="tag">input</span></div>
+            <div>
+              <h3 style="font-size:1.4rem">A photograph, and no context.</h3>
+              <p style="color:var(--ink-2);margin:.7rem 0">This is <span class="sci" data-fill="name"></span>, held out from <span class="num" data-fill="ntrain"></span> training photographs. The model is <strong>not told</strong> that. It must decide for itself whether this species is one it has studied — before it is allowed to name it.</p>
+              <p style="color:var(--muted);font-size:.9375rem;margin:0">Real citizen-science imagery: uneven lighting, hands, murky water, wildly varying framing. Training fish average an aspect ratio of 1.15; evaluation fish average 2.12.</p>
+            </div>
+          </div>
+          <div class="tiles" style="margin-top:1.5rem">
+            <div class="tile"><div class="k">17,393</div><div class="l">Possible answers</div><div class="s">One argmax over the whole space — no shortlisting by split.</div></div>
+            <div class="tile"><div class="k">0</div><div class="l">Hints available</div><div class="s">Assuming which half an image belongs to is prohibited.</div></div>
+            <div class="tile"><div class="k">2.12</div><div class="l">Evaluation aspect ratio</div><div class="s">Against 1.15 in training — a shift we had to augment for.</div></div>
+          </div>
+        </div>
+
+        <!-- 02 -->
+        <div class="panel">
+          <div class="stage-top">
+            <div class="specimen"><img alt=""><span class="tag">encode</span></div>
+            <div>
+              <h3 style="font-size:1.4rem">Six encoders, one image.</h3>
+              <p style="color:var(--ink-2);margin:.7rem 0">All fine-tuning used competition training images only. Every variant is shift-augmented so it sees the elongated framing it will be tested on.</p>
+            </div>
+          </div>
+          <div class="enc-grid">
+            <div class="enc"><b>ctftshift</b>BioCLIP-2.5 ViT-H/14 · LoRA</div>
+            <div class="enc"><b>ftshift</b>BioCLIP-2.5 ViT-H/14</div>
+            <div class="enc"><b>fullft336</b>BioCLIP-2.5 · 336 px</div>
+            <div class="enc"><b>bioclip-2</b>ViT-L/14 · frozen</div>
+            <div class="enc"><b>bioclip-2 LoRA</b>ViT-L/14 · tuned</div>
+            <div class="enc"><b>TaxaBind</b>ViT-B/16 · frozen</div>
+          </div>
+        </div>
+
+        <!-- 03 -->
+        <div class="panel">
+          <h3 style="font-size:1.4rem">Both heads answer. Only one is allowed to win.</h3>
+          <p style="color:var(--ink-2);margin:.7rem 0 0">The seen head compares against class prototypes built from training photos. The novel head has no photos to compare against, so it matches the image to <em>taxonomy text</em>.</p>
+          <div class="heads">
+            <div class="head-box win">
+              <h4>Seen head</h4><div class="cnt">5,795 candidates · image prototypes · best <span id="seenbest" class="num"></span></div>
+              <div id="seenlist"></div>
+            </div>
+            <div class="head-box">
+              <h4>Novel head</h4><div class="cnt">11,598 candidates · taxonomy text · best <span id="unseenbest" class="num"></span></div>
+              <div id="unseenlist"></div>
+            </div>
+          </div>
+          <p style="color:var(--muted);font-size:.875rem;margin-top:1rem">Highlighted rows are the true species. Note how far below the seen head's confidence the novel head sits — matching a photograph to a Latin name is a much weaker signal than matching it to other photographs.</p>
+        </div>
+
+        <!-- 04 -->
+        <div class="panel">
+          <h3 style="font-size:1.4rem">The gate is a quota, not a threshold.</h3>
+          <p style="color:var(--ink-2);margin:.7rem 0 0">All 35,665 images are ranked by novelty. The top 60% go to the seen head — a fixed count, so only the <strong>ordering</strong> matters and the gate's probabilities are discarded entirely.</p>
+          <div class="gatebar">
+            <div class="gtrack"><div class="gfill" id="gfill"></div></div>
+            <div class="gmark" style="left:60%"></div>
+            <div class="gyou" id="gyou"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:.6rem;font-family:var(--mono);font-size:.6875rem;color:var(--muted)">
+              <span>← more novel</span><span>more familiar →</span>
+            </div>
+          </div>
+          <p style="color:var(--ink-2);margin-top:1.2rem">This fish's seen-head maximum similarity is <span class="num" id="gsim" style="color:var(--accent-in);font-weight:600"></span> — one of the twelve features the gate reads. It sits far to the familiar end, so it routes to the seen head.</p>
+          <p style="color:var(--muted);font-size:.8125rem">Marker position is derived from that single real feature for illustration; the deployed gate combines all twelve.</p>
+          <div class="tiles" style="margin-top:1.4rem">
+            <div class="tile"><div class="k" style="color:var(--c4)">5,678</div><div class="l">Images lost to routing</div><div class="s">15.9% of the set, wrong before naming even starts.</div></div>
+            <div class="tile"><div class="k">89.1<span style="font-size:.5em;color:var(--muted)">/</span>77.6</div><div class="l">Routing accuracy</div><div class="s">Seen kept · novel ejected, as percentages.</div></div>
+          </div>
+        </div>
+
+        <!-- 05 -->
+        <div class="panel">
+          <div class="stage-top">
+            <div class="specimen"><img alt=""><span class="tag">result</span></div>
+            <div>
+              <div class="verdict"><div class="lb">Prediction</div><div class="vv" id="answer"></div></div>
+              <p style="color:var(--ink-2);margin:1.1rem 0 .3rem"><strong>Had the gate misrouted it</strong>, the best available answer would have been:</p>
+              <p class="sci" style="font-size:1.15rem;color:var(--c4);margin:0"><span id="wrongans"></span></p>
+              <p style="color:var(--muted);font-size:.9375rem;margin:.3rem 0 0">— <span id="wrongnote"></span>.</p>
+            </div>
+          </div>
+          <p style="color:var(--ink-2);margin-top:1.3rem;border-top:1px solid var(--line);padding-top:1.1rem">This is why routing dominates everything else. A misrouted fish does not get a slightly worse answer; it gets an answer drawn from a list that <em>cannot contain</em> the right one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SPECIES ══════════ -->
+<section id="species">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">The data</p>
+      <h2>Real species, real descriptions.</h2>
+      <p>Photographs chosen by the model itself — each is the image closest to its class prototype. Novel species have no card image, because no training photograph exists.</p>
+    </div>
+    <div class="filters rv">
+      <button class="fbtn" data-f="all" aria-pressed="true">All</button>
+      <button class="fbtn" data-f="seen" aria-pressed="false">Seen</button>
+      <button class="fbtn" data-f="unseen" aria-pressed="false">Novel · text only</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<!-- ══════════ RESULTS ══════════ -->
+<section id="results" class="soft">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Results</p>
+      <h2>47.8% to 53.7% across sixteen submissions.</h2>
+      <p>Everything after v56 was won without a single new encoder or dataset — only by learning components that had been hand-tuned constants.</p>
+    </div>
+
+    <div class="tiles rv" style="margin-bottom:2.5rem">
+      <div class="tile hero-tile"><div class="k"><span data-to="53.697" data-dp="3">0</span></div><div class="l">Overall</div><div class="s">Final submission, v83</div></div>
+      <div class="tile"><div class="k"><span data-to="77.54" data-dp="2">0</span></div><div class="l">Seen accuracy</div><div class="s">56.35% of the evaluation set</div></div>
+      <div class="tile"><div class="k"><span data-to="22.91" data-dp="2">0</span></div><div class="l">Novel accuracy</div><div class="s">43.65% of the set — the hard half</div></div>
+      <div class="tile"><div class="k"><span data-to="35665">0</span></div><div class="l">Images scored</div><div class="s">One uniform rule, one argmax</div></div>
+    </div>
+
+    <div class="bars rv">
+      <div class="brow"><span class="bl">v33</span><span class="bt"><span class="bf" data-w="11%"></span></span><span class="bv">47.78</span></div>
+      <div class="brow"><span class="bl">v37</span><span class="bt"><span class="bf" data-w="47%"></span></span><span class="bv">50.32</span></div>
+      <div class="brow"><span class="bl">v46</span><span class="bt"><span class="bf" data-w="55%"></span></span><span class="bv">50.84</span></div>
+      <div class="brow"><span class="bl">v56</span><span class="bt"><span class="bf" data-w="66%"></span></span><span class="bv">51.62</span></div>
+      <div class="brow"><span class="bl">v77</span><span class="bt"><span class="bf" data-w="91%"></span></span><span class="bv">53.38</span></div>
+      <div class="brow"><span class="bl">v82</span><span class="bt"><span class="bf" data-w="95%"></span></span><span class="bv">53.64</span></div>
+      <div class="brow peak"><span class="bl">v83</span><span class="bt"><span class="bf" data-w="96%"></span></span><span class="bv">53.70</span></div>
+      <div class="brow down"><span class="bl">v84</span><span class="bt"><span class="bf" data-w="95%"></span></span><span class="bv">53.66</span></div>
+    </div>
+    <p style="font-family:var(--mono);font-size:.6875rem;color:var(--muted);margin-top:.9rem">Bar axis starts at 47% to make the differences visible. v84 is the one submission that went backwards.</p>
+  </div>
+</section>
+
+<!-- ══════════ THE LEAK ══════════ -->
+<section id="leak">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">The finding we are proudest of</p>
+      <h2>Our best-ever result was the model cheating.</h2>
+      <p>A re-ranker scored <strong>+13.374</strong> on our validation set and <strong>+0.006</strong> on the real leaderboard. A gap that size is not optimism — it means the model found something in the test harness that does not exist in reality.</p>
+    </div>
+
+    <div class="leak">
+      <div class="pool bad rv">
+        <h4>Before — the pool had a tell</h4>
+        <div class="poolbar"><span class="el" style="width:9.1%"></span><span class="ne" style="width:90.9%"></span></div>
+        <div class="fig">9.1%</div>
+        <p class="cap">Only 1,159 of 12,757 candidates could ever be the answer — and that subgroup is detectable from the features. The model learned <em>"prefer the eligible-looking ones"</em>, picking them 53.7% of the time against the fusion's 38.4%.</p>
+      </div>
+      <div class="pool good rv rv-d1">
+        <h4>After — every candidate is eligible</h4>
+        <div class="poolbar"><span class="el" style="width:100%"></span></div>
+        <div class="fig">100%</div>
+        <p class="cap">Restrict the pool so the shortcut carries no information. The validation number <strong>fell</strong> to +8.154 — and the real score <strong>rose</strong> to +0.213, a 35× improvement in what actually counts.</p>
+      </div>
+    </div>
+
+    <div class="tiles rv" style="margin-top:1.5rem">
+      <div class="tile"><div class="k">0.026</div><div class="l">Real points per validation point</div><div class="s">Measured on two independent heads. So <strong>+1 real point needs +34 validation points</strong> — enough to kill most proposals in a sentence.</div></div>
+      <div class="tile"><div class="k">53.69</div><div class="l">Predicted, before submitting</div><div class="s">The calibration forecast v83 in advance. Measured: 53.6969.</div></div>
+      <div class="tile"><div class="k" style="color:var(--c4)">−0.039</div><div class="l">Where the rule breaks</div><div class="s">A +0.345 validation gain flipped sign in reality. Below ~+2 points, outcomes are noise.</div></div>
+    </div>
+
+    <p class="narrow rv" style="font-size:1.3rem;font-family:var(--serif);font-style:italic;color:var(--ink);margin:2.5rem auto 0;text-align:center;line-height:1.5">The magnitude of a validation number is not evidence.<br>The population it was measured on is.</p>
+  </div>
+</section>
+
+<!-- ══════════ REGISTER ══════════ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <p class="eyebrow">Negative results</p>
+      <h2>Everything that didn't work.</h2>
+      <p>Each was measured, not assumed. Together they define the ceiling at roughly 54.35% for this architecture.</p>
+    </div>
+    <div class="reg rv">
+      <div class="ritem"><span class="rn">SigLIP2 backbone swap</span><span class="rv dead">5.13 vs 21.53</span></div>
+      <div class="ritem"><span class="rn">BioTrove-CLIP</span><span class="rv dead">≈ 0.00</span></div>
+      <div class="ritem"><span class="rn">BioCAP</span><span class="rv dead">6.8–12.3</span></div>
+      <div class="ritem"><span class="rn">7B vision-language re-ranker</span><span class="rv dead">−16 pt</span></div>
+      <div class="ritem"><span class="rn">LLM-written trait text</span><span class="rv dead">−6.3 pt</span></div>
+      <div class="ritem"><span class="rn">Common names instead of Latin</span><span class="rv dead">−17.7 pt</span></div>
+      <div class="ritem"><span class="rn">GBIF image prototypes</span><span class="rv dead">13% coverage</span></div>
+      <div class="ritem"><span class="rn">Wikipedia summaries</span><span class="rv dead">35 / 12,757</span></div>
+      <div class="ritem"><span class="rn">Gradient boosting, novel head</span><span class="rv dead">−0.302</span></div>
+      <div class="ritem"><span class="rn">Genus consensus features</span><span class="rv dead">−0.432</span></div>
+      <div class="ritem"><span class="rn">Two extra encoders on seen head</span><span class="rv flat">+0.001</span></div>
+      <div class="ritem"><span class="rn">Shortlist depth 20 → 50</span><span class="rv dead">−0.039</span></div>
+      <div class="ritem"><span class="rn">Unified single-head inference</span><span class="rv dead">−2 to −5</span></div>
+      <div class="ritem"><span class="rn">Operating point f = 0.55 / 0.65</span><span class="rv dead">−0.18 / −0.21</span></div>
+      <div class="ritem"><span class="rn">Second-encoder gate features</span><span class="rv dead">−0.044</span></div>
+      <div class="ritem"><span class="rn">Sinkhorn re-added after re-ranking</span><span class="rv dead">monotonic loss</span></div>
+    </div>
+    <p class="narrow rv" style="margin-top:2rem;color:var(--ink-2)">Read two of these together: gradient boosting can fit <em>any</em> interaction of the existing features and gains nothing, and two entire encoders that had never scored a seen class add 0.001. More model returns zero; more encoder returns zero. The remaining gap is an <strong>evidence</strong> limit — which is what tells you to stop.</p>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER / REPO ══════════ -->
+<footer id="repo">
+  <div class="wrap">
+    <div class="sec-head rv" style="margin-bottom:1.75rem">
+      <p class="eyebrow">Reproduce it</p>
+      <h2 style="font-size:1.9rem">Four commands.</h2>
+    </div>
+<pre class="rv"><code><span class="c"># environment</span>
+conda activate onet &amp;&amp; python src/sanity.py
+
+<span class="c"># learned components</span>
+python research/learned_gate_v77.py
+python research/rerank_leakfree_v82.py
+python research/rerank_seen_v83.py
+
+<span class="c"># final submission — deterministic, bit-identical on rebuild</span>
+python builders/build_v83_rerank_both.py</code></pre>
+
+    <div class="fcols" style="margin-top:2.75rem">
+      <div><h5>Final</h5><p class="mono">53.69690172437964%</p><p>submission_v83_rerank_both_f60.zip</p></div>
+      <div><h5>Built with</h5><p>PyTorch · open_clip · scikit-learn</p><p>BioCLIP-2.5 · BioCLIP-2 · TaxaBind</p></div>
+      <div><h5>Documents</h5><ul>
+        <li>REPORT.md — technical report</li>
+        <li>DISCLOSURE.md — external data</li>
+        <li>HANDOFF.md — full research log</li>
+      </ul></div>
+      <div><h5>Compute</h5><p>1 × NVIDIA L40S, 46 GB</p><p>~30 GB peak at inference</p></div>
+    </div>
+
+    <p class="fnote">Every photograph, species name and description on this page comes from the competition training set. Head scores in the walkthrough are real cosine similarities computed from the project's cached embeddings. Numbers that are projections rather than measurements are labelled as such.</p>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

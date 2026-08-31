@@ -6,7 +6,8 @@ CV4Ecology 2026 challenge (Codabench 16815).
 
 **Final score: 53.69690172437964% overall** — 77.544% on seen species, 22.912% on novel ones.
 
-🌐 **[View the project page →](https://lexus-x.github.io/FihOnet/)**
+🌐 **[Live Interactive Showcase → https://fihonet.lalithsai00.workers.dev/](https://fihonet.lalithsai00.workers.dev/)**  
+📖 **[Technical Report & Methodology → REPORT.md](https://github.com/lexus-x/FihOnet/blob/main/REPORT.md)**
 
 ---
 

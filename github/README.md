@@ -123,9 +123,15 @@ cd fishonet && python -m http.server 8000
 2. **Settings → Pages → Source: Deploy from a branch**, select `main` and `/ (root)`.
 3. Update the page URL at the top of this README.
 
+## Authors & Laboratory Attribution
+
+- **Author:** Lalith Sai ([lexus-x](https://github.com/lexus-x))
+- **Laboratory:** Intelligent Systems Laboratory ([ISLab](http://islab.cwnu.ac.kr/)), Changwon National University (CWNU)
+- **Supervision:** [Prof. Cheng Yaw Low](https://chengyawlow.github.io/)
+
 ## License & Intellectual Property
 
-Copyright (c) 2026 Lalith Sai (lexus-x). All Rights Reserved. **This work is proprietary and not open source.**
+Copyright (c) 2026 Lalith Sai, Intelligent Systems Laboratory (ISLab, CWNU), and Prof. Cheng Yaw Low. All Rights Reserved. **This work is proprietary and not open source.**
 
 Unauthorized copying, distribution, modification, commercial use, or reproduction of this codebase, architecture, or research materials is strictly prohibited without explicit written permission.
 

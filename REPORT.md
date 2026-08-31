@@ -2,6 +2,9 @@
 
 **FishONet: Open-Set Fine-Grained Fish Species Recognition via Shift-Augmented Multimodal Ensembles, Learned Quota Routing, and Leak-Free Shortlist Re-ranking**
 
+- **Author:** Lalith Sai ([lexus-x](https://github.com/lexus-x))
+- **Laboratory:** Intelligent Systems Laboratory ([ISLab](http://islab.cwnu.ac.kr/)), Changwon National University (CWNU)
+- **Supervision:** [Prof. Cheng Yaw Low](https://chengyawlow.github.io/)
 - **Live Interactive Showcase:** [https://fihonet.lalithsai00.workers.dev/](https://fihonet.lalithsai00.workers.dev/)
 - **Code Repository:** [https://github.com/lexus-x/FihOnet](https://github.com/lexus-x/FihOnet)
 - **Final Submitted Artifact:** `submissions/submission_v83_rerank_both_f60.zip`

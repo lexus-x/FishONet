@@ -1,0 +1,73 @@
+{
+  "full class vocabulary": {
+    "pass": true,
+    "detail": "17393 classes"
+  },
+  "photographed / unphotographed split": {
+    "pass": true,
+    "detail": "5795 with training images, 11598 without"
+  },
+  "all 35,665 eval images predicted": {
+    "pass": true,
+    "detail": "35665 predictions"
+  },
+  "every prediction is in the vocabulary": {
+    "pass": true,
+    "detail": "no out-of-vocabulary labels"
+  },
+  "no split read in build_v109_genus_gamble.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "no split read in build_v83_rerank_both.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "no split read in build_v82_rerank_leakfree.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "no split read in build_v81_rerank.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "no split read in build_v77_learned_gate.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "no split read in build_v56_overlap_336.py": {
+    "pass": true,
+    "detail": "clean"
+  },
+  "predictions land on both sides of the split": {
+    "pass": true,
+    "detail": "21399 photographed-class predictions, 14266 unphotographed-class"
+  },
+  "routing is NOT an oracle": {
+    "pass": true,
+    "detail": "seen-split routed to a photographed class 89.11%, unseen-split to an unphotographed class 77.58% (an oracle would be 100.00% / 100.00%)"
+  },
+  "routing_confusion": {
+    "test->photo": 17909,
+    "test->unphoto": 2188,
+    "uns->photo": 3490,
+    "uns->unphoto": 12078
+  },
+  "coupling_ladder": [
+    {
+      "variant": "gate z1 + f-quota frozen",
+      "changed": 729,
+      "pct": 2.044
+    },
+    {
+      "variant": "  + dbnorm hub frozen",
+      "changed": 4213,
+      "pct": 11.813
+    }
+  ],
+  "learned_gate_v79 reproduces bit-identically": {
+    "pass": true,
+    "detail": "coefficients and intercept match exactly (GATE_C=100 GATE_TAG=v79 python research/learned_gate_v77.py)"
+  },
+  "ok": true
+}

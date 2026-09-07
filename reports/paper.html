@@ -1,0 +1,465 @@
+<meta charset="utf-8">
+<title>FishONet — Technical Report</title>
+<style>
+@font-face{font-family:"Body";src:url("design_assets/fonts/newsreader.ttf") format("truetype");font-weight:200 800;font-display:block}
+@font-face{font-family:"UI";src:url("design_assets/fonts/inter.ttf") format("truetype");font-weight:100 900;font-display:block}
+@font-face{font-family:"Mono";src:url("design_assets/fonts/plexmono.ttf") format("truetype");font-weight:400;font-display:block}
+@font-face{font-family:"Mono";src:url("design_assets/fonts/plexmono-sb.ttf") format("truetype");font-weight:500 700;font-display:block}
+
+@page{ size:A4; margin:15mm 16mm 13mm; }
+
+:root{
+  --ink:#191919; --muted:#5C5C5C; --faint:#8C8C8C; --rule:#D8D8D8;
+  --teal:#1F6F6B; --clay:#B24E1C; --flag:#8F2D2D;
+  --body:"Body",Georgia,serif; --ui:"UI",Helvetica,sans-serif; --mono:"Mono",monospace;
+}
+
+*{ box-sizing:border-box; }
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{
+  margin:0; color:var(--ink); background:#fff;
+  font-family:var(--body); font-size:7.85pt; line-height:1.17;
+  font-variant-numeric:oldstyle-nums proportional-nums;
+}
+
+/* ---------------------------------------------------------- title block */
+header{ column-span:all; margin:0 0 3.2mm; }
+h1{
+  font-family:var(--body); font-weight:600; font-size:16.4pt; line-height:1.13;
+  letter-spacing:-0.008em; margin:0 0 1.6mm; max-width:160mm;
+  font-variant-numeric:lining-nums;
+}
+h1 em{ font-style:italic; color:var(--teal); }
+.venue{
+  font-family:var(--ui); font-size:6.6pt; font-weight:600; letter-spacing:0.11em;
+  text-transform:uppercase; color:var(--clay); margin:0 0 2.2mm;
+}
+.authors{ font-size:9.1pt; margin:0 0 0.9mm; }
+.authors b{ font-weight:600; }
+.affil{ font-family:var(--ui); font-size:7.1pt; color:var(--muted); margin:0; line-height:1.42; }
+.affil a{ color:var(--muted); text-decoration:none; border-bottom:0.3pt solid var(--rule); }
+
+.result{
+  display:flex; gap:5mm; align-items:baseline; margin:3.0mm 0 0;
+  border-top:0.9pt solid var(--ink); border-bottom:0.4pt solid var(--rule);
+  padding:1.5mm 0 1.6mm;
+}
+.result div{ display:flex; gap:1.6mm; align-items:baseline; }
+.result .n{ font-family:var(--mono); font-weight:600; font-size:11.6pt; letter-spacing:-0.02em; }
+.result .big .n{ font-size:15pt; color:var(--teal); }
+.result .l{ font-family:var(--ui); font-size:6.3pt; letter-spacing:0.07em;
+            text-transform:uppercase; color:var(--faint); white-space:nowrap; }
+.result .sp{ margin-left:auto; font-family:var(--ui); font-size:6.6pt; color:var(--faint);
+             letter-spacing:0.04em; text-align:right; }
+
+/* ---------------------------------------------------------- abstract */
+.abstract{
+  column-span:all; margin:0 0 3.0mm; padding:0 0 0 3.6mm;
+  border-left:1.6pt solid var(--teal); max-width:178mm;
+}
+.abstract h4{
+  font-family:var(--ui); font-size:6.5pt; font-weight:700; letter-spacing:0.13em;
+  text-transform:uppercase; color:var(--teal); margin:0 0 1.3mm;
+}
+.abstract p{ margin:0 0 1.15mm; font-size:7.9pt; line-height:1.27; text-align:justify;
+             hyphens:auto; -webkit-hyphens:auto; }
+.abstract p:last-child{ margin-bottom:0; }
+
+/* ---------------------------------------------------------- columns */
+main{ columns:2; column-gap:6mm; column-fill:balance; }
+h2{
+  font-family:var(--ui); font-size:8.1pt; font-weight:700; letter-spacing:0.005em;
+  margin:2.4mm 0 0.95mm; padding:0 0 0.65mm; border-bottom:0.5pt solid var(--rule);
+  break-after:avoid;
+}
+h2:first-child{ margin-top:0; }
+h2 .num{ color:var(--clay); font-family:var(--mono); font-weight:600; margin-right:1.4mm; }
+h3{
+  font-family:var(--ui); font-size:7.3pt; font-weight:650; color:var(--ink);
+  margin:1.7mm 0 0.55mm; break-after:avoid;
+}
+h3 .num{ color:var(--faint); font-family:var(--mono); font-weight:500; margin-right:1.1mm; }
+p{ margin:0 0 1.25mm; text-align:justify; hyphens:auto; -webkit-hyphens:auto;
+   hyphenate-limit-chars:7 3 3; orphans:2; widows:2; }
+b,strong{ font-weight:650; }
+em{ font-style:italic; }
+.n{ font-family:var(--mono); font-variant-numeric:lining-nums tabular-nums; }
+.fg{ color:var(--flag); }
+
+ol.rules{ margin:0 0 1.3mm; padding-left:3.6mm; }
+ol.rules li{ margin:0 0 0.9mm; text-align:justify; hyphens:auto; -webkit-hyphens:auto; }
+ol.rules li::marker{ color:var(--clay); font-weight:650; }
+ol.rules b{ color:var(--ink); }
+
+/* ---------------------------------------------------------- figures */
+figure{ margin:1.7mm 0 2.0mm; break-inside:avoid; }
+figure img{ width:100%; display:block; }
+figure.span{ column-span:all; margin:1.2mm 0 2.4mm; }
+figure.lead{ column-span:all; margin:0 0 3.0mm; }
+figcaption{
+  font-family:var(--ui); font-size:6.2pt; line-height:1.38; color:var(--muted);
+  margin-top:1.3mm; text-align:left; hyphens:none;
+}
+figcaption b{ color:var(--ink); font-weight:650; }
+
+/* ---------------------------------------------------------- tables */
+table{ width:100%; border-collapse:collapse; margin:1.1mm 0 1.8mm; break-inside:avoid;
+       font-family:var(--ui); font-size:6.5pt; }
+caption{
+  caption-side:top; text-align:left; font-family:var(--ui); font-size:6.4pt;
+  color:var(--muted); padding:0 0 1.1mm; line-height:1.4;
+}
+caption b{ color:var(--ink); font-weight:650; }
+th{
+  font-weight:650; text-align:left; color:var(--faint); font-size:5.9pt;
+  letter-spacing:0.07em; text-transform:uppercase;
+  border-bottom:0.5pt solid var(--ink); padding:0 1.4mm 0.7mm 0;
+}
+td{ padding:0.62mm 1.4mm 0.62mm 0; border-bottom:0.3pt solid var(--rule);
+    vertical-align:baseline; }
+tr:last-child td{ border-bottom:0.5pt solid var(--ink); }
+th.r,td.r{ text-align:right; padding-right:2.6mm; }
+th:last-child,td:last-child{ padding-right:0; }
+td.r{ font-family:var(--mono); font-variant-numeric:lining-nums tabular-nums; font-size:6.5pt; }
+tr.best td{ font-weight:650; color:var(--teal); }
+tr.best td.r{ font-weight:600; }
+td.d{ color:var(--muted); }
+
+/* ---------------------------------------------------------- notes */
+.callout{
+  border-left:1.4pt solid var(--clay); padding:0 0 0 2.6mm; margin:1.6mm 0 1.8mm;
+  break-inside:avoid;
+}
+.callout p{ margin:0; font-size:7.85pt; }
+.callout .lab{
+  font-family:var(--ui); font-size:6.1pt; font-weight:700; letter-spacing:0.11em;
+  text-transform:uppercase; color:var(--clay); display:block; margin-bottom:0.8mm;
+}
+.refs{ font-size:6.0pt; line-height:1.24; }
+.refs p{ margin:0; text-align:justify; hyphens:auto; -webkit-hyphens:auto; color:var(--muted); orphans:1; widows:1; }
+.refs .k{ font-family:var(--mono); color:var(--faint); }
+code{ font-family:var(--mono); font-size:7.4pt; color:var(--muted); }
+</style>
+
+<header>
+  <p class="venue">CV4Ecology 2026 · Fish Species Recognition Challenge · Codabench 16815 · Technical Report</p>
+  <h1><em>When the holdout lies:</em> blind open-set recognition of 17,393 fish species on a thirty-submission budget</h1>
+  <p class="authors"><b>Lalith Sai</b> &nbsp;·&nbsp; <b>Cheng Yaw Low</b></p>
+  <p class="affil">Intelligent Systems Laboratory (ISLab), Changwon National University, Republic of Korea
+    &nbsp;·&nbsp; System: <span class="n">FishONet&nbsp;v109</span>
+    &nbsp;·&nbsp; <a href="https://github.com/lexus-x/FishONet">github.com/lexus-x/FishONet</a></p>
+
+  <div class="result">
+    <div class="big"><span class="n">53.761%</span><span class="l">overall</span></div>
+    <div><span class="n">77.00%</span><span class="l">photographed</span></div>
+    <div><span class="n">23.77%</span><span class="l">no photograph</span></div>
+    <span class="sp"><a href="https://www.codabench.org/competitions/16815/#/results-tab">official leaderboard · rank #3</a> · one uniform rule<br>no split membership used</span>
+  </div>
+</header>
+
+<div class="abstract">
+  <h4>Abstract</h4>
+  <p>Fish species recognition is simultaneously fine-grained, long-tailed, and open-set: closely
+  related species differ by subtle morphology, the median photographed species has only two training
+  images, and 11,598 of 17,393 candidate species have no training photograph. FishONet v109 addresses
+  these challenges with one blind inference pipeline and reaches <b>53.761%</b> overall accuracy,
+  ranking <b>#3</b> on the official leaderboard.</p>
+  <p>Each challenge receives a targeted solution. For fine-grained discrimination, BioCLIP encoders
+  are adapted with additive-margin objectives from face recognition: ArcFace for the BioCLIP-2.5
+  members and CosFace (AM-Softmax) for the BioCLIP-2 adapter. For the long tail, frequency-aware
+  Balanced Softmax is paired with class prototypes, nearest exemplars, and genus-level evidence so
+  rare species are not represented by an unstable classifier head. For open-set recognition, we
+  construct a multimodal support-set fish bank from taxonomy text, TreeOfLife-200M prototypes, and
+  117,225 disclosed iNaturalist photographs.</p>
+  <p>Our central implementation novelty is the <b>Proposed Quota Gate</b>: a learned 12-feature
+  soft gate that ranks every evaluation image by familiarity and assigns the top 60% to the
+  photographed-species route without reading seen/unseen membership. Leak-free route-specific
+  re-ranking and genus backoff complete the system. Across 109 builds and thirty leaderboard
+  submissions, the gate produced the largest real gain, while a machine-checkable audit confirms one
+  uniform rule and one prediction over the full 17,393-class vocabulary.</p>
+  <p><b>Project links.</b> Website:
+  <a href="https://fishonet.lalithsai00.workers.dev/">fishonet.lalithsai00.workers.dev</a>
+  &nbsp;·&nbsp; Code and artifacts:
+  <a href="https://github.com/lexus-x/FishONet">github.com/lexus-x/FishONet</a>
+  &nbsp;·&nbsp; Official results:
+  <a href="https://www.codabench.org/competitions/16815/#/results-tab">codabench.org/competitions/16815/#/results-tab</a>.</p>
+</div>
+
+<figure class="lead">
+  <img src="paper_assets/promise.png" alt="Holdout promise versus leaderboard payment for 18 changes">
+  <figcaption><b>Figure 1. What the holdout promised, what the leaderboard paid.</b> Every change
+  for which both a holdout delta and a real leaderboard delta were recorded, in overall-accuracy
+  points, symlog axes. The dashed diagonal is an honest proxy. Grey paid less than promised; red
+  flipped sign; the one teal point, the learned gate, is the only change that paid more than it
+  promised. v81 sits on the axis at far right: +13.374 promised, +0.006 paid. That is the leak of Section 5.1.</figcaption>
+</figure>
+
+<main>
+
+<h2><span class="num">1</span>The problem</h2>
+
+<p>Each evaluation image receives one species from a fixed vocabulary of 17,393, scored on plain
+overall accuracy across 35,665 images. Because 20,097 (56.35%) belong to species seen in training
+and 15,568 (43.65%) do not, accuracy decomposes exactly as
+<span class="n">0.5635·A<sub>seen</sub> + 0.4365·A<sub>novel</sub></span>: a point on the novel side
+is worth 0.77 of a point on the seen side, and an image sent to the wrong side scores zero with
+certainty. Three difficulties compound.</p>
+
+<p><b>Fine-grained.</b> Sibling species often differ only in pigment pattern, stripe count, or fin morphology. We sharpen these small inter-class boundaries with additive-margin objectives developed for face recognition: ArcFace trains the BioCLIP-2.5 members, while a CosFace (AM-Softmax) objective adapts the BioCLIP-2 image encoder against image and text anchors.</p>
+
+<p><b>Long-tailed.</b> The 64,259 labelled images cover 5,795 species at a 140:1 imbalance ratio; the median species has two images, 79.4% have five or fewer, and 90.6% ten or fewer. Frequency-aware Balanced Softmax corrects the training prior, while inference combines class prototypes, nearest exemplars, and genus-level evidence instead of trusting an unstable learned classifier head for rare species.</p>
+
+<figure>
+  <img src="paper_assets/task.png" alt="Training photographs per species, ranked">
+  <figcaption><b>Figure 2. All three difficulties in one distribution.</b> Training photographs per
+  species, ranked, log scale, read directly from <code>label_train.json</code>. The teal curve is the
+  long tail; it bottoms out at two images and stays there for half the photographed species. The clay
+  bar is the open-set problem: 11,598 species for which no photograph exists at all.</figcaption>
+</figure>
+
+<p><b>Open-set.</b> Two-thirds of the label space is unphotographed, so we build a multimodal support-set fish bank rather than reject these species as background. The novel route actively retrieves all 11,598 candidates using taxonomy and morphology text, TreeOfLife-200M prototypes, and disclosed iNaturalist photographs embedded under complementary organismal encoders.</p>
+
+<p><b>And a budget.</b> Three submissions per day, thirty in total. The evaluation images are
+framed differently from the training ones (mean aspect ratio 2.12 against 1.15), and every question
+about that distribution costs a submission. The offline holdout is the only other instrument we
+have. Figure 1 is what it turned out to be worth.</p>
+
+<figure class="span">
+  <img src="paper_assets/pipeline.png" alt="FishONet v109 inference pipeline">
+  <figcaption><b>Figure 3. The v109 inference pipeline.</b> One uniform rule over every evaluation
+  image. The gate sees only signals computed from the image and the class texts — never split
+  membership — and assigns a quota rather than thresholding. Both routes are scored and the label is
+  one argmax over all 17,393 classes, so a prediction is never restricted to one side.</figcaption>
+</figure>
+
+<h2><span class="num">2</span>The rules, and how we comply</h2>
+
+<p>The competition forbids using the seen/unseen split at inference. <code>splits/test.pkl</code>
+and <code>splits/unseen.pkl</code> are protocol-only: a system may not read them to learn whether an
+evaluation image is of a photographed species, and may not restrict a prediction to one side of the
+split. The seen/novel decision must therefore be made <em>blind</em>, from the image and the class
+texts alone, and every error in it is unrecoverable. Section 6.2 shows this costs about 15.9% of all images
+and sets the design's ceiling.</p>
+
+<p>Compliance is checked, not asserted. <code>research/verify_compliance.py</code> ships with
+the code, re-runs every claim in Table 1, and exits non-zero on any failure. Its central move is an
+inversion. It deliberately reads the split files, which no builder does, in order to prove the
+router could not have been an oracle: if we were consulting them, every seen-split image would reach
+a photographed class, and ours do so 89.11% of the time. The system makes the same errors a blind
+system makes.</p>
+
+<table>
+  <caption><b>Table 1.</b> Every check re-run against the submitted artefact; all pass.</caption>
+  <tr><th>Claim</th><th>Machine-checked evidence</th></tr>
+  <tr><td>No split file read at inference</td><td class="d">static scan, 6/6 builders in the chain clean</td></tr>
+  <tr><td>One argmax over 17,393</td><td class="d">21,399 predictions photographed, 14,266 unphotographed</td></tr>
+  <tr><td>Router is blind</td><td class="d">89.11% / 77.58% route purity; an oracle scores 100 / 100</td></tr>
+  <tr><td>No fish-specific model</td><td class="d">5 general organismal backbones; 2 fish fine-tunes declined</td></tr>
+  <tr><td>External data disclosed</td><td class="d">iNat Open Data, TreeOfLife-200M; FishBase unused, declared</td></tr>
+  <tr><td>Gate artefact reproducible</td><td class="d"><code>learned_gate_v79.pkl</code> rebuilds bit-identically</td></tr>
+</table>
+
+<p><b>The one gray zone, priced instead of argued.</b> Five points in the pipeline couple across
+the evaluation batch: member and gate standardisation, the <span class="n">f</span>-quota rank
+cutoff, <code>dbnorm</code>'s across-image term, and Sinkhorn on the novel route. The rules forbid
+split-based routing and say nothing about batch-coupled inference either way. We did not want to
+argue the reading, so we built the strict alternatives and measured them. Freezing the two <em>routing</em>
+couplings against holdout-calibrated constants changes <b>729 of 35,665</b> predictions (2.04%);
+additionally freezing <code>dbnorm</code>'s hub term changes 4,213 (11.81%). Both builds ship. Organisers
+can pick a strictness level and re-run instead of accepting or rejecting the submission whole, and
+the licence grants them that right.</p>
+
+<h2><span class="num">3</span>Problem-Aware Encoders and Data Resources</h2>
+
+<p>Training data is the provided 64,259 labelled images over 5,795 species, plus
+<code>descriptions.json</code> for all 17,393 classes; evaluation is the provided 35,665-image test
+set. Everything ran on one NVIDIA L40S (46 GB). Five encoders, all fine-tuned only on the provided
+images with shift-matched augmentation (<code>RandomResizedCrop</code>, <code>scale (0.35, 1.0)</code>,
+<code>ratio (0.5, 2.0)</code>): three BioCLIP-2.5 ViT-H/14 variants (<code>ctftshift</code>,
+contrastive LoRA with taxonomic context; <code>ftshift</code>; <code>fullft336shift</code> at
+336 px), one BioCLIP-2 ViT-L/14 with a frozen backbone plus a LoRA adapter, and TaxaBind ViT-B/16
+as a taxonomic anchor. No fish-specific model or dataset is used. External resources, fully
+disclosed: <b>iNaturalist Open Data</b> (117,225 research-grade images over 7,364 species, the
+novel route's photo bank) and <b>TreeOfLife-200M</b> embeddings in the BioCLIP-2 prototype legs.</p>
+
+<h2><span class="num">4</span>Implementation</h2>
+
+<h3><span class="num">4.1</span>Seen and novel routes</h3>
+<p>For a candidate among the 5,795 photographed species the score is a weighted sum of mean class
+prototype, nearest training exemplar, and taxonomic text similarity, weights
+<span class="n">(1.0, 2.5, 2.5)</span>. The exemplar term dominates because of the long tail: at a
+median of two images per class a class mean is a poor summary, and one well-matched exemplar is the
+stronger evidence. For the 11,598 unphotographed species, ten legs are fused under a debiased
+normalisation (<code>dbnorm</code>) that removes each leg's per-class score bias: six text legs
+(multi-template taxonomy, common names, taxonomic context across four encoders), two iNaturalist
+photo-bank legs with 7-crop max-pooling, and two BioCLIP-2 prototype legs merged with
+TreeOfLife-200M.</p>
+
+<h3><span class="num">4.2</span>Proposed Quota Gate</h3>
+<p>Routing is a ranking problem, not a thresholding problem. All 35,665 queries are scored by a
+12-feature logistic model (seen-side maximum similarity, top-1/top-2 margin, log-sum-exp entropy
+gap, per-encoder maxima, the seen-text-minus-novel-text margin, and photo-bank confidence), and the
+top <span class="n">f = 0.60</span> quantile routes to the seen head. A quota is invariant to the
+scale drift the domain shift induces, and uniform by construction: the rule depends on nothing about
+an image but its rank.</p>
+
+<h3><span class="num">4.3</span>Leak-free re-ranking, genus backoff</h3>
+<p>The top <span class="n">K</span> candidates per route (10 seen, 20 novel) are re-ordered by a
+logistic re-ranker, 32 features seen-side and 34 novel-side. Every feature is a within-query
+statistic (percentile rank, gap-to-maximum, per-leg z-score), so it is invariant to candidate-pool
+size. Section 5.1 explains why that invariance is what separates a real gain from an artefact. The final build adds
+one seen-route signal: per candidate, <code>ctftshift</code> prototype and exemplar evidence pooled
+across sibling species of the same genus (<span class="n">λ<sub>G</sub> = 3.0</span>). It was
+submitted on 1 September, in the last slot before the 22:00 UTC close, changes 312 of 35,665
+predictions (0.87%), and leaves the gate bit-identical.</p>
+
+<h2><span class="num">5</span>What the holdout taught us</h2>
+
+<h3><span class="num">5.1</span>The leak, and what a proxy point is worth</h3>
+
+<p>Our first shortlist re-ranker (v81, submitted 29 August) scored <b>+13.374</b> on a
+class-disjoint 5-fold cross-validated pseudo-novel holdout and <b>+0.006</b> on the leaderboard. The
+cause was the pool, not the model. Gold labels in that holdout are always drawn from the 1,159
+rarest <em>training</em> classes, which are only 9.1% of the 12,757-class candidate pool and which
+are identifiable from the features. So the re-ranker learned to prefer gold-eligible classes,
+picking one 53.7% of the time against the fusion's 38.4%, instead of learning to rank evidence.
+Class-disjoint cross-validation cannot catch this because the leak is in the pool's composition,
+not in the class partition. It took us one wasted submission to see it.</p>
+
+<div class="callout">
+  <span class="lab">The rule we now apply</span>
+  <p>Per-<em>image</em> decisions such as the gate are safe to train on the holdout.
+  Per-<em>candidate</em> learning (re-rankers, learned fusion weights, calibrators over the class
+  axis) must be trained on a pool in which every candidate is gold-eligible, with
+  pool-size-invariant features. The magnitude of a holdout number is not evidence; the population it
+  was measured on is.</p>
+</div>
+
+<p>Rebuilding the pool that way (v82) <em>lowered</em> the proxy gain to +8.154 while raising the
+real gain to <b>+0.213</b>. The seen head gave a consistent exchange rate, and that anchor,
+<span class="n">0.026–0.030</span> real points per leak-free proxy point (the teal band in Figure 1),
+became a working instrument. A full point needs +34 proxy points, and nothing we had came close.
+Below about two proxy points the real outcome can flip sign (v84: +0.345 promised, −0.039 paid).</p>
+
+<table>
+  <caption><b>Table 2.</b> The same idea, measured on a leaking pool and on a clean one.</caption>
+  <tr><th>Re-ranker</th><th>Candidate pool</th><th class="r">Proxy Δ</th><th class="r">Real Δ</th></tr>
+  <tr><td>v81 novel</td><td class="d">leaky, 9.1% eligible</td><td class="r">+13.374</td><td class="r fg">+0.006</td></tr>
+  <tr><td>v82 novel</td><td class="d">leak-free</td><td class="r">+8.154</td><td class="r"><b>+0.213</b></td></tr>
+  <tr><td>v83 seen</td><td class="d">leak-free</td><td class="r">+1.803</td><td class="r">+0.053</td></tr>
+</table>
+
+<h3><span class="num">5.2</span>New evidence compounds, re-weighting refunds</h3>
+
+<p>The gate produced the project's largest single gain. It is the one teal point in Figure 1, the
+only change that paid more than it promised. Decomposing it twice gave us the most useful rule we
+found. A gate change moves overall accuracy through two channels: the <em>routing</em> term (how
+many images reach a route that can contain their label) and the <em>conditional</em> term (how
+accurate each route is on what it receives).</p>
+
+<table>
+  <caption><b>Table 3.</b> Two changes to the same gate, decomposed. Real leaderboard deltas.</caption>
+  <tr><th>Change to the gate</th><th class="r">Routing</th><th class="r">Cond.</th><th class="r">Real Δ</th></tr>
+  <tr><td>v56→v77 &nbsp;2 features → 12<br><span style="color:#8C8C8C">new information</span></td>
+      <td class="r">+1.082</td><td class="r">+0.686</td><td class="r"><b>+1.767</b></td></tr>
+  <tr><td>v77→v79 &nbsp;same 12, C = 1 → 100<br><span style="color:#8C8C8C">re-weighted only</span></td>
+      <td class="r">+0.481</td><td class="r" style="color:#8F2D2D">−0.439</td><td class="r">+0.042</td></tr>
+</table>
+
+<p>New features change <em>which</em> images sit near the boundary, and since they also predict
+whether the receiving head will be correct, both terms rise together. Re-weighting the same features
+only slides marginal images across a fixed ordering: routing improves, the conditional term falls
+almost as much, and 90% of the gain is refunded. We thereafter projected every gate proposal at 0.1×
+its routing delta and stopped tuning. The genus backoff was accepted on the same logic (sibling
+similarity is absent from the base fusion) and also transferred, which makes the rule 2 for 2.</p>
+
+<h3><span class="num">5.3</span>The operating point, where the holdout is anti-correlated</h3>
+
+<p>The quota <span class="n">f</span> trades the routes at roughly 4:1. The holdout preferred
+<span class="n">f = 0.72</span> by five points, and the leaderboard docked 0.60 for it. That is the red point
+at the bottom of Figure 1. Three real submissions then bracketed the axis and the response is
+concave, so <span class="n">f = 0.60</span> is a measured optimum:
+<span class="n">53.520 / 53.697 / 53.492</span> at <span class="n">f = 0.55 / 0.60 / 0.65</span>.
+The holdout was not consulted on this axis again.</p>
+
+<h3><span class="num">5.4</span>Encoder Screening and Saturated Alternatives</h3>
+
+<p>Roughly 25 backbones were screened on the novel route. Organismal pre-training dominates: BioCLIP
+21.53% where SigLIP2 reached 5.13% and BioTrove ≈0%. No encoder-side lever survived after v56, and
+every later real gain came from evidence the pipeline already computed. The following are closed
+and need not be re-run: <b>re-ranker model class</b> is inert (gradient boosting vs logistic on clean pools: −0.008
+novel, +0.003 seen); <b>gate recalibration</b> is exhausted (six levers, AUC pinned at 0.981);
+<b>transduction</b> gives little (Sinkhorn +0.09 at v33, negative later); <b>multi-crop TTA</b>
+changed 0.6% of predictions; <b>recover-on-eject</b> promised +3.51 and paid −0.07.</p>
+
+<h2><span class="num">6</span>Results</h2>
+
+<h3><span class="num">6.1</span>The campaign</h3>
+
+<p>Every number below is a real leaderboard score, not a holdout estimate. The system went from
+45.39% to 53.761% over 109 numbered builds; the novel route carried almost all of it, 8.51% to
+23.77%, while seen accuracy stayed inside a two-point band.</p>
+
+<figure>
+  <img src="paper_assets/campaign.png" alt="Real leaderboard accuracy across the build campaign">
+  <figcaption><b>Figure 4. What 109 builds bought.</b> Upper strip: every numbered build; the
+  29 that received a leaderboard score are darker, the 13 milestones plotted beneath darkest.
+  A budget of 3 per day and 30 in total is why most builds were resolved offline. Lower: real overall
+  accuracy at each plotted milestone.</figcaption>
+</figure>
+
+<table>
+  <caption><b>Table 4.</b> Measured leaderboard progression. Seen and novel columns are the
+  organiser-reported diagnostics.</caption>
+  <tr><th>Build</th><th class="r">Seen</th><th class="r">Novel</th><th class="r">Overall</th><th>What changed</th></tr>
+  <tr><td>v22</td><td class="r">—</td><td class="r">—</td><td class="r">45.390</td><td class="d">closed-set shift-robust ensemble</td></tr>
+  <tr><td>v33</td><td class="r">78.20</td><td class="r">8.51</td><td class="r">47.780</td><td class="d">single-pipeline routing baseline</td></tr>
+  <tr><td>v56</td><td class="r">75.67</td><td class="r">20.57</td><td class="r">51.616</td><td class="d">7-crop max-pool, 336 px bank</td></tr>
+  <tr><td>v77</td><td class="r">77.72</td><td class="r">21.96</td><td class="r">53.383</td><td class="d">learned 12-feature gate</td></tr>
+  <tr><td>v82</td><td class="r">77.45</td><td class="r">22.91</td><td class="r">53.644</td><td class="d">leak-free novel re-ranker</td></tr>
+  <tr><td>v83</td><td class="r">77.54</td><td class="r">22.91</td><td class="r">53.697</td><td class="d">+ leak-free seen re-ranker</td></tr>
+  <tr class="best"><td>v109</td><td class="r">77.00</td><td class="r">23.77</td><td class="r">53.761</td><td>+ genus-level backoff</td></tr>
+</table>
+
+<h3><span class="num">6.2</span>Where the remaining error is</h3>
+
+<p>The gate separates the two populations almost perfectly on held-out data (AUC
+<span class="n">0.981</span>) but only at <span class="n">0.911</span> on evaluation, because the
+framing shift moves the statistics of the crops it reads. At the deployed operating point it mis-routes
+<b>15.9%</b> of images, each then choosing from a candidate set that cannot contain its label.
+Correcting only the routing would reach <span class="n">54.35%</span>, this design's ceiling.
+Reaching 55% needs <span class="n">+1.30</span> from the recognisers themselves, while re-ranking
+headroom is bounded at ~0.65 by the anchor of Section 5.1. The gap needs a stronger recogniser, not a
+better decision rule.</p>
+
+<h2><span class="num">7</span>Three rules for thirty measurements</h2>
+
+<p>This benchmark forces fine-grained, long-tailed and open-set recognition at once, under a rule
+that denies the system any knowledge of which regime an image is in, and under a budget that makes
+the offline proxy the main instrument. The proxy lied to us more often than not. What we would
+carry to the next such problem is not the architecture but three rules for reading evidence when
+you get thirty real measurements.</p>
+
+<ol class="rules">
+<li><b>Measure the population, not the number.</b> A holdout gain is only evidence if every
+candidate in the pool could have been the answer. Class-disjoint cross-validation does not check
+this. Ours said +13.374 and the leaderboard said +0.006.</li>
+<li><b>New information compounds; re-weighting refunds.</b> Before spending a submission on a change
+to a decision rule, ask whether it reads evidence the rule has never seen. If not, project it at a
+tenth of its holdout delta.</li>
+<li><b>When a rule is ambiguous, price the strict reading and ship it.</b> Building the per-image
+variant cost us nothing on the leaderboard and turned an argument into a number, 729 predictions.
+The decision then belongs to the organisers, which is where it should be.</li>
+</ol>
+
+<div class="refs" style="margin-top:2.2mm;padding-top:1.2mm;border-top:0.5pt solid var(--rule)">
+<p><b style="font-family:var(--ui);color:var(--ink);font-size:6.3pt;letter-spacing:0.05em">REFERENCES</b>&nbsp;&nbsp;
+<span class="k">[1]</span> Stevens et al. BioCLIP. CVPR 2024. &nbsp;<span class="k">[2]</span> Gu
+et al. BioCLIP 2 / TreeOfLife-200M. 2025. &nbsp;<span class="k">[3]</span> Sastry et al. TaxaBind.
+WACV 2025. &nbsp;<span class="k">[4]</span> Radford et al. CLIP. ICML 2021.
+&nbsp;<span class="k">[5]</span> Tschannen et al. SigLIP 2. 2025. &nbsp;<span class="k">[6]</span> Hu
+et al. LoRA. ICLR 2022. &nbsp;<span class="k">[7]</span> Cuturi. Sinkhorn Distances. NeurIPS 2013.
+&nbsp;<span class="k">[8]</span> iNaturalist Open Data, 2026.</p>
+</div>
+
+</main>

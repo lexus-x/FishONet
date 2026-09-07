@@ -1,0 +1,296 @@
+[
+ {
+  "name": "Phycodurus eques",
+  "img": "assets/img/species/phycodurus-eques.jpg",
+  "n_train": 253,
+  "seen_top": [
+   {
+    "cls": "Phycodurus eques",
+    "score": 0.9854
+   },
+   {
+    "cls": "Phyllopteryx taeniolatus",
+    "score": 0.7084
+   },
+   {
+    "cls": "Hippocampus abdominalis",
+    "score": 0.6326
+   },
+   {
+    "cls": "Enoplosus armatus",
+    "score": 0.6048
+   },
+   {
+    "cls": "Pterois volitans",
+    "score": 0.5563
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Heteroclinus tristis",
+    "score": 0.4562
+   },
+   {
+    "cls": "Cristiceps aurantiacus",
+    "score": 0.4495
+   },
+   {
+    "cls": "Phyllopteryx dewysea",
+    "score": 0.4422
+   },
+   {
+    "cls": "Hippocampus breviceps",
+    "score": 0.4379
+   },
+   {
+    "cls": "Neosebastes pandus",
+    "score": 0.4326
+   }
+  ]
+ },
+ {
+  "name": "Zanclus cornutus",
+  "img": "assets/img/species/zanclus-cornutus.jpg",
+  "n_train": 260,
+  "seen_top": [
+   {
+    "cls": "Zanclus cornutus",
+    "score": 0.9843
+   },
+   {
+    "cls": "Abudefduf vaigiensis",
+    "score": 0.606
+   },
+   {
+    "cls": "Acanthurus triostegus",
+    "score": 0.5885
+   },
+   {
+    "cls": "Naso lituratus",
+    "score": 0.5749
+   },
+   {
+    "cls": "Pterois miles",
+    "score": 0.5628
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Labroides rubrolabiatus",
+    "score": 0.3889
+   },
+   {
+    "cls": "Abudefduf conformis",
+    "score": 0.3706
+   },
+   {
+    "cls": "Acanthurus tennentii",
+    "score": 0.3675
+   },
+   {
+    "cls": "Acanthurus auranticavus",
+    "score": 0.3646
+   },
+   {
+    "cls": "Prognathodes falcifer",
+    "score": 0.3597
+   }
+  ]
+ },
+ {
+  "name": "Sargocentron ittodai",
+  "img": "assets/img/species/sargocentron-ittodai.jpg",
+  "n_train": 12,
+  "seen_top": [
+   {
+    "cls": "Sargocentron ittodai",
+    "score": 0.9829
+   },
+   {
+    "cls": "Sargocentron tiereoides",
+    "score": 0.9446
+   },
+   {
+    "cls": "Sargocentron xantherythrum",
+    "score": 0.9332
+   },
+   {
+    "cls": "Sargocentron praslin",
+    "score": 0.9186
+   },
+   {
+    "cls": "Sargocentron microstoma",
+    "score": 0.9178
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Sargocentron lepros",
+    "score": 0.6542
+   },
+   {
+    "cls": "Sargocentron inaequalis",
+    "score": 0.6489
+   },
+   {
+    "cls": "Sargocentron ensifer",
+    "score": 0.6482
+   },
+   {
+    "cls": "Sargocentron bullisi",
+    "score": 0.6264
+   },
+   {
+    "cls": "Sargocentron marisrubri",
+    "score": 0.6251
+   }
+  ]
+ },
+ {
+  "name": "Perca flavescens",
+  "img": "assets/img/species/perca-flavescens.jpg",
+  "n_train": 252,
+  "seen_top": [
+   {
+    "cls": "Perca flavescens",
+    "score": 0.9808
+   },
+   {
+    "cls": "Perca fluviatilis",
+    "score": 0.7001
+   },
+   {
+    "cls": "Sander volgensis",
+    "score": 0.6444
+   },
+   {
+    "cls": "Sander vitreus",
+    "score": 0.6396
+   },
+   {
+    "cls": "Cichla pleiozona",
+    "score": 0.5273
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Sander marinus",
+    "score": 0.3967
+   },
+   {
+    "cls": "Etheostoma exile",
+    "score": 0.374
+   },
+   {
+    "cls": "Percina peltata",
+    "score": 0.3537
+   },
+   {
+    "cls": "Percina burtoni",
+    "score": 0.3472
+   },
+   {
+    "cls": "Percina crypta",
+    "score": 0.3434
+   }
+  ]
+ },
+ {
+  "name": "Chaetodon auriga",
+  "img": "assets/img/species/chaetodon-auriga.jpg",
+  "n_train": 264,
+  "seen_top": [
+   {
+    "cls": "Chaetodon auriga",
+    "score": 0.9804
+   },
+   {
+    "cls": "Chaetodon mertensii",
+    "score": 0.6494
+   },
+   {
+    "cls": "Chaetodon falcula",
+    "score": 0.6294
+   },
+   {
+    "cls": "Chaetodon madagaskariensis",
+    "score": 0.6084
+   },
+   {
+    "cls": "Abudefduf vaigiensis",
+    "score": 0.5403
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Chaetodon oxycephalus",
+    "score": 0.4214
+   },
+   {
+    "cls": "Chaetodon flavocoronatus",
+    "score": 0.4181
+   },
+   {
+    "cls": "Chaetodon leucopleura",
+    "score": 0.4165
+   },
+   {
+    "cls": "Chaetodon pictus",
+    "score": 0.4
+   },
+   {
+    "cls": "Chromis monochroma",
+    "score": 0.3793
+   }
+  ]
+ },
+ {
+  "name": "Lepomis auritus",
+  "img": "assets/img/species/lepomis-auritus.jpg",
+  "n_train": 252,
+  "seen_top": [
+   {
+    "cls": "Lepomis auritus",
+    "score": 0.9769
+   },
+   {
+    "cls": "Lepomis megalotis",
+    "score": 0.7072
+   },
+   {
+    "cls": "Lepomis macrochirus",
+    "score": 0.5779
+   },
+   {
+    "cls": "Lepomis cyanellus",
+    "score": 0.5703
+   },
+   {
+    "cls": "Lepomis humilis",
+    "score": 0.5466
+   }
+  ],
+  "unseen_top": [
+   {
+    "cls": "Lepomis miniatus",
+    "score": 0.4452
+   },
+   {
+    "cls": "Ameiurus brunneus",
+    "score": 0.383
+   },
+   {
+    "cls": "Rhinichthys obtusus",
+    "score": 0.3809
+   },
+   {
+    "cls": "Semotilus thoreauianus",
+    "score": 0.369
+   },
+   {
+    "cls": "Lepomis peltastes",
+    "score": 0.3679
+   }
+  ]
+ }
+]

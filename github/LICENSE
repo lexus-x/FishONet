@@ -1,0 +1,45 @@
+Copyright (c) 2026 Team CWNU AIX, Changwon National University. All Rights Reserved.
+
+PROPRIETARY AND CONFIDENTIAL.
+
+This software, codebase, models, pipeline architecture, documentation, and associated 
+intellectual property are the proprietary work of Team CWNU AIX from the 
+Department of AI Convergence Engineering, Changwon National University (CWNU), Republic of Korea.
+
+SUPERVISORS:
+- Prof. Oh-Seol Kwon  |  Visual AI Lab  (http://islab.cwnu.ac.kr/)
+- Prof. Cheng-Yaw Low |  RAISE Lab      (https://chengyawlow.github.io/)
+
+RESEARCH TEAM (Master's Research Students):
+- Sunghan Oh
+- Han Lei
+- Hasibul Haque Rodro
+- Lalith Sai (lexus-x)
+
+AFFILIATION:
+Department of AI Convergence Engineering, Changwon National University, Republic of Korea.
+
+THIS WORK IS NOT OPEN SOURCE.
+
+Unauthorized copying, distribution, modification, public display, commercial exploitation, 
+sub-licensing, reverse engineering, or extraction of this repository, its source code, 
+architecture designs, model pipelines, research artifacts, or related materials, 
+in whole or in part, via any medium, is strictly prohibited without prior explicit 
+written authorization from the copyright holders.
+
+---
+
+COMPETITION CARVE-OUT:
+Notwithstanding the proprietary reservation above, the authors grant the CV4Ecology 2026 / 
+Codabench 16815 competition organizers a non-exclusive, irrevocable right to receive, 
+inspect, execute, and independently reproduce the inference code, model weights, and 
+configuration required to verify the submitted result, and to retain that material 
+for verification and prize adjudication.
+
+---
+
+NOTE ON THIRD-PARTY DATASETS:
+Any third-party biodiversity metadata, taxonomic descriptions, or reference images 
+(e.g., from iNaturalist, TreeOfLife-200M, or competition evaluation materials) are 
+the property of their respective contributors and licensors, and are cited under 
+applicable fair research use and attribution guidelines.

@@ -1,0 +1,543 @@
+{
+ "species": [
+  {
+   "name": "Phycodurus eques",
+   "genus": "Phycodurus",
+   "img": "assets/img/species/phycodurus-eques.jpg",
+   "n_train": 253,
+   "proto_sim": 0.985,
+   "desc": "Phycodurus eques, commonly known as the Leafy Sea Dragon, features a distinct tube-like terminal mouth. Its pelvic fins are notably suppressed or absent.",
+   "status": "seen"
+  },
+  {
+   "name": "Zanclus cornutus",
+   "genus": "Zanclus",
+   "img": "assets/img/species/zanclus-cornutus.jpg",
+   "n_train": 260,
+   "proto_sim": 0.984,
+   "desc": "The Zanclus cornutus features a striking appearance with its strongly compressed, discoid body and distinctive alternating yellow and black bars. It has a clearly concave forehead and a tubular snout ending in a small terminal mouth, packed with numerous bristle-like teeth.",
+   "status": "seen"
+  },
+  {
+   "name": "Sargocentron ittodai",
+   "genus": "Sargocentron",
+   "img": "assets/img/species/sargocentron-ittodai.jpg",
+   "n_train": 12,
+   "proto_sim": 0.983,
+   "desc": "The Sargocentron ittodai is a fusiform fish with a compressed body and a clearly convex forehead. It exhibits ctenoid scales and a forked caudal fin.",
+   "status": "seen"
+  },
+  {
+   "name": "Perca flavescens",
+   "genus": "Perca",
+   "img": "assets/img/species/perca-flavescens.jpg",
+   "n_train": 252,
+   "proto_sim": 0.981,
+   "desc": "The Perca flavescens, commonly known as the Yellow Perch, features a fusiform, or torpedo-shaped body that is typical for streamlined swimming. Although detailed visual attributes are limited in the data, this species is generally recognized for its striking yellow to golden body color with vertical dark stripes.",
+   "status": "seen"
+  },
+  {
+   "name": "Chaetodon auriga",
+   "genus": "Chaetodon",
+   "img": "assets/img/species/chaetodon-auriga.jpg",
+   "n_train": 264,
+   "proto_sim": 0.98,
+   "desc": "The Chaetodon auriga is distinguished by its striking fins and a short, deep, compressed body. It features a clearly concave forehead and terminal mouth.",
+   "status": "seen"
+  },
+  {
+   "name": "Lepomis auritus",
+   "genus": "Lepomis",
+   "img": "assets/img/species/lepomis-auritus.jpg",
+   "n_train": 252,
+   "proto_sim": 0.977,
+   "desc": "The Lepomis auritus, commonly known as the Redbreast Sunfish, is characterized by a short and deep body shape. While specific striking features and detailed visual attributes are not provided, this species typically exhibits vibrant coloration with shades of blue and green on its body, and a distinctive red or orange breast, which is prominent in males.",
+   "status": "seen"
+  },
+  {
+   "name": "Enoplosus armatus",
+   "genus": "Enoplosus",
+   "img": "assets/img/species/enoplosus-armatus.jpg",
+   "n_train": 249,
+   "proto_sim": 0.975,
+   "desc": "The Enoplosus armatus is characterized by an elongated body adorned with ctenoid scales. Adults exhibit a striking silver to brown coloration, accentuated by distinctive black vertical stripes.",
+   "status": "seen"
+  },
+  {
+   "name": "Abudefduf saxatilis",
+   "genus": "Abudefduf",
+   "img": "assets/img/species/abudefduf-saxatilis.jpg",
+   "n_train": 256,
+   "proto_sim": 0.975,
+   "desc": "The Abudefduf saxatilis, known for its short and deep body shape, displays a striking coloration of greenish-yellow above, transitioning to white below, adorned with five prominent vertical black bars narrowing toward the belly. Occasionally, a faint sixth bar appears on the caudal peduncle, with a distinctive black spot at the upper base of the pectoral fin.",
+   "status": "seen"
+  },
+  {
+   "name": "Parascorpaena mcadamsi",
+   "genus": "Parascorpaena",
+   "img": "assets/img/species/parascorpaena-mcadamsi.jpg",
+   "n_train": 12,
+   "proto_sim": 0.974,
+   "desc": "The Parascorpaena mcadamsi is a fusiform-shaped fish, featuring a reddish mottled coloration with white. Males exhibit a distinctive large black spot at the rear of the spinous dorsal fin, while females and juveniles may have a faint or absent spot.",
+   "status": "seen"
+  },
+  {
+   "name": "Acanthurus coeruleus",
+   "genus": "Acanthurus",
+   "img": "assets/img/species/acanthurus-coeruleus.jpg",
+   "n_train": 256,
+   "proto_sim": 0.973,
+   "desc": "The Acanthurus coeruleus, a deep-bodied surgeonfish, features a short, deep body with a clearly convex forehead. It possesses more or less normal eyes and a terminal mouth.",
+   "status": "seen"
+  },
+  {
+   "name": "Serranus scriba",
+   "genus": "Serranus",
+   "img": "assets/img/species/serranus-scriba.jpg",
+   "n_train": 170,
+   "proto_sim": 0.973,
+   "desc": "The Painted Comber is a striking fish, averaging 25 cm in length with a laterally compressed, slightly pot-bellied body. Its multicolored skin showcases vibrant hues of yellow, blue, and brown, adorned with distinctive brown vertical stripes.",
+   "status": "seen"
+  },
+  {
+   "name": "Taeniura lymma",
+   "genus": "Taeniura",
+   "img": "assets/img/species/taeniura-lymma.jpg",
+   "n_train": 187,
+   "proto_sim": 0.973,
+   "desc": "The Taeniura lymma, known for its striking appearance, features a colorful oval, elongated disc adorned with large bright blue spots and blue side-stripes along its tail. Its snout is rounded and angular, with broadly rounded outer corners.",
+   "status": "seen"
+  },
+  {
+   "name": "Salmo trutta",
+   "genus": "Salmo",
+   "img": "assets/img/species/salmo-trutta.jpg",
+   "n_train": 264,
+   "proto_sim": 0.972,
+   "desc": "The species *Salmo trutta* is characterized by a fusiform, or torpedo-shaped, body that suggests a streamlined form ideal for swift swimming. Notably, the caudal fin is equipped with 18 to 20 soft rays, a distinguishing feature.",
+   "status": "seen"
+  },
+  {
+   "name": "Ocyurus chrysurus",
+   "genus": "Ocyurus",
+   "img": "assets/img/species/ocyurus-chrysurus.jpg",
+   "n_train": 170,
+   "proto_sim": 0.972,
+   "desc": "The Ocyurus chrysurus features a fusiform, oval body with a straight forehead and terminal mouth. Its small head and slightly protruding lower jaw are distinctive.",
+   "status": "seen"
+  },
+  {
+   "name": "Semotilus atromaculatus",
+   "genus": "Semotilus",
+   "img": "assets/img/species/semotilus-atromaculatus.jpg",
+   "n_train": 252,
+   "proto_sim": 0.972,
+   "desc": "The *Semotilus atromaculatus* features a barely compressed body at the front and a compressed caudal peduncle. It has a forked caudal fin, a large terminal mouth reaching past the front of the eye, and 47-65 lateral line scales.",
+   "status": "seen"
+  },
+  {
+   "name": "Aetobatus narinari",
+   "genus": "Aetobatus",
+   "img": "assets/img/species/aetobatus-narinari.jpg",
+   "n_train": 206,
+   "proto_sim": 0.971,
+   "desc": "The Aetobatus narinari, or spotted eagle ray, features a strikingly flattened body with a long snout resembling a duck's bill. Its head is thick, and the pectoral disc has sharply curved, angular corners.",
+   "status": "seen"
+  },
+  {
+   "name": "Hypsypops rubicundus",
+   "genus": "Hypsypops",
+   "img": "assets/img/species/hypsypops-rubicundus.jpg",
+   "n_train": 208,
+   "proto_sim": 0.971,
+   "desc": "The Hypsypops rubicundus, commonly known as the Garibaldi, exhibits a short, deep, and compressed body shape. It features a clearly convex forehead and a terminal mouth.",
+   "status": "seen"
+  },
+  {
+   "name": "Pterois antennata",
+   "genus": "Pterois",
+   "img": "assets/img/species/pterois-antennata.jpg",
+   "n_train": 12,
+   "proto_sim": 0.971,
+   "desc": "The Pterois antennata, with a fusiform body shape, exhibits a striking reddish to tan coloration adorned with numerous dark bars. Its median fins are dotted with scattered dark spots, and it features a long tentacle above the eye, banded darkly.",
+   "status": "seen"
+  },
+  {
+   "name": "Lepidotrigla spiloptera",
+   "genus": "Lepidotrigla",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Lepidotrigla spiloptera is characterized by a compressed body with a slightly convex lateral profile from the first dorsal fin to the narrow caudal peduncle. It features a distinct postorbital notch and a furrow across the nape.",
+   "status": "unseen"
+  },
+  {
+   "name": "Cottocomephorus inermis",
+   "genus": "Cottocomephorus",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Cottocomephorus inermis is characterized by its elongated body shape. While specific visual features such as color, eye type, mouth shape, and scale type are not detailed, its distinctive body form suggests an adaptation to its environment, possibly aiding in swift movement or camouflage.",
+   "status": "unseen"
+  },
+  {
+   "name": "Amphilophus trimaculatus",
+   "genus": "Amphilophus",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Three Spot Cichlid is a robust fish, typically reaching up to 30 cm in length, with an ovoid, heavy body. Its coloration ranges from a vibrant green to a rich yellow, adorned with three prominent black ocellated spots along its sides.",
+   "status": "unseen"
+  },
+  {
+   "name": "Lampadena speculigera",
+   "genus": "Lampadena",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The species Lampadena speculigera lacks specific recorded features in the provided data. However, generally, this species is known for its slender, elongated body typical of many deep-sea fish.",
+   "status": "unseen"
+  },
+  {
+   "name": "Amblyraja radiata",
+   "genus": "Amblyraja",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Amblyraja radiata, also known as the starry skate, is distinguished by its rhomboid shape in adults and rounder form in juveniles. It features a short, stiff, triangular snout and a tail shorter than its body.",
+   "status": "unseen"
+  },
+  {
+   "name": "Oligolepis stomias",
+   "genus": "Oligolepis",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Oligolepis stomias, a small goby fish, typically measures about 6.6 cm in length with an elongated, streamlined body that enables swift movement through water. Its coloration is likely to feature earthy tones of brown, green, or gray, often adorned with mottled or spotted patterns, providing excellent camouflage against the seabed.",
+   "status": "unseen"
+  },
+  {
+   "name": "Psammphiletria delicata",
+   "genus": "Psammphiletria",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Psammphiletria delicata is an elongated fish with pelvics attributes described as more or less normal. Notably, its dorsal fin consists of 7 rays and 7 pterygophores, while the anal fin features 3 simple rays, 3 branched rays, and an additional simple ray.",
+   "status": "unseen"
+  },
+  {
+   "name": "Tlaloc labialis",
+   "genus": "Tlaloc",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Tlaloc labialis, or largelip killifish, is an elongated, laterally compressed fish reaching up to 11.5 cm in length. Its defining feature is its notably larger lips, which set it apart from other killifishes.",
+   "status": "unseen"
+  },
+  {
+   "name": "Lateolabrax latus",
+   "genus": "Lateolabrax",
+   "img": null,
+   "n_train": 0,
+   "proto_sim": null,
+   "desc": "The Lateolabrax latus, known for its fusiform body shape, exhibits a streamlined, torpedo-like appearance, ideal for swift swimming. While specific details on color, size, and other visual features are not provided, its shape suggests a typical predatory fish profile.",
+   "status": "unseen"
+  }
+ ],
+ "mosaic": [
+  {
+   "name": "Phyllopteryx taeniolatus",
+   "img": "assets/img/mosaic/phyllopteryx-taeniolatus.jpg"
+  },
+  {
+   "name": "Monodactylus argenteus",
+   "img": "assets/img/mosaic/monodactylus-argenteus.jpg"
+  },
+  {
+   "name": "Scardinius erythrophthalmus",
+   "img": "assets/img/mosaic/scardinius-erythrophthalmus.jpg"
+  },
+  {
+   "name": "Chilomycterus schoepfii",
+   "img": "assets/img/mosaic/chilomycterus-schoepfii.jpg"
+  },
+  {
+   "name": "Pomoxis annularis",
+   "img": "assets/img/mosaic/pomoxis-annularis.jpg"
+  },
+  {
+   "name": "Canthigaster valentini",
+   "img": "assets/img/mosaic/canthigaster-valentini.jpg"
+  },
+  {
+   "name": "Cynoscion nebulosus",
+   "img": "assets/img/mosaic/cynoscion-nebulosus.jpg"
+  },
+  {
+   "name": "Esox lucius",
+   "img": "assets/img/mosaic/esox-lucius.jpg"
+  },
+  {
+   "name": "Micropterus dolomieu",
+   "img": "assets/img/mosaic/micropterus-dolomieu.jpg"
+  },
+  {
+   "name": "Ambloplites rupestris",
+   "img": "assets/img/mosaic/ambloplites-rupestris.jpg"
+  },
+  {
+   "name": "Trachurus novaezelandiae",
+   "img": "assets/img/mosaic/trachurus-novaezelandiae.jpg"
+  },
+  {
+   "name": "Neogobius melanostomus",
+   "img": "assets/img/mosaic/neogobius-melanostomus.jpg"
+  },
+  {
+   "name": "Pygoplites diacanthus",
+   "img": "assets/img/mosaic/pygoplites-diacanthus.jpg"
+  },
+  {
+   "name": "Oblada melanurus",
+   "img": "assets/img/mosaic/oblada-melanurus.jpg"
+  },
+  {
+   "name": "Salvelinus fontinalis",
+   "img": "assets/img/mosaic/salvelinus-fontinalis.jpg"
+  },
+  {
+   "name": "Mullus surmuletus",
+   "img": "assets/img/mosaic/mullus-surmuletus.jpg"
+  },
+  {
+   "name": "Culaea inconstans",
+   "img": "assets/img/mosaic/culaea-inconstans.jpg"
+  },
+  {
+   "name": "Ophthalmolepis lineolata",
+   "img": "assets/img/mosaic/ophthalmolepis-lineolata.jpg"
+  },
+  {
+   "name": "Diplodus sargus",
+   "img": "assets/img/mosaic/diplodus-sargus.jpg"
+  },
+  {
+   "name": "Cociella punctata",
+   "img": "assets/img/mosaic/cociella-punctata.jpg"
+  },
+  {
+   "name": "Carcharias taurus",
+   "img": "assets/img/mosaic/carcharias-taurus.jpg"
+  },
+  {
+   "name": "Fistularia commersonii",
+   "img": "assets/img/mosaic/fistularia-commersonii.jpg"
+  },
+  {
+   "name": "Sarpa salpa",
+   "img": "assets/img/mosaic/sarpa-salpa.jpg"
+  },
+  {
+   "name": "Ictalurus punctatus",
+   "img": "assets/img/mosaic/ictalurus-punctatus.jpg"
+  },
+  {
+   "name": "Hypoplectrodes maccullochi",
+   "img": "assets/img/mosaic/hypoplectrodes-maccullochi.jpg"
+  },
+  {
+   "name": "Haemulon flavolineatum",
+   "img": "assets/img/mosaic/haemulon-flavolineatum.jpg"
+  },
+  {
+   "name": "Lutjanus apodus",
+   "img": "assets/img/mosaic/lutjanus-apodus.jpg"
+  },
+  {
+   "name": "Tilodon sexfasciatus",
+   "img": "assets/img/mosaic/tilodon-sexfasciatus.jpg"
+  },
+  {
+   "name": "Rhinichthys atratulus",
+   "img": "assets/img/mosaic/rhinichthys-atratulus.jpg"
+  },
+  {
+   "name": "Arothron hispidus",
+   "img": "assets/img/mosaic/arothron-hispidus.jpg"
+  },
+  {
+   "name": "Orectolobus halei",
+   "img": "assets/img/mosaic/orectolobus-halei.jpg"
+  },
+  {
+   "name": "Trygonoptera testacea",
+   "img": "assets/img/mosaic/trygonoptera-testacea.jpg"
+  },
+  {
+   "name": "Sphyraena barracuda",
+   "img": "assets/img/mosaic/sphyraena-barracuda.jpg"
+  },
+  {
+   "name": "Trygonorrhina fasciata",
+   "img": "assets/img/mosaic/trygonorrhina-fasciata.jpg"
+  },
+  {
+   "name": "Leptojulis cyanopleura",
+   "img": "assets/img/mosaic/leptojulis-cyanopleura.jpg"
+  },
+  {
+   "name": "Heterodontus portusjacksoni",
+   "img": "assets/img/mosaic/heterodontus-portusjacksoni.jpg"
+  },
+  {
+   "name": "Pseudogoniistius nigripes",
+   "img": "assets/img/mosaic/pseudogoniistius-nigripes.jpg"
+  },
+  {
+   "name": "Etheostoma caeruleum",
+   "img": "assets/img/mosaic/etheostoma-caeruleum.jpg"
+  },
+  {
+   "name": "Lepisosteus oculatus",
+   "img": "assets/img/mosaic/lepisosteus-oculatus.jpg"
+  },
+  {
+   "name": "Nemateleotris magnifica",
+   "img": "assets/img/mosaic/nemateleotris-magnifica.jpg"
+  },
+  {
+   "name": "Cyprinus carpio",
+   "img": "assets/img/mosaic/cyprinus-carpio.jpg"
+  },
+  {
+   "name": "Thalassoma bifasciatum",
+   "img": "assets/img/mosaic/thalassoma-bifasciatum.jpg"
+  },
+  {
+   "name": "Tetractenos glaber",
+   "img": "assets/img/mosaic/tetractenos-glaber.jpg"
+  },
+  {
+   "name": "Cephalopholis argus",
+   "img": "assets/img/mosaic/cephalopholis-argus.jpg"
+  },
+  {
+   "name": "Squalius cephalus",
+   "img": "assets/img/mosaic/squalius-cephalus.jpg"
+  },
+  {
+   "name": "Genicanthus caudovittatus",
+   "img": "assets/img/mosaic/genicanthus-caudovittatus.jpg"
+  },
+  {
+   "name": "Cirrhitichthys aprinus",
+   "img": "assets/img/mosaic/cirrhitichthys-aprinus.jpg"
+  },
+  {
+   "name": "Gnathodentex aureolineatus",
+   "img": "assets/img/mosaic/gnathodentex-aureolineatus.jpg"
+  },
+  {
+   "name": "Schuettea scalaripinnis",
+   "img": "assets/img/mosaic/schuettea-scalaripinnis.jpg"
+  },
+  {
+   "name": "Chromis chromis",
+   "img": "assets/img/mosaic/chromis-chromis.jpg"
+  },
+  {
+   "name": "Scorpaena jacksoniensis",
+   "img": "assets/img/mosaic/scorpaena-jacksoniensis.jpg"
+  },
+  {
+   "name": "Amblyglyphidodon flavilatus",
+   "img": "assets/img/mosaic/amblyglyphidodon-flavilatus.jpg"
+  },
+  {
+   "name": "Aplodinotus grunniens",
+   "img": "assets/img/mosaic/aplodinotus-grunniens.jpg"
+  },
+  {
+   "name": "Oligocottus maculosus",
+   "img": "assets/img/mosaic/oligocottus-maculosus.jpg"
+  },
+  {
+   "name": "Ostorhinchus cyanosoma",
+   "img": "assets/img/mosaic/ostorhinchus-cyanosoma.jpg"
+  },
+  {
+   "name": "Sciaenops ocellatus",
+   "img": "assets/img/mosaic/sciaenops-ocellatus.jpg"
+  },
+  {
+   "name": "Gasterosteus aculeatus",
+   "img": "assets/img/mosaic/gasterosteus-aculeatus.jpg"
+  },
+  {
+   "name": "Pimephales notatus",
+   "img": "assets/img/mosaic/pimephales-notatus.jpg"
+  },
+  {
+   "name": "Hippocampus abdominalis",
+   "img": "assets/img/mosaic/hippocampus-abdominalis.jpg"
+  },
+  {
+   "name": "Cheilodipterus lachneri",
+   "img": "assets/img/mosaic/cheilodipterus-lachneri.jpg"
+  },
+  {
+   "name": "Myliobatis tenuicaudatus",
+   "img": "assets/img/mosaic/myliobatis-tenuicaudatus.jpg"
+  },
+  {
+   "name": "Monacanthus chinensis",
+   "img": "assets/img/mosaic/monacanthus-chinensis.jpg"
+  },
+  {
+   "name": "Microspathodon chrysurus",
+   "img": "assets/img/mosaic/microspathodon-chrysurus.jpg"
+  },
+  {
+   "name": "Sander vitreus",
+   "img": "assets/img/mosaic/sander-vitreus.jpg"
+  },
+  {
+   "name": "Gymnosarda unicolor",
+   "img": "assets/img/mosaic/gymnosarda-unicolor.jpg"
+  },
+  {
+   "name": "Gymnocranius grandoculis",
+   "img": "assets/img/mosaic/gymnocranius-grandoculis.jpg"
+  },
+  {
+   "name": "Dorosoma cepedianum",
+   "img": "assets/img/mosaic/dorosoma-cepedianum.jpg"
+  },
+  {
+   "name": "Nemanthias dispar",
+   "img": "assets/img/mosaic/nemanthias-dispar.jpg"
+  },
+  {
+   "name": "Pseudocaranx dentex",
+   "img": "assets/img/mosaic/pseudocaranx-dentex.jpg"
+  },
+  {
+   "name": "Ginglymostoma cirratum",
+   "img": "assets/img/mosaic/ginglymostoma-cirratum.jpg"
+  },
+  {
+   "name": "Iniistius aneitensis",
+   "img": "assets/img/mosaic/iniistius-aneitensis.jpg"
+  },
+  {
+   "name": "Priacanthus hamrur",
+   "img": "assets/img/mosaic/priacanthus-hamrur.jpg"
+  }
+ ],
+ "counts": {
+  "seen_classes": 5795,
+  "unseen_classes": 11598,
+  "total_classes": 17393,
+  "train_images": 64259
+ }
+}

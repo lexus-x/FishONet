@@ -1,0 +1,28 @@
+data/*
+!data/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+outputs/*
+!outputs/.gitkeep
+# the small artifacts a reviewer needs to reproduce and audit the submitted v109 chain
+!outputs/learned_gate_v77.pkl
+!outputs/learned_gate_v79.pkl
+!outputs/frozen_gate_v109.json
+!outputs/rerank_unseen_v82_leakfree.pkl
+!outputs/rerank_seen_v83.pkl
+!outputs/rerank_seen_genus_v103.pkl
+!outputs/compliance_report.json
+!outputs/prediction_v109_genus_gamble.json
+!outputs/prediction_v109_compliant.json
+!outputs/prediction_v109_compliant_dbnorm.json
+__pycache__/
+*.pt
+*.pth
+.ipynb_checkpoints/
+
+# Contains live API tokens (github/hf/context7) — never commit
+.mcp.json
+.claude/settings.local.json
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

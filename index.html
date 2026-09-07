@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FishONet — Naming the Unseen</title>
+  <meta name="description"
+    content="Open-set recognition across 17,393 fish species, two thirds of which have no training photograph. Real data, real model output, and what actually worked.">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="FishONet — naming the unseen">
+  <meta property="og:description" content="Open-set species recognition across 17,393 fish. 53.697% overall.">
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/css/site.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+</head>
+
+<body>
+  <div id="preloader" aria-hidden="true">
+    <div class="ring"></div>
+    <div class="label">Loading specimens</div>
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a href="#" class="nav-mark">FishONet</a>
+      <ul class="nav-links">
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#pipeline">Pipeline</a></li>
+        <li><a href="#species">Taxonomy</a></li>
+        <li><a href="#results">Results</a></li>
+      </ul>
+      <a class="nav-cta" href="#repro">Reproduce v83</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="wrap hero-grid">
+      <div>
+        <div class="hero-eyebrow">CV4Ecology 2026, Codabench 16815</div>
+        <h1>Naming the fish<br>nobody <em>photographed.</em></h1>
+        <p class="dek">17,393 species. Two thirds have zero training photographs, only taxonomy and morphology. Every
+          evaluation image gets one classification, across the full space.</p>
+        <div class="hero-stat reveal-scale">
+          <div class="num"><span id="hero-score">0</span><span class="unit">%</span></div>
+          <div class="cap">Leaderboard accuracy, single global rule over 35,665 images</div>
+        </div>
+      </div>
+      <figure class="specimen-plate" id="hero-plate">
+        <img src="assets/img/species/phycodurus-eques.jpg" alt="Phycodurus eques, the leafy sea dragon">
+        <span class="tag sci">Phycodurus eques</span>
+      </figure>
+    </div>
+  </section>
+
+  <section id="problem">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Two thirds of the answer sheet has no picture.</h2>
+        <p>The evaluation set is class-disjoint and unlabeled. Misrouting a specimen makes the correct answer
+          unreachable: each half of the system can only propose candidates from its own side.</p>
+      </div>
+      <div class="compare-grid">
+        <div class="ledger-card reveal-left">
+          <div class="compare-head">
+            <span class="n">5,795</span>
+            <span class="l">Seen species, 64,259 training photos</span>
+          </div>
+          <div class="spec-mosaic stagger" id="have"></div>
+        </div>
+        <div class="ledger-card reveal-right">
+          <div class="compare-head">
+            <span class="n" style="color:var(--accent)">11,598</span>
+            <span class="l">Novel species, zero photographs</span>
+          </div>
+          <div class="void-mosaic stagger" id="havenot"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pipeline">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">The pipeline, traced</div>
+        <h2>Follow one photograph through the system.</h2>
+        <p>Pick a citizen-science specimen. Every similarity score below is real model output from the BioCLIP-2.5
+          and TaxaBind ensemble, not a mockup.</p>
+      </div>
+
+      <div class="specimen-picker reveal" id="picker"></div>
+
+      <div class="pipeline-layout reveal">
+        <div class="step-nav" role="tablist">
+          <button class="step-btn" role="tab" aria-selected="true">
+            <span class="idx">01</span>
+            <span><span class="title">Input specimen</span><span class="desc">One photo, no metadata, no split
+                hint.</span></span>
+          </button>
+          <button class="step-btn" role="tab" aria-selected="false">
+            <span class="idx">02</span>
+            <span><span class="title">Multi-encoder embedding</span><span class="desc">Six shift-augmented
+                vision-language backbones.</span></span>
+          </button>
+          <button class="step-btn" role="tab" aria-selected="false">
+            <span class="idx">03</span>
+            <span><span class="title">Dual-head scoring</span><span class="desc">Seen prototypes against zero-shot
+                taxonomy text.</span></span>
+          </button>
+          <button class="step-btn" role="tab" aria-selected="false">
+            <span class="idx">04</span>
+            <span><span class="title">Quota routing</span><span class="desc">Rank ordering under an f = 0.60
+                threshold.</span></span>
+          </button>
+          <button class="step-btn" role="tab" aria-selected="false">
+            <span class="idx">05</span>
+            <span><span class="title">Final prediction</span><span class="desc">Re-ranked output and a misrouting
+                counterfactual.</span></span>
+          </button>
+        </div>
+
+        <div class="stage">
+          <div class="stage-panel active">
+            <div class="stage-split">
+              <div class="specimen-frame"><img alt=""><span class="pill">Input</span></div>
+              <div>
+                <h3>A photograph with zero context.</h3>
+                <p>This is <span class="sci" data-fill="name"></span>, held out from <span
+                    class="mono" data-fill="ntrain"></span> training images. The system decides, on its own, whether
+                  it has ever encountered this species before it is allowed to answer.</p>
+                <p class="fine">Citizen-science conditions: turbidity, an aspect-ratio shift between train (1.15) and
+                  eval (2.12), and extreme pose variation.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-panel">
+            <div class="stage-split">
+              <div class="specimen-frame"><img alt=""><span class="pill">Embed</span></div>
+              <div>
+                <h3>Six vision-language encoders.</h3>
+                <p>Complementary backbones, each trained strictly on in-domain imagery, embed the same photograph in
+                  parallel.</p>
+              </div>
+            </div>
+            <div class="encoder-row stagger">
+              <div class="encoder-cell"><strong>ctftshift</strong><span>BioCLIP-2.5 ViT-H/14, LoRA</span></div>
+              <div class="encoder-cell"><strong>ftshift</strong><span>BioCLIP-2.5 ViT-H/14</span></div>
+              <div class="encoder-cell"><strong>fullft336</strong><span>BioCLIP-2.5, 336px</span></div>
+              <div class="encoder-cell"><strong>bioclip-2</strong><span>ViT-L/14, frozen</span></div>
+              <div class="encoder-cell"><strong>bioclip-2 LoRA</strong><span>ViT-L/14, fine-tuned</span></div>
+              <div class="encoder-cell"><strong>TaxaBind</strong><span>ViT-B/16, frozen</span></div>
+            </div>
+          </div>
+
+          <div class="stage-panel">
+            <h3>Two heads compete for the same specimen.</h3>
+            <p>The seen head compares against class prototypes built from training photos. The novel head matches
+              text-only taxonomy descriptions.</p>
+            <div class="head-compare">
+              <div class="head-col">
+                <h4>Seen head</h4>
+                <div class="sub">5,795 candidates, image prototypes, best <span id="seenbest" class="mono"></span>
+                </div>
+                <div id="seenlist"></div>
+              </div>
+              <div class="head-col">
+                <h4>Novel head</h4>
+                <div class="sub">11,598 candidates, taxonomy text, best <span id="unseenbest" class="mono"></span>
+                </div>
+                <div id="unseenlist"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-panel">
+            <h3>Routing is a quota, not a threshold.</h3>
+            <p>All 35,665 test images are ranked by novelty. The top 60% route to the seen head, which holds up
+              better against calibration drift than a fixed cutoff.</p>
+            <div class="quota-track-wrap">
+              <div class="quota-track">
+                <div class="quota-fill" id="gfill"></div>
+                <div class="quota-mark" style="left:60%"></div>
+              </div>
+            </div>
+            <p style="margin-top:1.25rem">This specimen's top seen-prototype similarity is <span class="mono"
+                id="gsim" style="color:var(--accent-bright)"></span>, comfortably inside the familiar 60% quota.</p>
+            <div class="stat-row">
+              <div>
+                <div class="k bad">5,678</div>
+                <div class="l">Misrouted, 15.9% of the set</div>
+              </div>
+              <div>
+                <div class="k">89.1 / 77.6</div>
+                <div class="l">TPR seen / TNR novel</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-panel">
+            <div class="stage-split">
+              <div class="specimen-frame"><img alt=""><span class="pill">Verdict</span></div>
+              <div>
+                <div class="verdict-box">
+                  <div class="label">Ensemble output</div>
+                  <div class="sci name" id="answer"></div>
+                </div>
+                <p style="margin-top:1.1rem">If the gate had misrouted this specimen, the best reachable answer would
+                  have been:</p>
+                <p class="sci" style="font-size:1.1rem;color:var(--bad)"><span id="wrongans"></span></p>
+                <p class="fine"><span id="wrongnote"></span>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="simulator">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>The quota is a trade, not a free lunch.</h2>
+        <p>Move the routing threshold f and watch seen accuracy trade against novel recall. This is why f = 0.60,
+          not a rounder number, is what shipped.</p>
+      </div>
+      <div class="sim-grid reveal">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <label for="sim-slider" class="mono"
+              style="font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-secondary)">Routing
+              quota f, <strong id="sim-f-val" style="color:var(--accent-bright);font-size:1.1rem">0.60</strong></label>
+          </div>
+          <input type="range" id="sim-slider" class="sim-range" min="0.40" max="0.80" step="0.01" value="0.60">
+          <div class="sim-scale">
+            <span>0.40, aggressive novel</span>
+            <span>0.60, deployed</span>
+            <span>0.80, closed-set bias</span>
+          </div>
+          <p style="margin-top:1.25rem;color:var(--text-secondary);font-size:0.9rem;line-height:1.6">A correctly
+            retained seen image is worth about 54% of the score, a novel image about 23%. Push f too low and seen
+            accuracy pays for it. Push it too high and the novel head starves.</p>
+        </div>
+        <div class="sim-readout">
+          <div>
+            <div class="val" id="sim-score-val" style="color:var(--accent-bright)">53.697%</div>
+            <div class="lbl">Projected accuracy</div>
+          </div>
+          <div>
+            <div class="val" id="sim-loss-val">5,678</div>
+            <div class="lbl">Misrouted images</div>
+          </div>
+          <div>
+            <div class="val" id="sim-tpr-val">89.1%</div>
+            <div class="lbl">Seen recall (TPR)</div>
+          </div>
+          <div>
+            <div class="val" id="sim-tnr-val">77.6%</div>
+            <div class="lbl">Novel recall (TNR)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="species">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Real species, real descriptions.</h2>
+        <p>Photographs sit closest to each species' latent prototype centroid. Novel species carry no training
+          photo and are matched purely by written morphology.</p>
+      </div>
+
+      <div class="gallery-bar reveal">
+        <div class="filter-set">
+          <button class="filter-btn" data-f="all" aria-pressed="true">All</button>
+          <button class="filter-btn" data-f="seen" aria-pressed="false">Seen</button>
+          <button class="filter-btn" data-f="unseen" aria-pressed="false">Novel, text only</button>
+        </div>
+        <input type="text" id="species-search" class="search-box" placeholder="Search by name or morphology">
+      </div>
+
+      <div class="species-grid stagger" id="cards"></div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">Sixteen iterations</div>
+        <h2>47.8% to 53.7%, without a new backbone.</h2>
+        <p>The gain came from calibrated gating, aspect augmentation, and leak-free re-ranking, not from adding
+          external models.</p>
+      </div>
+
+      <div class="result-ledger stagger">
+        <div class="result-cell crown">
+          <div class="k"><span id="res-final">0</span></div>
+          <div class="l">Final score</div>
+          <div class="s">Submission v83</div>
+        </div>
+        <div class="result-cell">
+          <div class="k"><span id="res-seen">0</span></div>
+          <div class="l">Seen accuracy</div>
+          <div class="s">56.35% of the eval set</div>
+        </div>
+        <div class="result-cell">
+          <div class="k"><span id="res-novel">0</span></div>
+          <div class="l">Novel accuracy</div>
+          <div class="s">43.65% zero-shot subset</div>
+        </div>
+        <div class="result-cell">
+          <div class="k">35,665</div>
+          <div class="l">Evaluated specimens</div>
+          <div class="s">One global classification rule</div>
+        </div>
+      </div>
+
+      <div class="prog-list reveal">
+        <div class="prog-row"><span class="ver">v33</span><span class="track"><span class="bar"
+              data-w="11%"></span></span><span class="score">47.78%</span></div>
+        <div class="prog-row"><span class="ver">v37</span><span class="track"><span class="bar"
+              data-w="47%"></span></span><span class="score">50.32%</span></div>
+        <div class="prog-row"><span class="ver">v46</span><span class="track"><span class="bar"
+              data-w="55%"></span></span><span class="score">50.84%</span></div>
+        <div class="prog-row"><span class="ver">v56</span><span class="track"><span class="bar"
+              data-w="66%"></span></span><span class="score">51.62%</span></div>
+        <div class="prog-row"><span class="ver">v77</span><span class="track"><span class="bar"
+              data-w="91%"></span></span><span class="score">53.38%</span></div>
+        <div class="prog-row peak"><span class="ver">v83</span><span class="track"><span class="bar"
+              data-w="100%"></span></span><span class="score">53.70%</span></div>
+        <div class="prog-row down"><span class="ver">v84</span><span class="track"><span class="bar"
+              data-w="97%"></span></span><span class="score">53.66%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="leak">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Our best validation gain was an artifact.</h2>
+        <p>An early re-ranker showed +13.374 on the validation split and +0.006 on the real leaderboard. Here is the
+          post-mortem.</p>
+      </div>
+      <div class="leak-grid">
+        <div class="leak-cell reveal-left">
+          <h4>Leaky validation pool</h4>
+          <div class="leak-bar">
+            <div style="width:9.1%"></div>
+          </div>
+          <div class="leak-metric">+13.374 proxy, +0.006 real</div>
+          <p>The candidate pool held 1,159 pseudo-novel classes among 11,598 ineligible distractors. The model
+            learned to spot the 9.1% subpopulation, not true morphology.</p>
+        </div>
+        <div class="leak-cell good reveal-right">
+          <h4>Leak-free pool</h4>
+          <div class="leak-bar">
+            <div style="width:100%"></div>
+          </div>
+          <div class="leak-metric">+8.154 proxy, +0.213 real</div>
+          <p>Restricting the pool to gold-eligible classes with within-query normalization dropped the proxy gain,
+            and multiplied the real leaderboard gain thirty-five times over.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="negative">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>What did not work sets the real ceiling.</h2>
+        <p>Knowing which levers saturated is how you find the actual bound on open-set zero-shot recognition.</p>
+      </div>
+      <div class="registry-list stagger">
+        <div class="registry-row"><span class="name">Gradient boosting re-ranker</span><span
+            class="val">-0.008</span></div>
+        <div class="registry-row"><span class="name">SigLIP2 backbone</span><span class="val">5.13 vs
+            21.53</span></div>
+        <div class="registry-row"><span class="name">7B VLM re-ranker</span><span class="val">-16.0 pt</span></div>
+        <div class="registry-row"><span class="name">Soft novelty gate</span><span class="val">capped
+            50.5%</span></div>
+        <div class="registry-row"><span class="name">LLM trait text</span><span class="val">-6.3 pt</span></div>
+        <div class="registry-row"><span class="name">GBIF image prototypes</span><span class="val">13%
+            coverage</span></div>
+        <div class="registry-row"><span class="name">Common-name matching</span><span class="val">-17.7
+            pt</span></div>
+        <div class="registry-row"><span class="name">Unified single-head inference</span><span
+            class="val">≤49.4%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="repro">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2>Four commands, bit-identical output.</h2>
+      </div>
+      <pre class="code-block reveal"><code><span class="c"># 1. Environment</span>
+conda activate onet && python src/sanity.py
+
+<span class="c"># 2. Train calibrated routing and leak-free re-rankers</span>
+python research/learned_gate_v77.py
+python research/rerank_leakfree_v82.py
+python research/rerank_seen_v83.py
+
+<span class="c"># 3. Build the submission</span>
+python builders/build_v83_rerank_both.py</code></pre>
+
+      <div class="footer-grid reveal">
+        <div>
+          <h5>Author and lab</h5>
+          <p><strong>Lalith Sai</strong> (<a href="https://github.com/lexus-x" target="_blank">lexus-x</a>)</p>
+          <p><a href="http://islab.cwnu.ac.kr/" target="_blank">Intelligent Systems Laboratory, CWNU</a></p>
+          <p>Supervision: <a href="https://chengyawlow.github.io/" target="_blank">Prof. Cheng Yaw Low</a></p>
+        </div>
+        <div>
+          <h5>Top score</h5>
+          <p class="mono" style="color:var(--accent-bright);font-size:1rem">53.69690172437964%</p>
+          <p>submission_v83_rerank_both_f60.zip</p>
+        </div>
+        <div>
+          <h5>Documentation</h5>
+          <p><a href="REPORT.md">REPORT.md, technical report</a></p>
+          <p><a href="https://github.com/lexus-x" target="_blank">GitHub profile</a></p>
+        </div>
+        <div>
+          <h5>Compute and stack</h5>
+          <p>1 x NVIDIA L40S, 46 GB VRAM</p>
+          <p>BioCLIP-2.5, BioCLIP-2, TaxaBind</p>
+        </div>
+      </div>
+
+      <div class="footer-legal">
+        © 2026 Lalith Sai, Intelligent Systems Laboratory (CWNU), and Prof. Cheng Yaw Low. All rights reserved.
+        Proprietary and confidential; this software, documentation, models, and intellectual property are not open
+        source. Every photograph and species description is drawn from the competition dataset. Cosine similarities
+        shown are empirical model outputs.
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/site.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+Copyright (c) 2026 Lalith Sai (lexus-x), Intelligent Systems Laboratory (ISLab, CWNU), and Prof. Cheng Yaw Low. All Rights Reserved.
+
+PROPRIETARY AND CONFIDENTIAL.
+
+This software, documentation, models, codebase, and associated intellectual property 
+are the proprietary work of the author (Lalith Sai / lexus-x) and the Intelligent Systems 
+Laboratory (ISLab), Changwon National University (CWNU), under the supervision of 
+Prof. Cheng Yaw Low.
+
+Lab Website: http://islab.cwnu.ac.kr/
+Supervision: https://chengyawlow.github.io/
+
+THIS WORK IS NOT OPEN SOURCE.
+
+Unauthorized copying, distribution, modification, public display, commercial exploitation, 
+sub-licensing, reverse engineering, or extraction of this repository, its source code, 
+architecture designs, model pipelines, research artifacts, or related materials, 
+in whole or in part, via any medium, is strictly prohibited without prior explicit 
+written authorization from the copyright holders.
+
+---
+
+NOTE ON THIRD-PARTY DATASETS:
+Any third-party biodiversity metadata, taxonomic descriptions, or reference images 
+(e.g., from iNaturalist, TreeOfLife-200M, or competition evaluation materials) are 
+the property of their respective contributors and licensors, and are cited under 
+applicable fair research use and attribution guidelines.

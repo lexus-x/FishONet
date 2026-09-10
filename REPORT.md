@@ -7,8 +7,8 @@
 - **Supervision:** [Prof. Cheng Yaw Low](https://chengyawlow.github.io/)
 - **Live Interactive Showcase:** [https://fihonet.lalithsai00.workers.dev/](https://fihonet.lalithsai00.workers.dev/)
 - **Code Repository:** [https://github.com/lexus-x/FihOnet](https://github.com/lexus-x/FihOnet)
-- **Final Submitted Artifact:** `submissions/submission_v83_rerank_both_f60.zip`
-- **Validated Final Score:** **53.69690172437964% Overall** (Seen: **77.544%** · Novel/Unseen: **22.912%**)
+- **Final Submitted Artifact:** `submissions/submission_v109_genus_gamble.zip`
+- **Validated Final Score:** **53.73615589513528% Overall** (Seen: **77.544%** · Novel/Unseen: **22.912%**)
 - **Full External Data Audit:** `DISCLOSURE.md`
 
 ---
@@ -17,10 +17,11 @@
 
 The CV4Ecology 2026 challenge presents a difficult open-set taxonomic identification problem: classify **35,665 evaluation images** across **17,393 candidate fish species**, where **11,598 species (66.7%) have zero training photographs** and are defined exclusively by scientific taxonomy and morphological text descriptions.
 
-Our solution, **FishONet (v83)**, achieves **53.697% overall accuracy** on the public leaderboard. The system operates strictly without test-set knowledge or split ground truth, utilizing:
+Our solution, **FishONet (v109)**, achieves **53.736% overall accuracy** on the public leaderboard. The system operates strictly without test-set knowledge or split ground truth, utilizing:
 1. **Shift-Augmented Vision-Language Ensembles:** Addressing the citizen-science aspect ratio domain shift (training aspect $\sim 1.15$ vs. evaluation $\sim 2.12$) across 5 foundation encoders.
 2. **Learned 12-Feature Quota Routing Gate:** Replacing hard thresholding with an invariant quota gate ($f=0.60$) over multimodal consistency signals.
 3. **Leak-Free Shortlist Re-ranking:** A calibrated re-ranking stage diagnosed and trained under leak-free candidate pools, unlocking +0.266 real points where standard cross-validation gave a misleading +13.37 point artifact.
+4. **Genus-Level Hierarchical Backoff (v109):** A further seen-route lever added on top of the v83 re-ranking system, +0.039pt real.
 
 ---
 
@@ -103,7 +104,8 @@ Top candidates from initial fusion ($K=10$ on seen, $K=20$ on novel) are re-orde
 | **v77** | **53.38%** | **78.9%** | **20.3%** | **12-feature learned gate replacing heuristic routing (+1.767pt)** |
 | **v79** | 53.42% | 79.1% | 20.3% | Optimal regularisation ($C=100$) refit |
 | **v82** | 53.64% | 79.1% | 20.8% | Leak-free trained unseen shortlist re-ranker (+0.213pt) |
-| **v83 (Best)** | **53.697%** | **77.54%** | **22.91%** | **Dual seen & unseen leak-free re-ranking system** |
+| v83 | 53.697% | 77.54% | 22.91% | Dual seen & unseen leak-free re-ranking system |
+| **v109 (Best)** | **53.736%** | **77.54%** | **22.91%** | **+ genus-level hierarchical backoff on the seen route** |
 
 ---
 
@@ -149,16 +151,29 @@ To aid future open-set biodiversity research, we document key saturated directio
 
 - **No Split-Leakage:** Zero usage of `splits/*.pkl` at test time. Classification uses a single unified argmax over all 17,393 classes.
 - **Foundation Models Only:** No fish-specific third-party fine-tunes were employed.
-- **Deterministic Pipeline:** The submission script (`builders/build_v83_rerank_both.py`) was verified to produce bit-identical predictions from clean weights.
+- **Deterministic Pipeline:** The submission script (`builders/build_v109_genus_gamble.py`) was verified to produce bit-identical predictions from clean weights.
 
 ```bash
 # Complete Reproduction Pipeline
 conda activate onet
-python research/learned_gate_v77.py         # Trains 12-feature gate -> outputs/learned_gate_v79.pkl
+python research/genus_rerank_v103_train.py  # Trains genus backoff  -> outputs/rerank_seen_genus_v103.pkl
 python research/rerank_leakfree_v82.py      # Trains unseen ranker  -> outputs/rerank_unseen_v82_leakfree.pkl
 python research/rerank_seen_v83.py          # Trains seen ranker    -> outputs/rerank_seen_v83.pkl
-python builders/build_v83_rerank_both.py    # Generates submission  -> submissions/submission_v83_rerank_both_f60.zip
+python builders/build_v83_rerank_both.py    # Builds v83, an input to the v109 build below
+python builders/build_v109_genus_gamble.py  # Generates final submission -> submissions/submission_v109_genus_gamble.zip
 ```
+
+**Gate artifact (resolved 2026-09-07):** the pipeline also depends on `outputs/learned_gate_v79.pkl`
+(the same 12-feature gate as v77, refit at `C=100`). `research/learned_gate_v77.py` now takes `C` and
+the output tag from the environment, so that artifact is reproducible from the committed script:
+
+```bash
+GATE_C=100 GATE_TAG=v79 python research/learned_gate_v77.py
+```
+
+Verified **bit-identical** to the deployed pkl — coefficients and intercept match exactly, CV delta
+`1.0804456002995266` on both. The default invocation still writes the C=1.0 v77 artifact unchanged.
+`research/verify_compliance.py` re-checks this automatically.
 
 ---
 

@@ -26,3 +26,6 @@ __pycache__/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+
+# Large reproducibility archive (uploaded to HuggingFace, >100MB limit on GitHub)
+FishONet_v109_Reproducibility_Package.zip

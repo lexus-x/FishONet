@@ -36,6 +36,15 @@ OBS_MAP = os.path.join(OUT, 'inat_od_obs.json')                 # obs_uuid -> na
 OBS_MAP_NEEDS = os.path.join(OUT, 'inat_od_obs_needs_id.json')
 URLS = os.path.join(OUT, 'inat_image_urls.json')
 
+# INAT_SUFFIX=seen -> separate artifact set (does not touch the cand-pool files).
+# INAT_TARGETS_JSON=<json list of names> overrides the D.cand target set.
+_SFX = os.environ.get('INAT_SUFFIX')
+if _SFX:
+    TARGET_TAXA = TARGET_TAXA.replace('.json', f'_{_SFX}.json')
+    OBS_MAP = OBS_MAP.replace('.json', f'_{_SFX}.json')
+    OBS_MAP_NEEDS = OBS_MAP_NEEDS.replace('.json', f'_{_SFX}.json')
+    URLS = URLS.replace('.json', f'_{_SFX}.json')
+
 # Defaults; overridden by CLI
 OBS_CAP = 60
 PHOTO_CAP = 16
@@ -50,8 +59,12 @@ def s3_stream(key):
 
 
 def stage_taxa():
-    D = FishData()
-    targets = {c.lower(): c for c in [D.classes[int(i)] for i in D.cand]}
+    tj = os.environ.get('INAT_TARGETS_JSON')
+    if tj:
+        targets = {c.lower(): c for c in json.load(open(tj))}
+    else:
+        D = FishData()
+        targets = {c.lower(): c for c in [D.classes[int(i)] for i in D.cand]}
     print(f'{len(targets)} target names', flush=True)
     tid2name = {}
     name_active = {}  # name_lower -> has an active mapping already

@@ -32,9 +32,9 @@ from ft import MODEL, inject_lora, load_lora_state, set_lora_scale
 DEV = 'cuda' if torch.cuda.is_available() else 'cpu'
 MEAN = (0.48145466, 0.4578275, 0.40821073)
 STD = (0.26862954, 0.26130258, 0.27577711)
-FILES_PATH = os.path.join(ROOT, 'outputs', 'inat_image_files.json')
+FILES_PATH = os.environ.get('INAT_FILES', os.path.join(ROOT, 'outputs', 'inat_image_files.json'))
 CLASSES_PATH = os.path.join(ROOT, 'data', 'dl', 'all_classes.pkl')
-MAX_PHOTOS = 24
+MAX_PHOTOS = int(os.environ.get('MAX_PHOTOS', 24))
 SQUASH_TTA = 1
 HFLIP = 1
 WORKERS = 6
@@ -42,8 +42,12 @@ BS_224 = 48
 BS_336 = 16
 CKPT_FT = os.path.join(ROOT, 'outputs', 'ft_lora_shift.pt')
 CKPT_336 = os.path.join(ROOT, 'outputs', 'fullft336_shift.pt')
-OUT_FT = os.path.join(ROOT, 'outputs', 'inat_photo_bank_ftshift.pt')
-OUT_336 = os.path.join(ROOT, 'outputs', 'inat_photo_bank_fullft336shift.pt')
+CKPT_CTFT = os.path.join(ROOT, 'outputs', 'ctft_shift.pt')
+_PFX = os.environ.get('BANK_PREFIX', 'inat_photo_bank')
+OUT_FT = os.path.join(ROOT, 'outputs', f'{_PFX}_ftshift.pt')
+OUT_336 = os.path.join(ROOT, 'outputs', f'{_PFX}_fullft336shift.pt')
+OUT_CTFT = os.path.join(ROOT, 'outputs', f'{_PFX}_ctftshift.pt')
+WITH_CTFT = int(os.environ.get('WITH_CTFT', 0))
 
 
 class PhotoDS(Dataset):
@@ -185,6 +189,21 @@ def load_fullft336(ckpt_path):
     return model, preprocess
 
 
+def load_ctft(ckpt_path, scale=0.4):
+    """ctft-style LoRA (mlp c_fc/c_proj) on ViT-H @224, deployed WiSE scale 0.4."""
+    from embed_inat import inject_lora as ctft_inject, set_scale as ctft_set_scale
+    print(f'loading ctft ckpt {ckpt_path} scale={scale}', flush=True)
+    ck = torch.load(ckpt_path, map_location='cpu', weights_only=False)
+    model, _, preprocess = open_clip.create_model_and_transforms(MODEL)
+    ctft_inject(model, ck['rank'], ck['alpha'], ck['top_k'])
+    own = dict(model.named_parameters())
+    for n, v in ck['state'].items():
+        own[n].data.copy_(v)
+    model = model.to(DEV).eval()
+    ctft_set_scale(model, scale)
+    return model, preprocess
+
+
 def save_bank(stacked, out_path, enc, ckpt):
     payload = {
         'bank': stacked,
@@ -227,6 +246,18 @@ def main():
         save_bank(stacked, OUT_336, 'fullft336shift', 'outputs/fullft336_shift.pt')
         del model, stacked
         torch.cuda.empty_cache()
+
+    if WITH_CTFT:
+        if os.path.exists(OUT_CTFT):
+            print(f'skip encoder C, exists {OUT_CTFT}', flush=True)
+        else:
+            print('=== encoder C ctftshift 224 ===', flush=True)
+            model, preprocess = load_ctft(CKPT_CTFT)
+            stacked = run_embed(model, preprocess, items, 224, BS_224, WORKERS,
+                                SQUASH_TTA, HFLIP, 'ctftshift')
+            save_bank(stacked, OUT_CTFT, 'ctft', CKPT_CTFT)
+            del model, stacked
+            torch.cuda.empty_cache()
 
     print('DONE', flush=True)
 

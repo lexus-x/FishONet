@@ -192,11 +192,11 @@ def main():
     print("Loading BioCLIP-2.5 Taxonomic Text Embeddings...")
     TtH = F.normalize(torch.load(os.path.join(OUT, 'text_emb_h_taxon.pt'), map_location='cpu', weights_only=False)['emb_taxon'].float(), dim=-1).to(DEV)
 
-    # 2. Load BioCLIP-2.5 LoRA Image Query Embeddings (Train & Eval)
-    print("Loading BioCLIP-2.5 LoRA ('ctftshift') image embeddings...")
-    idx_tr, feats_tr, files_tr = load_emb(os.path.join(OUT, 'emb_train_ctftshift.pt'))
-    idx_te, feats_te, files_te = load_emb(os.path.join(OUT, 'emb_test_ctftshift.pt'))
-    idx_un, feats_un, files_un = load_emb(os.path.join(OUT, 'emb_unseen_ctftshift.pt'))
+    # 2. Load BioCLIP-2.5 LoRA Image Query Embeddings (train only — the eval
+    # splits pseudo-novel holdout out of train). EMB_TRAIN env var swaps models.
+    emb_train = os.environ.get('EMB_TRAIN', 'emb_train_ctftshift.pt')
+    print(f"Loading image embeddings: {emb_train}")
+    idx_tr, feats_tr, files_tr = load_emb(os.path.join(OUT, emb_train))
 
     # 3. Setup Internal Holdout Split (20% Rarest Classes as Pseudo-Unseen)
     by = defaultdict(list)
@@ -272,7 +272,7 @@ def main():
 
     # Save summary report
     out_report = {
-        'model': 'BioCLIP-2.5 ViT-H/14 (ctftshift)',
+        'model': f'BioCLIP-2.5 ViT-H/14 ({emb_train})',
         'baseline_flat_accuracy': baseline_flat,
         'best_temperature': best_res['T'],
         'best_entropy_threshold': best_res['tau'],
@@ -286,7 +286,9 @@ def main():
         'results_by_temperature': table,
     }
 
-    report_path = os.path.join(OUT, 'entropy_softgate_evaluation.json')
+    report_tag = emb_train.removeprefix('emb_train_').removesuffix('.pt')
+    report_path = os.path.join(OUT, 'entropy_softgate_evaluation.json' if report_tag == 'ctftshift'
+                               else f'entropy_softgate_evaluation_{report_tag}.json')
     with open(report_path, 'w') as f:
         json.dump(out_report, f, indent=2)
     print(f"\nResults saved to {report_path}")

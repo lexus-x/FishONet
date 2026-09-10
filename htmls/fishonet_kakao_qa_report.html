@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FishONet Sprint Report — Kakao Thread Answered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0e1a; --surface:#131a2b; --surface2:#1a2338; --raised:#0d1220;
+    --border:#26314a; --border-soft:#1d2740;
+    --text:#eef1f8; --text-dim:#98a3c0; --text-faint:#5c6688;
+    --blue:#5b8def; --violet:#a689fa; --green:#34d399; --amber:#f0b042; --red:#f2596b;
+    --blue-bg:rgba(91,141,239,.12); --violet-bg:rgba(166,137,250,.12);
+    --green-bg:rgba(52,211,153,.10); --amber-bg:rgba(240,176,66,.10); --red-bg:rgba(242,89,107,.10);
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    line-height:1.6; padding-bottom:80px;
+  }
+  ::selection{background:var(--violet-bg);color:var(--text)}
+  a{color:var(--blue)}
+  h1,h2,h3,h4{text-wrap:balance; font-weight:700}
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--text-faint); font-weight:600;
+  }
+  code,.mono{font-family:var(--mono)}
+  .num{font-variant-numeric:tabular-nums}
+
+  /* header */
+  .header{
+    position:sticky; top:0; z-index:100; background:rgba(10,14,26,.86); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-soft); padding:14px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .header-title{display:flex; align-items:center; gap:12px}
+  .badge{
+    background:linear-gradient(135deg,var(--violet),#7c5cf0); color:#160b2e; font-family:var(--mono);
+    padding:4px 10px; border-radius:6px; font-size:.7rem; font-weight:700; letter-spacing:.05em;
+  }
+  .header-title h2{font-size:.98rem; font-weight:700; color:var(--text)}
+  .nav-links{display:flex; gap:18px; flex-wrap:wrap}
+  .nav-links a{color:var(--text-dim); text-decoration:none; font-size:.84rem; font-weight:600; transition:color .15s}
+  .nav-links a:hover{color:var(--violet)}
+
+  .container{max-width:1180px; margin:0 auto; padding:36px 24px 0}
+
+  /* hero */
+  .hero{
+    background:radial-gradient(circle at 85% 0%, rgba(166,137,250,.16), transparent 45%),
+               radial-gradient(circle at 0% 100%, rgba(91,141,239,.10), transparent 45%),
+               var(--surface);
+    border:1px solid var(--border); border-radius:18px; padding:38px; margin-bottom:28px;
+  }
+  .hero-top{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap}
+  .hero h1{font-size:2rem; letter-spacing:-.01em; margin-bottom:10px; max-width:680px}
+  .hero p.lead{color:var(--text-dim); max-width:640px; font-size:.98rem}
+  .clock-chip{
+    font-family:var(--mono); font-size:.78rem; color:var(--amber); background:var(--amber-bg);
+    border:1px solid rgba(240,176,66,.3); padding:8px 14px; border-radius:10px; white-space:nowrap;
+  }
+  .stats-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; margin-top:28px}
+  .stat{
+    background:var(--raised); border:1px solid var(--border); border-radius:12px; padding:18px 20px;
+  }
+  .stat .eyebrow{margin-bottom:6px}
+  .stat .v{font-family:var(--mono); font-size:1.7rem; font-weight:700}
+  .stat .d{font-size:.82rem; color:var(--text-dim); margin-top:4px}
+  .stat.pos .v{color:var(--green)} .stat.warn .v{color:var(--amber)}
+
+  /* sections/cards */
+  .section-head{display:flex; align-items:baseline; gap:12px; margin:52px 0 18px}
+  .section-head .idx{font-family:var(--mono); color:var(--violet); font-size:.85rem; font-weight:700}
+  .section-head h2{font-size:1.5rem}
+  .section-sub{color:var(--text-dim); font-size:.92rem; margin:-8px 0 22px; max-width:760px}
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px 30px;
+    margin-bottom:22px;
+  }
+  .card-header{display:flex; align-items:center; gap:12px; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap}
+  .card-title{font-size:1.12rem; font-weight:700; display:flex; align-items:center; gap:10px}
+  .tag{
+    font-family:var(--mono); font-size:.68rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    padding:3px 9px; border-radius:20px; border:1px solid transparent; white-space:nowrap;
+  }
+  .tag.confirmed{background:var(--green-bg); color:var(--green); border-color:rgba(52,211,153,.3)}
+  .tag.log{background:var(--amber-bg); color:var(--amber); border-color:rgba(240,176,66,.3)}
+  .tag.dead{background:var(--red-bg); color:var(--red); border-color:rgba(242,89,107,.3)}
+  .tag.proposed{background:var(--blue-bg); color:var(--blue); border-color:rgba(91,141,239,.3)}
+
+  .note{
+    border-left:3px solid var(--border); background:var(--raised); border-radius:0 10px 10px 0;
+    padding:12px 16px; margin:16px 0; font-size:.88rem; color:var(--text-dim);
+  }
+  .note.correct{border-color:var(--violet); background:var(--violet-bg); color:#e4d9ff}
+  .note.correct b{color:var(--violet)}
+  .note.dead{border-color:var(--red); background:var(--red-bg); color:#ffd8dd}
+  .note.dead b{color:var(--red)}
+  .note.win{border-color:var(--green); background:var(--green-bg); color:#c9f7e5}
+  .note.win b{color:var(--green)}
+
+  p{color:var(--text-dim); font-size:.94rem; max-width:74ch}
+  p + p{margin-top:10px}
+  .card p{margin-bottom:10px}
+  strong{color:var(--text); font-weight:600}
+
+  /* qa layout */
+  .qa{display:grid; grid-template-columns:minmax(0,1fr); gap:0}
+  .qa-ask{
+    font-family:var(--mono); font-size:.86rem; color:var(--text-dim); background:var(--raised);
+    border:1px solid var(--border-soft); border-radius:10px; padding:12px 16px; margin-bottom:16px;
+  }
+  .qa-ask .who{color:var(--blue); font-weight:700}
+  .answer-chip{
+    display:inline-flex; align-items:center; gap:8px; font-weight:700; font-size:.98rem;
+    padding:8px 14px; border-radius:10px; margin-bottom:14px;
+  }
+  .answer-chip.yes{background:var(--green-bg); color:var(--green)}
+  .answer-chip.fix{background:var(--amber-bg); color:var(--amber)}
+
+  /* flow diagram */
+  .flow{display:flex; align-items:stretch; gap:0; overflow-x:auto; padding:6px 2px 14px; margin:14px 0}
+  .flow-box{
+    flex:0 0 auto; background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:12px 16px; min-width:120px; text-align:center; display:flex; flex-direction:column; justify-content:center;
+  }
+  .flow-box .t{font-family:var(--mono); font-size:.78rem; font-weight:700; color:var(--text)}
+  .flow-box .s{font-size:.72rem; color:var(--text-faint); margin-top:3px}
+  .flow-box.accent{border-color:var(--violet); background:var(--violet-bg)}
+  .flow-box.accent .t{color:var(--violet)}
+  .flow-box.warn{border-color:var(--amber); background:var(--amber-bg)}
+  .flow-box.warn .t{color:var(--amber)}
+  .flow-arrow{flex:0 0 auto; display:flex; align-items:center; padding:0 8px; color:var(--text-faint); font-size:1.1rem}
+
+  .eqbox{
+    font-family:var(--mono); background:var(--raised); border:1px solid var(--border); border-radius:10px;
+    padding:16px 20px; margin:14px 0; font-size:.92rem; color:var(--text); overflow-x:auto;
+  }
+  .eqbox .c1{color:var(--violet)} .eqbox .c2{color:var(--blue)} .eqbox .c3{color:var(--text-faint)}
+
+  table{width:100%; border-collapse:collapse; margin:16px 0; font-size:.86rem}
+  th{
+    background:var(--raised); color:var(--text); text-align:left; padding:10px 14px;
+    border-bottom:2px solid var(--border); font-weight:700; font-family:var(--mono); font-size:.72rem;
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+  td{padding:10px 14px; border-bottom:1px solid var(--border-soft); color:var(--text-dim)}
+  td.mono{font-family:var(--mono); color:var(--text)}
+  tr.hi td{background:rgba(166,137,250,.07); color:var(--text)}
+  .tbl-wrap{overflow-x:auto}
+
+  .chart-card{background:var(--raised); border:1px solid var(--border-soft); border-radius:12px; padding:18px 20px 8px; margin:16px 0}
+  .chart-title{font-size:.85rem; font-weight:700; color:var(--text); margin-bottom:2px}
+  .chart-sub{font-size:.76rem; color:var(--text-faint); margin-bottom:8px}
+  svg{display:block; width:100%; height:auto; overflow:visible}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; font-size:.74rem; color:var(--text-faint); margin-top:8px; font-family:var(--mono)}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .dot{width:9px; height:9px; border-radius:50%; display:inline-block}
+
+  footer{
+    max-width:1180px; margin:60px auto 0; padding:24px; border-top:1px solid var(--border-soft);
+    color:var(--text-faint); font-size:.8rem; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  footer .src{font-family:var(--mono)}
+
+  @media (max-width:720px){
+    .hero{padding:26px}
+    .card{padding:22px}
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-title">
+    <span class="badge">SPRINT REPORT</span>
+    <h2>FishONet OSR — 류 &amp; 오성한 Kakao Thread</h2>
+  </div>
+  <nav class="nav-links">
+    <a href="#sprint">This Sprint</a>
+    <a href="#kakao">Kakao Q&amp;A</a>
+    <a href="#lora">LoRA Results</a>
+    <a href="#cosface">CosFace</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <h1>What changed, and answers to last night's thread</h1>
+        <p class="lead">CV4Ecology 2026 fish open-set recognition. Real Codabench scores only — every
+        number below is either a scored submission or explicitly marked as unverified. No folder-oracle
+        routing anywhere in the pipeline (single-pipeline rule, disclosed in <code>DISCLOSURE.md</code>).</p>
+      </div>
+      <div class="clock-chip">⏱ ~10 days to close · 3 submissions/day · 30 total</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat pos">
+        <div class="eyebrow">Best real score</div>
+        <div class="v num">51.616%</div>
+        <div class="d">v56 · seen 75.67% · unseen 20.57%</div>
+      </div>
+      <div class="stat warn">
+        <div class="eyebrow">Gap to 53% bar</div>
+        <div class="v num">1.384 pt</div>
+        <div class="d">needs unseen ≈23.7% at flat seen</div>
+      </div>
+      <div class="stat">
+        <div class="eyebrow">This sprint's gain</div>
+        <div class="v num">+0.78 pt</div>
+        <div class="d">v46 50.84% → v56 51.62%</div>
+      </div>
+      <div class="stat">
+        <div class="eyebrow">iNat photo bank</div>
+        <div class="v num">117,670</div>
+        <div class="d">photos · 7,364 classes · 55.2% of unseen route</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 1: THIS SPRINT ================= -->
+  <div class="section-head" id="sprint"><span class="idx">01</span><h2>This sprint — v46 → v56</h2></div>
+  <p class="section-sub">Two independent moves stacked: (1) re-tuned the seen/unseen routing fraction
+  down from 0.72 to 0.60, and (2) added elongated-crop test-time views + a 336px iNat bank on top.
+  Both are confirmed real; the intermediate f-sweep points below are logged in builder scripts but not
+  yet folded into <code>HANDOFF.md</code>'s reconciled ledger — flagged accordingly.</p>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Confirmed climb <span class="tag confirmed">3 real submissions</span></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Overall accuracy, HANDOFF-confirmed points only</div>
+      <div class="chart-sub">Each bar is a scored Codabench submission, not a projection.</div>
+      <svg viewBox="0 0 640 190" preserveAspectRatio="xMidYMid meet">
+        <line x1="60" y1="150" x2="620" y2="150" stroke="#26314a" stroke-width="1"/>
+        <!-- bars: baseline 50.0, scale 45px per point -->
+        <!-- v46 50.84 -> h=(50.84-50)*45=37.8 -->
+        <rect x="110" y="112.2" width="90" height="37.8" rx="4" fill="#a689fa" opacity="0.85"/>
+        <text x="155" y="102" text-anchor="middle" fill="#eef1f8" font-family="JetBrains Mono" font-size="13" font-weight="700">50.84%</text>
+        <text x="155" y="170" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">v46</text>
+        <text x="155" y="184" text-anchor="middle" fill="#5c6688" font-family="Inter" font-size="9.5">LoRA∩ToL denser · f=0.72</text>
+        <!-- v50 51.44 -> h=64.8 -->
+        <rect x="280" y="85.2" width="90" height="64.8" rx="4" fill="#5b8def" opacity="0.9"/>
+        <text x="325" y="75" text-anchor="middle" fill="#eef1f8" font-family="JetBrains Mono" font-size="13" font-weight="700">51.44%</text>
+        <text x="325" y="170" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">v50</text>
+        <text x="325" y="184" text-anchor="middle" fill="#5c6688" font-family="Inter" font-size="9.5">routing retuned · f=0.60</text>
+        <!-- v56 51.62 -> h=72.9 -->
+        <rect x="450" y="77.1" width="90" height="72.9" rx="4" fill="#34d399" opacity="0.95"/>
+        <text x="495" y="67" text-anchor="middle" fill="#eef1f8" font-family="JetBrains Mono" font-size="13" font-weight="700">51.62%</text>
+        <text x="495" y="170" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">v56</text>
+        <text x="495" y="184" text-anchor="middle" fill="#5c6688" font-family="Inter" font-size="9.5">+crop TTA + 336px bank</text>
+        <!-- deltas -->
+        <text x="240" y="90" text-anchor="middle" fill="#5b8def" font-family="JetBrains Mono" font-size="11" font-weight="700">+0.60</text>
+        <text x="410" y="65" text-anchor="middle" fill="#34d399" font-family="JetBrains Mono" font-size="11" font-weight="700">+0.17</text>
+      </svg>
+    </div>
+    <p>v56's recipe: <code>max(center-crop, squash-resize, 5 overlapping long-axis strips)</code> on the
+    ctftshift encoder, plus a 336px-resolution iNat bank fused at weight 3, on top of the full v50 stack
+    (frozen+LoRA dual BioCLIP‑2, ToL-denser merge, TaxaBind, Sinkhorn τ=1.8). Rationale: eval fish are
+    more elongated than train-time crops assumed, so a short-side-resize + center-crop was cutting off
+    heads and tails — max-pooling over several crop geometries recovers that signal.</p>
+    <div class="note win"><b>Holdout → real:</b> +1.424pt holdout → +0.174pt real (~0.122 overall-pt
+    per proxy-pt on this leg). Routing shape is byte-identical to v50 on the seen side (86.71% tf→seen);
+    the entire gain is on the unseen route.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Why f=0.60 — the routing sweep</div>
+      <span class="tag confirmed">2 confirmed · 3 builder-logged</span>
+    </div>
+    <p>Lower <code>seen_frac</code> ejects more images to the unseen route. Seen accuracy falls
+    monotonically, unseen rises monotonically — but <strong>overall peaks at f=0.60</strong>, not at the
+    extremes. Going lower (f=0.52) already gives back more seen than it recovers in unseen.</p>
+    <div class="chart-card">
+      <div class="chart-title">Three small-multiples, same x-axis (seen_frac 0.50 → 0.74)</div>
+      <svg viewBox="0 0 660 400" preserveAspectRatio="xMidYMid meet">
+        <!-- shared x mapping: x(f)=70+(f-0.50)/0.24*560 -->
+        <!-- ROW 1: overall, y range 50.5(bottom,y=100)-51.6(top,y=10) -->
+        <text x="70" y="8" fill="#eef1f8" font-family="Inter" font-size="12" font-weight="700">Overall %</text>
+        <line x1="70" y1="100" x2="630" y2="100" stroke="#26314a"/>
+        <text x="62" y="14" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">51.6</text>
+        <text x="62" y="103" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">50.5</text>
+        <polyline points="116.7,40.3 303.3,23.1 373.3,30.5 420,41.1 583.3,72.2" fill="none" stroke="#a689fa" stroke-width="2.5"/>
+        <circle cx="116.7" cy="40.3" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="303.3" cy="23.1" r="6" fill="#34d399"/>
+        <circle cx="373.3" cy="30.5" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="420" cy="41.1" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="583.3" cy="72.2" r="6" fill="#34d399"/>
+        <text x="303.3" y="14" text-anchor="middle" fill="#34d399" font-family="JetBrains Mono" font-size="10" font-weight="700">peak 51.44</text>
+
+        <!-- ROW 2: seen, offset +120, range 73(y=210)-80(y=120) -->
+        <text x="70" y="128" fill="#eef1f8" font-family="Inter" font-size="12" font-weight="700">Seen %</text>
+        <line x1="70" y1="220" x2="630" y2="220" stroke="#26314a"/>
+        <text x="62" y="134" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">80</text>
+        <text x="62" y="223" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">73</text>
+        <polyline points="116.7,213.3 303.3,177.4 373.3,173.7 420,155.6 583.3,143.5" fill="none" stroke="#5b8def" stroke-width="2.5"/>
+        <circle cx="116.7" cy="213.3" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="303.3" cy="177.4" r="6" fill="#34d399"/>
+        <circle cx="373.3" cy="173.7" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="420" cy="155.6" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="583.3" cy="143.5" r="6" fill="#34d399"/>
+
+        <!-- ROW 3: unseen, offset +240, range 14(y=330)-23(y=240) -->
+        <text x="70" y="248" fill="#eef1f8" font-family="Inter" font-size="12" font-weight="700">Unseen %</text>
+        <line x1="70" y1="340" x2="630" y2="340" stroke="#26314a"/>
+        <text x="62" y="254" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">23</text>
+        <text x="62" y="343" text-anchor="end" fill="#5c6688" font-family="JetBrains Mono" font-size="9">14</text>
+        <polyline points="116.7,255.6 303.3,286.6 373.3,292.2 420,313.8 583.3,334.5" fill="none" stroke="#f2596b" stroke-width="2.5"/>
+        <circle cx="116.7" cy="255.6" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="303.3" cy="286.6" r="6" fill="#34d399"/>
+        <circle cx="373.3" cy="292.2" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="420" cy="313.8" r="5" fill="#0a0e1a" stroke="#f0b042" stroke-width="2"/>
+        <circle cx="583.3" cy="334.5" r="6" fill="#34d399"/>
+
+        <!-- shared x axis labels -->
+        <text x="116.7" y="365" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">0.52</text>
+        <text x="303.3" y="365" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">0.60</text>
+        <text x="373.3" y="365" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">0.63</text>
+        <text x="420" y="365" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">0.65</text>
+        <text x="583.3" y="365" text-anchor="middle" fill="#98a3c0" font-family="JetBrains Mono" font-size="11">0.72</text>
+        <text x="350" y="390" text-anchor="middle" fill="#5c6688" font-family="Inter" font-size="10.5">seen_frac (f)</text>
+      </svg>
+      <div class="legend">
+        <span><span class="dot" style="background:#34d399"></span>HANDOFF-confirmed real</span>
+        <span><span class="dot" style="background:#0a0e1a;border:2px solid #f0b042"></span>builder-log real, not yet reconciled in HANDOFF</span>
+      </div>
+    </div>
+    <p style="margin-top:8px">f=0.63's seen% (76.60) is <em>derived</em> from
+    <code>overall = 0.5635·seen + 0.4365·unseen</code> since only unseen/overall were logged for that
+    point — the other four are as-recorded. All five satisfy the weighting formula to within rounding,
+    which is why we trust the un-reconciled points enough to show them.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Held-back / dead this sprint</div>
+    </div>
+    <div class="note dead">
+      <b>Unified single-head 2-stage pipeline (drop the seen/unseen heads entirely) — DEAD, no zip.</b>
+      Holdout ranked f=0.72 <strong>+5.09pt</strong> above f=0.60; real Codabench says f=0.60 wins by
+      <strong>+0.60pt</strong> — the proxy is anti-correlated on this axis. Even granting every unified
+      variant production's conditional accuracy, the best projects ≤49.35%, all below the 51.44%
+      floor. Root cause: the seen head's 3-encoder prototype ensemble has no counterpart on the unseen
+      side, and the iNat photo bank only covers 966/5,795 seen classes.
+    </div>
+    <div class="note dead">
+      <b>v57 (336px query-crop + recropped 336 gallery) — fails kill bar, not submitted.</b>
+      Holdout only +0.043 vs v56 (kill bar is +0.3). Same crop trick does not stack a second time on the
+      336 encoder. Zip exists, budget not spent on it.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Why holdout keeps lying — transfer rate by leg</div>
+    </div>
+    <p>Every lever below cleared its holdout kill bar. Real-world transfer (real Δoverall ÷ holdout
+    Δproxy) ranges over <strong>18×</strong> depending on <em>what kind</em> of signal it is — this is
+    the single most important calibration fact for judging any new proxy result, including a future
+    iNat validation set (see §2, Q1).</p>
+    <div class="chart-card">
+      <div class="chart-title">Overall-pt gained per holdout-proxy-pt</div>
+      <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet">
+        <!-- bars horizontal, max 0.36 -> scale 480/0.36=1333.3 px per unit -->
+        <text x="4" y="18" fill="#eef1f8" font-family="Inter" font-size="12">dual-B2 (v43)</text>
+        <rect x="150" y="6" width="480" height="20" rx="4" fill="#34d399"/>
+        <text x="638" y="21" text-anchor="end" fill="#0a0e1a" font-family="JetBrains Mono" font-size="11" font-weight="700">0.36</text>
+
+        <text x="4" y="60" fill="#eef1f8" font-family="Inter" font-size="12">LoRA∩ToL denser (v46)</text>
+        <rect x="150" y="48" width="260" height="20" rx="4" fill="#5b8def"/>
+        <text x="418" y="63" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">0.195</text>
+
+        <text x="4" y="102" fill="#eef1f8" font-family="Inter" font-size="12">crop TTA + 336 bank (v56)</text>
+        <rect x="150" y="90" width="163" height="20" rx="4" fill="#a689fa"/>
+        <text x="321" y="105" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">0.122</text>
+
+        <text x="4" y="144" fill="#eef1f8" font-family="Inter" font-size="12">frozen ToL denser (v44)</text>
+        <rect x="150" y="132" width="52" height="20" rx="4" fill="#f0b042"/>
+        <text x="210" y="147" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">0.039</text>
+
+        <text x="4" y="186" fill="#eef1f8" font-family="Inter" font-size="12">iNat maxpool (v40)</text>
+        <rect x="150" y="174" width="27" height="20" rx="4" fill="#f2596b"/>
+        <text x="185" y="189" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">0.02</text>
+      </svg>
+    </div>
+    <p>Two levers below the kill bar do not appear here because they transferred with the <em>wrong
+    sign</em>: recover-on-eject (holdout +3.5 → real −0.07) and TaxaBind iNat image protos (holdout
+    +0.52 → real −0.11).</p>
+  </div>
+
+  <!-- ================= SECTION 2: KAKAO Q&A ================= -->
+  <div class="section-head" id="kakao"><span class="idx">02</span><h2>Kakao thread, answered</h2></div>
+  <p class="section-sub">In order asked. Corrections are called out explicitly where the group's
+  working assumption needs an update.</p>
+
+  <div class="card">
+    <div class="qa-ask"><span class="who">류.正.열</span> — "Okay sai, can you please create the
+    iNaturalist validation set first? So that Sunghan and you can use it soon."</div>
+    <div class="answer-chip fix">⚠ Not built yet — spec below, one hard constraint identified</div>
+    <p>The iNat photo bank (117,670 photos / 7,364 classes) currently plays two roles at once:
+    it <em>is</em> the prototype source for the unseen route, and every proxy script that scores a
+    "which leg helps" question queries against those same prototypes. A validation set needs to
+    <strong>break that loop</strong> or every measurement leaks.</p>
+    <div class="flow">
+      <div class="flow-box"><div class="t">per-class photo pool</div><div class="s">e.g. 12 iNat photos</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box warn"><div class="t">split k-hold / rest</div><div class="s">hold out ≥1 per class</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box"><div class="t">prototype = mean(rest)</div><div class="s">never touches held-out</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box accent"><div class="t">query = held-out</div><div class="s">scored against full 17,393-class space</div></div>
+    </div>
+    <div class="note dead"><b>The mistake this avoids:</b> if a held-out query photo was itself averaged
+    into its own class prototype, the leg would score near-perfect and every weight sweep since v37
+    would look better than it is — this is exactly the "gold-only proxy read +31.75, inflated" trap
+    already hit once (§ HANDOFF, v37 build note) and the "+31.75 → +12.08" correction on the same page.</div>
+    <p><strong>Proposed build</strong> (not yet run): for the ~6,398 unseen-route classes with ≥2 iNat
+    photos, hold out 1 query photo per class; classes with exactly 1 photo can't validate this way and
+    stay proto-only. Candidate space for scoring must include the ~5,200 uncovered classes as
+    distractors — an iNat-covered-only candidate space is the same "gold-only" inflation in a different
+    shape. Estimated eligible val set: a few thousand photos across ~5–6k classes, one query each.</p>
+    <div class="note"><b>Honest ceiling on this proxy:</b> it validates the iNat-proto leg against
+    iNat's <em>own</em> photo distribution — not eval-image shift. Per the transfer chart above, even a
+    proxy built this carefully should be treated as directional, not as a real-score prediction, until
+    anchored against an actual submission.</div>
+  </div>
+
+  <div class="card">
+    <div class="qa-ask"><span class="who">류.正.열</span> — "And I think you're using iNaturalist 2021?"</div>
+    <div class="answer-chip fix">⚠ Correction — not iNat-2021</div>
+    <p>iNat-2021 is a fixed, curated 10,000-species competition dataset. The pipeline uses two different,
+    larger sources instead:</p>
+    <table>
+      <tr><th>source</th><th>what</th><th>why not iNat-2021</th></tr>
+      <tr><td class="mono">iNaturalist Open Data</td><td>public AWS S3 dump (<code>taxa/observations/photos.csv.gz</code>), streamed, no rate limit</td><td>iNat-2021 tops out at 10k species; this join matched <strong>12,738/12,757 (99.9%)</strong> competition scientific names</td></tr>
+      <tr><td class="mono">iNaturalist API v1</td><td><code>api.inaturalist.org</code>, research-grade then needs_id, used only to densify thin classes</td><td>live/current observations, not a fixed 2021 snapshot</td></tr>
+    </table>
+    <p>Current bank: <strong>117,670 photos</strong> across <strong>7,364 classes</strong>, covering
+    <strong>55.2%</strong> of the 11,598 unseen classes (up from 51.8% at first build). Disclosed in
+    <code>DISCLOSURE.md</code> as a general biodiversity platform, not fish-specific — allowed under the
+    competition's External Data Policy.</p>
+  </div>
+
+  <div class="card">
+    <div class="qa-ask"><span class="who">류.正.열</span> — "Please check: (1) the loss function you
+    used for LoRA. (2) Clip-style cross entropy or softmax cross entropy?" &nbsp;
+    <span class="who">오성한</span> — "I use the logits from CLIP to backward with softmax cross entropy.
+    My text embeddings are fixed. I implemented option 1 (full candidate space, not in-batch)."</div>
+    <div class="answer-chip yes">✓ Confirmed — both readings are the same mechanism</div>
+    <p>Verified directly against <code>src/contrastive_ft.py</code> (the BioCLIP‑2.5‑H ctftshift family)
+    and all six BioCLIP‑2 variants under <code>research/contrastive_ft_bioclip2*.py</code> — identical
+    loss shape in every one:</p>
+    <div class="flow">
+      <div class="flow-box"><div class="t">image</div><div class="s">train crop, shift-aug</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box accent"><div class="t">LoRA image tower</div><div class="s">only .A/.B trainable</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box"><div class="t">f · normalize()</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box warn"><div class="t">cos vs T_known</div><div class="s">frozen text matrix, C×d</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box"><div class="t">× temp (=30, fixed)</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box accent"><div class="t">softmax CE</div><div class="s">vs true class y</div></div>
+    </div>
+    <div class="eqbox">loss = <span class="c1">F.cross_entropy</span>( temp · ( f_img @ <span class="c2">T_known</span><sup>T</sup> ),&nbsp;y )</div>
+    <p><strong>Why "CLIP-style" and "softmax cross-entropy" are the same statement here:</strong> CLIP-style
+    means the softmax class-weight matrix is replaced by frozen text embeddings instead of a learned
+    linear head. That's exactly this loss — Sunghan's answer and 류's clarification both describe the
+    identical mechanism, just from two ends.</p>
+    <div class="note correct"><b>One real deviation from vanilla CLIP:</b> <code>temp=30.0</code> is a
+    fixed scalar, not CLIP's own learned <code>logit_scale</code> (normally clamped to ln(100)≈4.6).
+    Worth flagging since it's exactly the <code>s</code> term CosFace needs (see below) — it's already
+    sitting there as a hyperparameter, not something to add.</div>
+  </div>
+
+  <div class="card">
+    <div class="qa-ask"><span class="who">류.正.열</span> — "Option 1: each pair vs all negatives, sim
+    matrix N×C (C≈35k for FishNet)? Or Option 2: negatives within the mini-batch only, N×c (c≤32)?"
+    &nbsp;<span class="who">오성한</span> — "I implemented option 1."</div>
+    <div class="answer-chip yes">✓ Option 1 confirmed — one number needs correcting</div>
+    <p>Option 1 is correct: <code>logits = temp * (f @ Tknown.t())</code> scores every image against
+    the <em>entire</em> known-class text matrix every step, not just the other 31 items in the batch.
+    <code>T_known</code> is frozen throughout, matching "my text embeddings are fixed."</p>
+    <div class="note correct"><b>C correction:</b> C is not ≈35,000. Re-derived directly from
+    <code>data/dl/label_train.json</code> + <code>all_classes.pkl</code> with the exact split logic in
+    the training script (rarest 20% of seen classes held out as an internal pseudo-unseen check):
+    <div class="chart-card" style="margin-top:10px">
+      <svg viewBox="0 0 640 130" preserveAspectRatio="xMidYMid meet">
+        <text x="0" y="18" fill="#98a3c0" font-family="Inter" font-size="12">estimated in thread</text>
+        <rect x="180" y="6" width="440" height="22" rx="4" fill="#26314a"/>
+        <text x="628" y="22" text-anchor="end" fill="#98a3c0" font-family="JetBrains Mono" font-size="12" font-weight="700">≈ 35,000</text>
+        <text x="0" y="58" fill="#eef1f8" font-family="Inter" font-size="12">total competition classes</text>
+        <rect x="180" y="46" width="217" height="22" rx="4" fill="#5b8def"/>
+        <text x="405" y="62" fill="#98a3c0" font-family="JetBrains Mono" font-size="12" font-weight="700">17,393</text>
+        <text x="0" y="98" fill="#eef1f8" font-family="Inter" font-size="12">actual C (known/seen − pseudo-unseen)</text>
+        <rect x="180" y="86" width="58" height="22" rx="4" fill="#a689fa"/>
+        <text x="246" y="102" fill="#eef1f8" font-family="JetBrains Mono" font-size="12" font-weight="700">4,636</text>
+      </svg>
+    </div>
+    <p style="margin-top:10px">17,393 total classes → 5,795 have any training images ("seen") →
+    training holds out the rarest 20% (1,159 classes) as an internal validation proxy for the real
+    unseen split → <strong>C = 4,636</strong> known classes actually seen as softmax targets. This is
+    Option 1 done correctly at the true scale, just an order of magnitude smaller than the number
+    quoted in chat.</p>
+  </div>
+  </div>
+
+  <div class="card" id="cosface">
+    <div class="qa-ask"><span class="who">류.正.열</span> — "I will share the idea of plugging CosFace
+    to train LoRA later."</div>
+    <div class="answer-chip yes">✓ Drop-in — here's exactly where it goes, and why it's a different axis
+    than what's already been tried</div>
+    <p>Because the loss already uses frozen text embeddings as the class-weight matrix, adding a
+    CosFace margin is a one-line change to the same line shown above — subtract a margin from the
+    <em>target</em> class's cosine before scaling, leave every other class's cosine untouched:</p>
+    <div class="eqbox">
+      logit[i, y] = <span class="c2">temp</span> · ( cos(f_img, <span class="c1">T_known</span>[y]) <span style="color:#f2596b">− m</span> )<span class="c3">&nbsp;&nbsp;// target class only</span><br>
+      logit[i, j] = <span class="c2">temp</span> · cos(f_img, <span class="c1">T_known</span>[j])<span class="c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// j ≠ y</span><br>
+      loss = <span class="c1">F.cross_entropy</span>(logit, y)
+    </div>
+    <p><code>temp=30</code> already plays CosFace's <code>s</code>. Sweep <code>m ∈ {0.10, 0.20, 0.35}</code>
+    against the same pseudo-unseen db metric used for every LoRA variant below.</p>
+    <div class="note"><b>Why this is worth trying even though hard-negative mining already failed:</b>
+    hard-neg reweights <em>which wrong classes</em> count more in the loss; CosFace tightens the margin
+    around the <em>correct</em> class regardless of which negatives are nearby. Different mechanism,
+    not a rerun of the dead hard-neg probe (best db 14.06, below every other variant).
+    The metric that actually decides deployment is not standalone db — it's the downstream fused-stack
+    proxy gain against the +0.3 kill bar, exactly like v2 below.</div>
+  </div>
+
+  <!-- ================= SECTION 3: LORA RESULTS ================= -->
+  <div class="section-head" id="lora"><span class="idx">03</span><h2>LoRA results, compiled</h2></div>
+  <p class="section-sub">Sunghan's ask. All rows are the same recipe (LoRA on BioCLIP‑2's image tower,
+  frozen text targets, softmax CE, <code>--shift_aug 1</code>), scored by pseudo-unseen "db" (debiased
+  top-1 on the rarest-20% held-out classes) unless noted.</p>
+
+  <div class="card">
+    <div class="chart-card">
+      <div class="chart-title">Pseudo-unseen db by variant (zoomed 12–16)</div>
+      <div class="chart-sub">Bar color marks what's deployed, not what scored highest standalone.</div>
+      <svg viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet">
+        <!-- domain 12-16, scale 560/4=140 px/unit, x0=70 -->
+        <line x1="70" y1="10" x2="70" y2="240" stroke="#26314a"/>
+        <text x="70" y="252" text-anchor="middle" fill="#5c6688" font-family="JetBrains Mono" font-size="9">12</text>
+        <text x="350" y="252" text-anchor="middle" fill="#5c6688" font-family="JetBrains Mono" font-size="9">14</text>
+        <text x="630" y="252" text-anchor="middle" fill="#5c6688" font-family="JetBrains Mono" font-size="9">16</text>
+        <!-- v1: 15.53 -> w=(15.53-12)*140=494 -->
+        <text x="4" y="24" fill="#eef1f8" font-family="Inter" font-size="12">v1 (name-text)</text>
+        <rect x="70" y="14" width="494" height="18" rx="3" fill="#5b8def"/>
+        <text x="574" y="27" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">15.53</text>
+        <!-- v5: 15.01 -> 421.4 -->
+        <text x="4" y="56" fill="#eef1f8" font-family="Inter" font-size="12">v5 (full-slice, init v1)</text>
+        <rect x="70" y="46" width="421" height="18" rx="3" fill="#5b8def" opacity="0.75"/>
+        <text x="501" y="59" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">15.01</text>
+        <!-- v4: 14.80 -> 392 -->
+        <text x="4" y="88" fill="#eef1f8" font-family="Inter" font-size="12">v4 (full-slice, cold)</text>
+        <rect x="70" y="78" width="392" height="18" rx="3" fill="#5b8def" opacity="0.6"/>
+        <text x="472" y="91" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">14.80</text>
+        <!-- rank32: 14.67 -> 373.8 -->
+        <text x="4" y="120" fill="#eef1f8" font-family="Inter" font-size="12">rank-32 probe</text>
+        <rect x="70" y="110" width="374" height="18" rx="3" fill="#5b8def" opacity="0.6"/>
+        <text x="454" y="123" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">14.67</text>
+        <!-- v2 taxctx: 14.50 -> 350, DEPLOYED violet -->
+        <text x="4" y="152" fill="#eef1f8" font-family="Inter" font-size="12" font-weight="700">v2 (taxctx) — DEPLOYED</text>
+        <rect x="70" y="142" width="350" height="18" rx="3" fill="#a689fa"/>
+        <text x="430" y="155" fill="#eef1f8" font-family="JetBrains Mono" font-size="11" font-weight="700">14.50</text>
+        <!-- hard-neg: 14.06 -> 288.4 -->
+        <text x="4" y="184" fill="#eef1f8" font-family="Inter" font-size="12">hard-negative</text>
+        <rect x="70" y="174" width="288" height="18" rx="3" fill="#f2596b" opacity="0.7"/>
+        <text x="368" y="187" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">14.06</text>
+        <!-- CE-only: 13.63 -> 228.2 -->
+        <text x="4" y="216" fill="#eef1f8" font-family="Inter" font-size="12">CE-only (no iNat)</text>
+        <rect x="70" y="206" width="228" height="18" rx="3" fill="#f2596b" opacity="0.7"/>
+        <text x="308" y="219" fill="#98a3c0" font-family="JetBrains Mono" font-size="11" font-weight="700">13.63</text>
+      </svg>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>variant</th><th>text target</th><th>steps</th><th>best db</th><th>vs v1</th><th>status</th></tr>
+        <tr><td>v1</td><td class="mono">name-text</td><td class="mono">800</td><td class="mono">15.53</td><td class="mono">—</td><td>warm-start source only</td></tr>
+        <tr><td>v5</td><td class="mono">taxctx, full-slice, init=v1</td><td class="mono">—</td><td class="mono">15.01</td><td class="mono">−0.52</td><td>no zip</td></tr>
+        <tr><td>v4</td><td class="mono">taxctx, full-slice, cold top_k=0</td><td class="mono">—</td><td class="mono">14.80</td><td class="mono">−0.73</td><td>no zip (final 14.45)</td></tr>
+        <tr><td>rank-32</td><td class="mono">taxctx, rank=32</td><td class="mono">400</td><td class="mono">14.67</td><td class="mono">−0.86</td><td>no zip</td></tr>
+        <tr class="hi"><td><strong>v2</strong></td><td class="mono">768-d taxctx, iNat cap=8</td><td class="mono">2000</td><td class="mono">14.50</td><td class="mono">−1.03</td><td><strong>deployed (v43 / v46)</strong></td></tr>
+        <tr><td>hard-neg</td><td class="mono">taxctx + hard-neg term</td><td class="mono">1800</td><td class="mono">14.06</td><td class="mono">−1.47</td><td>no zip</td></tr>
+        <tr><td>CE-only</td><td class="mono">taxctx, <code>--inat 0</code></td><td class="mono">1600</td><td class="mono">13.63</td><td class="mono">−1.90</td><td>no zip (final 13.07)</td></tr>
+      </table>
+    </div>
+    <div class="note correct"><b>The nuance worth flagging to Sunghan directly:</b> v1 has the highest
+    standalone db, but production runs <strong>v2</strong> — because standalone db on the LoRA checkpoint
+    doesn't predict what wins once fused into the full dual-leg stack. v2's dual-fusion proxy cleared
+    <strong>+0.43</strong> against the kill bar (+0.3) when combined with the frozen BioCLIP-2 leg; that's
+    the number that decided deployment, not the 15.53 vs 14.50 db gap. The team's informal target for a
+    standalone checkpoint was db≥16.0 — nothing has cleared it yet, including v1.</div>
+  </div>
+
+</div>
+
+<footer>
+  <span>Generated from <span class="src">HANDOFF.md</span>, <span class="src">DISCLOSURE.md</span>,
+  <span class="src">CLAUDE.md</span>, builder scripts, and direct recomputation against
+  <span class="src">data/dl/label_train.json</span> — 2026-08-22.</span>
+  <span>Note: <span class="src">CLAUDE.md</span>'s quoted "best real 51.44%" is stale — v56 at 51.616%
+  supersedes it (HANDOFF §1).</span>
+</footer>
+
+</body>
+</html>

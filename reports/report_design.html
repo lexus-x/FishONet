@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FishONet — Technical Report</title>
+<style>
+/* ============================================================== type */
+@font-face{ font-family:"Display"; src:url("design_assets/fonts/instrument.ttf") format("truetype"); font-weight:400; font-display:block; }
+@font-face{ font-family:"Body"; src:url("design_assets/fonts/newsreader.ttf") format("truetype"); font-weight:200 800; font-display:block; }
+@font-face{ font-family:"UI"; src:url("design_assets/fonts/inter.ttf") format("truetype"); font-weight:100 900; font-display:block; }
+@font-face{ font-family:"Mono"; src:url("design_assets/fonts/plexmono.ttf") format("truetype"); font-weight:400; font-display:block; }
+@font-face{ font-family:"Mono"; src:url("design_assets/fonts/plexmono-sb.ttf") format("truetype"); font-weight:500 700; font-display:block; }
+
+:root{
+  --ground:#FAF7F2; --dark:#14100D; --ink:#221A15; --muted:#7A6E65;
+  --faint:#A99C91; --rule:#E3DAD0; --panel:#F2EDE5;
+  --teal:#1F6F6B; --clay:#C96442; --flag:#8F2D2D; --gain:#3F6B4A;
+  --measure:134mm; --rail:32mm; --gap:8mm;
+}
+
+@page{ size:A4; margin:0; }
+
+*{ box-sizing:border-box; }
+html{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Body",Georgia,serif; font-size:10pt; line-height:1.58;
+}
+
+/* ============================================================ layout */
+.sheet{ break-after:page; }
+.bleed{
+  position:relative; width:210mm; height:297mm;
+  overflow:hidden; break-after:page;
+}
+.grid{
+  display:grid; grid-template-columns:var(--rail) var(--gap) var(--measure);
+  margin-bottom:5mm;
+}
+.grid > .rail{ grid-column:1; }
+.grid > .col{ grid-column:3; }
+.grid > .full{ grid-column:1 / -1; }
+
+.rail{
+  font-family:"UI",sans-serif; font-size:6.6pt; line-height:1.5;
+  color:var(--muted); padding-top:1.2mm;
+}
+.rail .n{
+  font-family:"Mono",monospace; font-size:7.4pt; color:var(--clay);
+  letter-spacing:.06em; display:block; margin-bottom:1.4mm;
+}
+.rail b{ display:block; color:var(--ink); font-weight:500; }
+
+p{
+  margin:0 0 3mm;
+  text-align:justify; text-justify:inter-word;
+  hyphens:auto; -webkit-hyphens:auto; hyphenate-limit-chars:7 3 3;
+  orphans:2; widows:2;
+}
+p.big{ font-size:12pt; line-height:1.5; }
+
+/* display and short-measure text stays ragged — justifying it opens rivers */
+.lede, .pull, .kicker, h1, h2, h3, h4,
+figcaption, caption, .rail, th, td, .toc, .kpi .k,
+.cover .sub, .cover .scorenote, .absence .det, .note .lab{
+  text-align:left; hyphens:none; -webkit-hyphens:none;
+}
+.note p{ hyphens:auto; -webkit-hyphens:auto; }
+strong{ font-weight:600; }
+.tnum{ font-family:"Mono",monospace; font-size:9.2pt; font-weight:500; }
+.hl{ color:var(--teal); font-weight:600; }
+.hl-c{ color:var(--clay); font-weight:600; }
+.hl-f{ color:var(--flag); font-weight:600; }
+
+h1,h2,h3,h4{ margin:0; font-weight:400; }
+h2{
+  font-family:"Display",serif; font-size:27pt; line-height:1.06;
+  letter-spacing:-.008em; margin-bottom:4mm;
+}
+h3{
+  font-family:"UI",sans-serif; font-size:7.4pt; font-weight:600;
+  letter-spacing:.11em; text-transform:uppercase; color:var(--clay);
+  margin:0 0 2.5mm;
+}
+h4{
+  font-family:"UI",sans-serif; font-size:9pt; font-weight:600;
+  color:var(--ink); margin:5mm 0 1.6mm;
+}
+.opener{ break-before:page; padding:20mm 18mm 17mm; }
+.opener h2{ max-width:150mm; }
+.sec1-p1{ padding:16mm 18mm 14mm; }
+.sec1-p1 .grid{ margin-bottom:3mm; }
+.sec1-p1 figure{ margin:2mm 0 2.5mm; }
+.sec1-p1 figure img{ max-height:46mm; width:auto; margin:0 auto; }
+.sec3-p2{ padding:16mm 18mm 14mm; }
+.sec3-p2 .grid{ margin-bottom:3.2mm; }
+.sec3-p2 .note{ padding:3mm 4mm; margin:2.5mm 0; }
+.sec3-p2 p{ margin:0 0 2.4mm; }
+.sec4{ padding:18mm 18mm 15mm; }
+.sec4 .grid{ margin-bottom:3.2mm; }
+.sec4 figure{ margin:2mm 0 2.5mm; }
+.sec4 figure img{ max-height:37mm; width:auto; margin:0 auto; }
+.sec4 table{ margin:1.5mm 0; }
+.sec4 caption{ padding-top:1.8mm; margin-top:1.5mm; }
+.sec4 p{ margin:0 0 2.4mm; }
+.sec6-p2{ padding:16mm 18mm 14mm; }
+.sec6-p2 .grid{ margin-bottom:3.2mm; }
+.sec6-p2 figure{ margin:2mm 0 2.5mm; }
+.sec6-p2 figure img{ max-height:42mm; width:auto; margin:0 auto; }
+.sec6-p2 .pull{ font-size:16pt; margin:3.5mm 0; line-height:1.2; }
+.sec6-p2 .note{ padding:3mm 4mm; margin:2.5mm 0; font-size:9pt; }
+.sec7-p2{ padding:16mm 18mm 14mm; }
+.sec7-p2 .grid{ margin-bottom:3.2mm; }
+.sec7-p2 table{ margin:1.2mm 0; font-size:7.6pt; }
+.sec7-p2 caption{ padding-top:1.5mm; margin-top:1.2mm; }
+.sec7-p2 p{ margin:0 0 2mm; }
+.kicker{
+  font-family:"UI",sans-serif; font-size:6.8pt; font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--clay);
+  margin-bottom:3mm;
+}
+.lede{
+  font-family:"Body",serif; font-size:12.5pt; line-height:1.46;
+  color:var(--ink); margin:0 0 6mm; max-width:150mm;
+}
+
+/* ============================================================= cover */
+.cover{ position:absolute; inset:0; background:var(--dark); }
+.cover img{
+  position:absolute; right:0; top:0; height:297mm; width:126mm;
+  object-fit:cover; object-position:52% 46%;
+  filter:saturate(1.05) contrast(1.03);
+}
+.cover .veil{
+  position:absolute; inset:0;
+  background:linear-gradient(100deg,#14100D 34%,rgba(20,16,13,.90) 48%,rgba(20,16,13,.10) 72%,rgba(20,16,13,.45) 100%);
+}
+.cover .scrim{
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(to top,rgba(20,16,13,.94) 0%,rgba(20,16,13,.72) 13%,
+                             rgba(20,16,13,0) 30%);
+}
+.cover .plate{ position:absolute; left:18mm; right:18mm; top:18mm; }
+.cover .meta{
+  font-family:"Mono",monospace; font-size:6.8pt; color:#8C8078;
+  display:flex; justify-content:space-between;
+  border-bottom:.5pt solid #33291F; padding-bottom:2.5mm;
+}
+.cover h1{
+  font-family:"Display",serif; color:#F6EFE4; font-size:46pt; line-height:.99;
+  letter-spacing:-.018em; margin:52mm 0 0; max-width:116mm;
+}
+.cover h1 em{ font-style:italic; color:var(--clay); }
+.cover .sub{
+  font-family:"Body",serif; font-size:11.5pt; line-height:1.45; color:#B9AEA2;
+  max-width:96mm; margin:7mm 0 0;
+}
+.cover .foot{
+  position:absolute; left:18mm; right:18mm; bottom:16mm;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  border-top:.5pt solid #33291F; padding-top:4mm;
+}
+.cover .score{
+  font-family:"Mono",monospace; font-size:40pt; font-weight:600; line-height:.9;
+  color:#F6EFE4; letter-spacing:-.03em;
+}
+.cover .score i{ font-style:normal; font-size:17pt; color:var(--clay); }
+.cover .scorenote{
+  font-family:"UI",sans-serif; font-size:7.2pt; line-height:1.5; color:#8C8078;
+  text-align:right; max-width:88mm;
+}
+.cover .scorenote b{ color:#D8CEC2; font-weight:500; }
+
+/* ==================================================== absence spread */
+.absence{ position:absolute; inset:0; background:var(--ground); padding:22mm 18mm 18mm;
+  display:flex; flex-direction:column; }
+.absence .row{ display:grid; grid-template-columns:1fr 1fr; gap:11mm; margin-top:auto; }
+.absence figure{ margin:0; }
+.absence img{ width:100%; display:block; }
+.void{
+  width:100%; aspect-ratio:1000/664; border:.6pt dashed var(--faint);
+  display:flex; align-items:center; justify-content:center; background:#F5F0E8;
+}
+.void span{
+  font-family:"UI",sans-serif; font-size:7.4pt; color:var(--faint);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.absence .cap{ margin-top:3mm; }
+.absence .sci{ font-family:"Body",serif; font-style:italic; font-size:11pt; }
+.absence .det{
+  font-family:"UI",sans-serif; font-size:7.2pt; color:var(--muted);
+  margin-top:1.2mm; line-height:1.5;
+}
+.absence .det b{ font-family:"Mono",monospace; color:var(--ink); font-weight:500; }
+
+/* =============================================================== kpi */
+.kpis{ display:grid; grid-template-columns:repeat(4,1fr); border-top:.8pt solid var(--ink); }
+.kpi{ padding:4mm 5mm 4mm 0; }
+.kpi .v{
+  font-family:"Mono",monospace; font-size:19pt; font-weight:600; line-height:1;
+  letter-spacing:-.03em;
+}
+.kpi .v.t{ color:var(--teal); } .kpi .v.c{ color:var(--clay); }
+.kpi .k{
+  font-family:"UI",sans-serif; font-size:6.6pt; line-height:1.45; color:var(--muted);
+  margin-top:2mm;
+}
+
+/* =========================================================== figures */
+figure{ margin:4mm 0 5mm; break-inside:avoid; }
+figure img{ width:100%; display:block; }
+figcaption{
+  font-family:"UI",sans-serif; font-size:7pt; line-height:1.55; color:var(--muted);
+  margin-top:2.5mm; padding-top:2mm; border-top:.5pt solid var(--rule);
+}
+figcaption b{ color:var(--ink); font-weight:600; }
+
+/* ============================================================= table */
+table{ width:100%; border-collapse:collapse; font-size:8pt; margin:2mm 0; break-inside:avoid; }
+caption{
+  caption-side:bottom; text-align:left; font-family:"UI",sans-serif; font-size:7pt;
+  line-height:1.55; color:var(--muted); padding-top:2.5mm; margin-top:2mm;
+  border-top:.5pt solid var(--rule);
+}
+caption b{ color:var(--ink); font-weight:600; }
+th{
+  font-family:"UI",sans-serif; font-size:6.6pt; font-weight:600; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--muted); text-align:left;
+  padding:0 2.5mm 1.6mm 0; border-bottom:.8pt solid var(--ink);
+}
+td{ padding:1.5mm 2.5mm 1.5mm 0; border-bottom:.4pt solid var(--rule); vertical-align:top; }
+tr:last-child td{ border-bottom:.8pt solid var(--ink); }
+td.n, th.n{ text-align:right; font-family:"Mono",monospace; padding-right:0; }
+td.n{ font-size:7.6pt; }
+tr.win td{ font-weight:600; } tr.win td.n{ color:var(--teal); }
+tr.bad td.n{ color:var(--flag); }
+.mono{ font-family:"Mono",monospace; font-size:7.6pt; }
+.chip{
+  font-family:"UI",sans-serif; font-size:6.2pt; font-weight:600; letter-spacing:.07em;
+  color:#fff; padding:.6mm 1.8mm; display:inline-block; line-height:1.4;
+}
+.chip.h{ background:var(--flag); } .chip.m{ background:var(--clay); } .chip.l{ background:var(--gain); }
+
+/* =========================================================== callout */
+.pull{
+  font-family:"Display",serif; font-size:19pt; line-height:1.2;
+  color:var(--ink); margin:6mm 0; break-inside:avoid; max-width:150mm;
+}
+.pull em{ font-style:italic; color:var(--clay); }
+.note{
+  background:var(--panel); padding:4mm 5mm; margin:4mm 0; break-inside:avoid;
+  border-left:2pt solid var(--teal); font-size:9.4pt; line-height:1.55;
+}
+.note.warn{ border-left-color:var(--flag); }
+.note .lab{
+  font-family:"UI",sans-serif; font-size:6.4pt; font-weight:600; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:2mm;
+}
+.note p:last-child{ margin-bottom:0; }
+
+pre{
+  font-family:"Mono",monospace; font-size:7.2pt; line-height:1.6; background:var(--panel);
+  padding:3.5mm 4mm; margin:2mm 0 4mm; white-space:pre-wrap; break-inside:avoid;
+}
+pre .c{ color:var(--faint); }
+
+.toc{ font-family:"UI",sans-serif; font-size:8.6pt; }
+.toc div{
+  display:grid; grid-template-columns:9mm 1fr; padding:2.2mm 0;
+  border-bottom:.4pt solid var(--rule); align-items:baseline;
+}
+.toc .i{ font-family:"Mono",monospace; color:var(--clay); font-size:7.4pt; }
+.toc .t{ color:var(--ink); }
+.toc .t em{ display:block; font-style:normal; font-size:7.2pt; color:var(--muted); margin-top:.6mm; }
+.toc .p{ font-family:"Mono",monospace; font-size:7.4pt; color:var(--faint); }
+
+ul.pl{ margin:0 0 3mm; padding-left:4.5mm; }
+ul.pl li{ margin-bottom:1.4mm; }
+</style>
+</head>
+<body>
+
+<!-- ===================================================== COVER ====== -->
+<div class="bleed">
+  <div class="cover">
+    <img src="design_assets/photos/cover_boxfish.jpg" alt="Ostracion cubicum">
+    <div class="veil"></div>
+    <div class="scrim"></div>
+    <div class="plate">
+      <div class="meta">
+        <span>CV4Ecology 2026 &nbsp;·&nbsp; Codabench 16815</span>
+        <span>Technical Report &nbsp;·&nbsp; September 2026</span>
+      </div>
+      <h1>Naming the fish<br>nobody has<br><em>ever photographed.</em></h1>
+      <p class="sub">Open-set species recognition across a catalogue of 17,393 fish —
+      and what thirty leaderboard evaluations taught us about trusting a held-out proxy.</p>
+    </div>
+    <div class="foot">
+      <div class="score">53.736<i>%</i></div>
+      <div class="scorenote">
+        Final overall accuracy across all 35,665 evaluation images.<br>
+        <b>77.61%</b> on species with training photographs ·
+        <b>22.91%</b> on species with none ·
+        public leader at the time <b>50.56%</b><br>
+        Intelligent Systems Laboratory, Changwon National University
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== ABSENCE ======= -->
+<div class="bleed">
+  <div class="absence">
+    <div class="kicker">The problem, in one page</div>
+    <h2 style="max-width:150mm;">Two thirds of this catalogue has<br>never been photographed.</h2>
+    <p style="max-width:150mm; font-size:11pt;">Both of these species are on the list the system
+    must choose from. Only one of them has ever appeared in front of a camera in the data we were
+    given. The system is asked to tell them apart anyway.</p>
+
+    <div class="row">
+      <figure>
+        <img src="design_assets/photos/spread_clownfish.jpg" alt="Amphiprion clarkii">
+        <div class="cap">
+          <div class="sci">Amphiprion clarkii</div>
+          <div class="det"><b>270</b> training photographs · the closed-set route
+          scores it against 5,795 species it has seen</div>
+        </div>
+      </figure>
+      <figure>
+        <div class="void"><span>no photograph exists</span></div>
+        <div class="cap">
+          <div class="sci">Cyclothone microdon</div>
+          <div class="det"><b>0</b> training photographs · among the most abundant
+          vertebrates on Earth, and the system must name it from its name and its
+          position in the taxonomy alone</div>
+        </div>
+      </figure>
+    </div>
+
+    <div style="margin-top:auto; border-top:.8pt solid var(--ink); padding-top:6mm;
+                display:grid; grid-template-columns:repeat(3,1fr); gap:8mm;">
+      <div><div class="kpi"><div class="v t">5,795</div>
+        <div class="k">species with at least one training photograph</div></div></div>
+      <div><div class="kpi"><div class="v c">11,598</div>
+        <div class="k">species with none, anywhere in the provided data</div></div></div>
+      <div><div class="kpi"><div class="v">43.65%</div>
+        <div class="k">of the final score comes from that second group</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== SUMMARY ======= -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">00</span><b>Summary</b></div>
+    <div class="col">
+      <div class="kicker">What was built, and what it cost to learn</div>
+      <h2>A system that splits the decision, and a validation set that lied about it.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full kpis">
+    <div class="kpi"><div class="v t">53.736%</div><div class="k">final overall accuracy,<br>submission v109</div></div>
+    <div class="kpi"><div class="v">+5.96</div><div class="k">points gained across<br>the whole campaign</div></div>
+    <div class="kpi"><div class="v c">30</div><div class="k">real evaluations available,<br>every one of them used</div></div>
+    <div class="kpi"><div class="v">2,229×</div><div class="k">the worst overstatement<br>our proxy produced</div></div>
+  </div></div>
+
+  <div class="grid">
+    <div class="rail"><b>Contents</b></div>
+    <div class="col toc">
+      <div><span class="i">1</span><span class="t">The catalogue<em>What the task is, and why its shape decides everything else</em></span></div>
+      <div><span class="i">2</span><span class="t">The framing mismatch<em>An assumption about image geometry, and what it cost</em></span></div>
+      <div><span class="i">3</span><span class="t">The system<em>Two routes, disjoint candidate sets, one uniform rule</em></span></div>
+      <div><span class="i">4</span><span class="t">The gate<em>From a derived threshold to a learned decision</em></span></div>
+      <div><span class="i">5</span><span class="t">Results<em>Where the 5.96 points came from, submission by submission</em></span></div>
+      <div><span class="i">6</span><span class="t">What the proxy hid<em>A population leak, its fix, and the rule it produced</em></span></div>
+      <div><span class="i">7</span><span class="t">What failed<em>Twenty-four measured negative results</em></span></div>
+      <div><span class="i">8</span><span class="t">Limits<em>Where this report should not be trusted</em></span></div>
+      <div><span class="i">9</span><span class="t">Reproducing the result<em>The exact chain, in order</em></span></div>
+      <div><span class="i">A</span><span class="t">Appendix A<em>Final configuration &amp; routing execution</em></span></div>
+      <div><span class="i">B</span><span class="t">Appendix B<em>The leak-free candidate pool reference implementation</em></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="opener">
+  <div class="grid">
+    <div class="rail"><span class="n">00</span><b>The task</b></div>
+    <div class="col">
+      <p class="big">Every evaluation image must be given one species name drawn from a fixed list of
+      17,393. For 11,598 of those species the organizers supply no photograph at all — only the
+      scientific name and its position in the taxonomy. Scoring is population-weighted accuracy, so
+      the two thirds of the catalogue that were never photographed still decide 43.65% of the result.</p>
+
+      <p>The system answers by splitting the decision rather than the data. A learned gate reads
+      twelve signals off each image and sends it down one of two routes: a closed-set classifier over
+      the 5,795 photographed species, or a retrieval route that scores the remaining 11,598 against
+      text and against an external bank of 101,545 biodiversity photographs. The two routes share no
+      scoring leg and their candidate sets are disjoint, so no image is ever subjected to a single
+      17,393-way decision.</p>
+
+      <p>Three ordinary engineering corrections produced nearly all of the gain: fixing an
+      aspect-ratio mismatch between how the encoder was trained and how the evaluation images are
+      framed; adding an external photograph bank for species that have no images of their own; and
+      replacing a hand-derived routing threshold with a learned classifier. Each was found by
+      measurement, after an assumption failed.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The finding<br>worth keeping</b></div>
+    <div class="col">
+      <p>The more transferable result is about the validation setup rather than the model. Under a
+      budget of three submissions per day and thirty in total, nearly every decision was screened on
+      an internal held-out proxy first. Because that proxy is measurable, we measured it: across nine
+      confirmed changes, the share of proxy gain that survived contact with the real evaluation ranged
+      from parity down to a factor of 2,229.</p>
+
+      <div class="pull">A re-ranker gained <em>13.374</em> points on our held-out set and
+      <em>0.006</em> on the real one. It had not learned to rank evidence. It had learned to
+      recognise the shape of the holdout.</div>
+
+      <p>That produced a rule we now apply before spending a submission. Interventions that add
+      <strong>information the system did not have</strong> compound with the rest of the pipeline and
+      transfer. Interventions that only <strong>re-weight information it already has</strong> return
+      most of their proxy gain on the real evaluation, or reverse it. Both halves were confirmed
+      twice, independently, on separate components. Section 6 gives the measurements.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================================================ 1 CATALOGUE ===== -->
+<div class="opener sec1-p1">
+  <div class="grid"><div class="rail"><span class="n">01</span><b>The catalogue</b></div>
+    <div class="col">
+      <div class="kicker">Section one</div>
+      <h2>A list of names, most of which have no picture attached.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <figure>
+      <img src="design_assets/fan.png" alt="The catalogue divided by whether a photograph exists">
+      <figcaption><b>Figure 1.</b> The label space, divided by the only distinction that matters
+      to the architecture. Counts are read directly from the released class list and training
+      labels, not from any model output.</figcaption>
+    </figure>
+  </div></div>
+
+  <div class="grid">
+    <div class="rail"><b>Splits</b></div>
+    <div class="col">
+      <p>The label space holds 17,393 species. 5,795 of them appear somewhere in the 64,259 labelled
+      training images. The other 11,598 appear nowhere in the training data and are known only by
+      name and taxonomic placement. All 17,393 names are published in advance, which makes this
+      generalized zero-shot recognition rather than open-set recognition: nothing is unknown, but
+      most of it is unseen.</p>
+
+      <p>The evaluation set holds 35,665 images, split 20,097 to 15,568 between the two groups.
+      Those proportions <em>are</em> the scoring weights — the metric is
+      <span class="tnum">0.5635</span> × accuracy on photographed species +
+      <span class="tnum">0.4365</span> × accuracy on the rest. One point on the first side is worth
+      0.56 overall points; one point on the second is worth 0.44.</p>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <figure>
+      <img src="design_assets/composition.png" alt="Class share against image share">
+      <figcaption><b>Figure 2.</b> The catalogue and the evaluation set divide in opposite
+      directions. Species without photographs are two thirds of the names but under half the
+      images, because each photographed species is sampled roughly 2.6 times as often.</figcaption>
+    </figure>
+  </div></div>
+</div>
+
+<div class="opener">
+  <div class="grid">
+    <div class="rail"><span class="n">01</span><b>The asymmetry<br>that shapes<br>everything</b></div>
+    <div class="col">
+      <p>That asymmetry is the whole design problem. The two halves of the metric are wildly
+      different in difficulty — at the end of this campaign the system reads 77.61% on species it has
+      seen and 22.91% on species it has not — and yet they are weighted almost evenly. Every routing
+      decision therefore trades one against the other, and at the margin the exchange rate is roughly
+      four to one.</p>
+
+      <table>
+        <thead><tr><th>quantity</th><th class="n">count</th><th class="n">share</th></tr></thead>
+        <tbody>
+          <tr><td>candidate species</td><td class="n">17,393</td><td class="n">100%</td></tr>
+          <tr><td>&nbsp;&nbsp;with training photographs</td><td class="n">5,795</td><td class="n">33.3%</td></tr>
+          <tr><td>&nbsp;&nbsp;with none</td><td class="n">11,598</td><td class="n">66.7%</td></tr>
+          <tr><td>labelled training images</td><td class="n">64,259</td><td class="n">100%</td></tr>
+          <tr><td>&nbsp;&nbsp;used to train the adapter</td><td class="n">61,941</td><td class="n">96.4%</td></tr>
+          <tr><td>&nbsp;&nbsp;withheld as a pseudo-novel proxy</td><td class="n">2,318</td><td class="n">3.6%</td></tr>
+          <tr><td>evaluation images</td><td class="n">35,665</td><td class="n">100%</td></tr>
+          <tr><td>&nbsp;&nbsp;of photographed species</td><td class="n">20,097</td><td class="n">56.35%</td></tr>
+          <tr><td>&nbsp;&nbsp;of species with none</td><td class="n">15,568</td><td class="n">43.65%</td></tr>
+          <tr><td>external bank photographs</td><td class="n">117,225</td><td class="n">—</td></tr>
+          <tr><td>&nbsp;&nbsp;embedded into the final bank</td><td class="n">101,545</td><td class="n">—</td></tr>
+        </tbody>
+        <caption><b>Table 1.</b> The task at full scale. The evaluation-split proportions are
+        exactly the weights in the scoring metric.</caption>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Rules and<br>budget</b></div>
+    <div class="col">
+      <p>Two constraints shape everything that follows. The rules forbid using evaluation split
+      metadata to decide whether an image's true species is photographed, or to narrow its candidate
+      set: one uniform procedure must run over all 35,665 images and emit a label from the full
+      space. And the leaderboard allows three evaluations per day, thirty in total.</p>
+
+      <p>A thirty-evaluation budget changes the research process rather than merely slowing it. Almost
+      every candidate change is screened on an internal held-out proxy, and only changes clearing a
+      fixed margin are spent on a real evaluation. That makes the proxy's reliability a property
+      worth measuring in its own right — which is what Section 6 does, and what this report is
+      finally about.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== 2 FRAMING ===== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">02</span><b>The framing<br>mismatch</b></div>
+    <div class="col">
+      <div class="kicker">Section two</div>
+      <h2>The largest early correction was not a model change.</h2>
+      <p class="lede">Standard augmentation had been quietly training the encoder on a shape of
+      image that the evaluation set does not contain.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Diagnosis</b></div>
+    <div class="col">
+      <p>The closed-set route was underperforming its held-out accuracy by roughly eight points on
+      the real evaluation, and no amount of work on the classifier moved it. The cause turned out to
+      be geometry. RandomResizedCrop, in its standard configuration, samples aspect ratios in
+      [0.75, 1.33]. The evaluation images of species without photographs have a median aspect of
+      1.74 and a 90th percentile of 2.76.</p>
+
+      <p>Fish are elongated, and photographs of fish are framed accordingly. The encoder had
+      effectively never been shown the shape of image it would be asked to classify.</p>
+
+      <figure>
+        <img src="design_assets/framing.png" alt="Aspect ratio distributions against the augmentation range">
+        <figcaption><b>Figure 3.</b> Measured aspect statistics against the range the encoder was
+        trained on. The augmentation window does not cover even the training set's own median
+        framing, and misses the evaluation distribution badly. Only measured percentiles are drawn;
+        no distribution shape is implied between them.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Two<br>corrections</b></div>
+    <div class="col">
+      <p>We corrected it twice, independently. At training time the augmentation range was widened
+      to scale (0.35, 1.0) and ratio (0.5, 2.0). At inference time each query is scored under seven
+      crop geometries — a centre crop, a full squash, and long-axis strips — combined with a
+      max-over-crops rule.</p>
+
+      <table>
+        <thead><tr><th>configuration</th><th class="n">before</th><th class="n">after</th><th class="n">Δ</th></tr></thead>
+        <tbody>
+          <tr><td>LoRA adapter, 224px</td><td class="n">86.10</td><td class="n">86.70</td><td class="n">+0.60</td></tr>
+          <tr class="win"><td>contrastive adapter, standalone</td><td class="n">26.62</td><td class="n">31.10</td><td class="n">+4.48</td></tr>
+          <tr><td>novel-class text stack</td><td class="n">29.38</td><td class="n">31.45</td><td class="n">+2.07</td></tr>
+        </tbody>
+        <caption><b>Table 2.</b> Effect of correcting the augmentation aspect range, measured on
+        the held-out proxy. The middle row is the adopted encoder; correcting its framing moved it
+        further than any change of frozen backbone in Section 7.</caption>
+      </table>
+
+      <p>Together the two corrections were worth roughly <span class="hl">+1.60 real points</span>
+      across two submissions. It is the least glamorous finding in this report and one of the
+      largest.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =================================================== 3 SYSTEM ===== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">03</span><b>The system</b></div>
+    <div class="col">
+      <div class="kicker">Section three</div>
+      <h2>Two routes, disjoint candidate sets, one uniform rule.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <figure>
+      <img src="design_assets/pipeline.png" alt="The inference flow, stream width proportional to image count">
+      <figcaption><b>Figure 4.</b> The inference path, drawn to scale — the width of every stream is
+      the number of images travelling it. The gate sees only the image's own scores; it never sees
+      split metadata.</figcaption>
+    </figure>
+  </div></div>
+
+  <div class="grid">
+    <div class="rail"><b>The closed-set<br>route</b></div>
+    <div class="col">
+      <p>Three fine-tuned BioCLIP-2.5 ViT-H/14 encoders are ensembled at weights 1.0 / 2.5 / 2.5.
+      Each member scores a photographed species by a genuine class prototype, plus its single best
+      training exemplar, plus a taxonomic text anchor — the exemplar term weighted 2.0 and the text
+      anchor 4.0. The argmax runs over all 5,795 photographed species, not merely the 4,636 that
+      appeared in the adapter's training objective.</p>
+    </div>
+  </div>
+</div>
+
+<div class="opener sec3-p2">
+  <div class="grid">
+    <div class="rail"><span class="n">03</span><b>The retrieval<br>route</b></div>
+    <div class="col">
+      <p>Species with no photographs were the binding constraint throughout, and text alone plateaued
+      at 10.42%. Eight separate attempts to improve the text representation all failed, and they are
+      catalogued in Section 7. What worked was giving those species pictures from somewhere else.</p>
+
+      <p>We assembled 117,225 photographs from the iNaturalist Open Data archive covering 7,364 of
+      the species with no training images, capped at 24 per species, of which 101,545 were embedded
+      into the final bank. A species is scored by the mean of its top-4 cosine similarities. That
+      choice was measured rather than assumed: a plain class mean scores 43.49, a single nearest
+      photograph 44.61, and top-4 pooling 45.25, flattening beyond that because many species hold
+      only a handful of photographs.</p>
+
+      <p>The retrieval route also sums six text legs — four encoders across two prompt styles, plus
+      TaxaBind — and two prototype sets from BioCLIP 2, one frozen and one LoRA-adapted. Its argmax
+      runs over the disjoint 11,598.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The audit</b></div>
+    <div class="col">
+      <div class="note warn" style="margin-top:0;">
+        <span class="lab">Where the retrieval result is vulnerable</span>
+        <p>The bank and the evaluation set are both drawn from public biodiversity imagery, so
+        near-duplication is a real risk and we audited it directly, comparing all 35,665 evaluation
+        embeddings against all 101,106 bank embeddings. Calibrated against genuinely different
+        photographs of the same species, the split without training photographs has 0.906% of images
+        above the duplicate threshold — about three times chance. Treating every one of those as free
+        would inflate accuracy by at most 0.91 of the +10.15 points attributed to retrieval, or
+        <strong>8.9% of the claimed gain</strong>. The retrieval result survives that bound. An
+        unqualified no-duplication claim would not, and an earlier version of this work made one.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Normalization<br>and transport</b></div>
+    <div class="col">
+      <p>Every raw similarity matrix enters through a double log-softmax — once across images, once
+      across classes. The across-image term is the single most load-bearing normalization in the
+      system: it penalises candidate species that are similar to everything, a hubness correction,
+      and removing it costs 1.60 points on species without photographs.</p>
+
+      <p>Rows sent to the retrieval route then pass through a Sinkhorn projection at τ = 1.8 over 60
+      iterations, pushing the assignment toward a uniform prior across the 11,598 candidates. It
+      raised vocabulary usage from 38.6% to 57.5% and was worth <span class="tnum">+0.09</span> real
+      points — inside this report's own noise band, and retained more for its effect on the
+      distribution than for its measured gain.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Stated plainly</b></div>
+    <div class="col">
+      <p>The system is transductive at five points: the rank-quantile threshold, the across-image
+      normalization, the Sinkhorn column prior, and two batch-level score standardizations. Freezing
+      the largest of these against a reference pool instead of the test batch changes 296 of 35,665
+      predictions, which bounds the coupling at 0.63 overall points. The learned gate and both
+      re-rankers add no coupling of their own — each scores one image, or one candidate, at a
+      time.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================== 4 GATE ===== -->
+<div class="opener sec4">
+  <div class="grid"><div class="rail"><span class="n">04</span><b>The gate</b></div>
+    <div class="col">
+      <div class="kicker">Section four</div>
+      <h2>The routing fraction was never tuned. It follows from an identity.</h2>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The identity</b></div>
+    <div class="col">
+      <p>Writing <em>s</em> and <em>u</em> for the kept and ejected fractions and <em>a</em> and
+      <em>b</em> for conditional accuracies, overall accuracy is
+      <span class="tnum">w<sub>T</sub>·s·a + w<sub>U</sub>·u·b</span>. The marginal image is worth
+      ejecting only once purity clears <span class="tnum">a/(a+b)</span>.</p>
+
+      <p>At <em>a</em> = 86.0% and <em>b</em> = 19.5% that threshold sits at 81.5%, setting
+      optimum f = 0.72. Once retrieval raised <em>b</em> to 26.0%, the threshold fell to 77.2%
+      and optimum f moved to 0.60 (+0.60 real points) — a direct consequence of retrieval
+      work rather than an independent discovery. The fraction has not moved since.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Learning the<br>decision</b></div>
+    <div class="col">
+      <p>What did move was decision quality at that fixed operating point. A 12-feature logistic
+      classifier (seen-head similarity, margins, entropy gaps, per-encoder maxima, dual-text
+      margins, and photo-bank confidence) replaced the two-signal derived rule on a class-disjoint
+      holdout.</p>
+
+      <table>
+        <thead><tr><th>gate</th><th class="n">features</th><th class="n">AUC, real</th><th class="n">overall</th></tr></thead>
+        <tbody>
+          <tr><td>derived, two standardized signals</td><td class="n">2</td><td class="n">0.9084</td><td class="n">51.62</td></tr>
+          <tr class="win"><td>learned, C = 1</td><td class="n">12</td><td class="n">0.9314</td><td class="n">53.383</td></tr>
+          <tr><td>learned, C = 100 (re-weighted)</td><td class="n">12</td><td class="n">—</td><td class="n">53.425</td></tr>
+        </tbody>
+        <caption><b>Table 3.</b> Adding features lifts trained- and novel-class accuracy together;
+        re-weighting returns most of the gain (the pattern Section 6 generalises).</caption>
+      </table>
+
+      <p>It is the only change in the project that improved both sides at once: accuracy on
+      photographed species rose from 75.67% to 77.72% and on the rest from 20.57% to 21.96%, in a
+      single submission. Everything else traded.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>What routing<br>costs</b></div>
+    <div class="col">
+      <figure>
+        <img src="design_assets/routing.png" alt="Where the evaluation images are actually routed">
+        <figcaption><b>Figure 5.</b> The gate is a guess about the true species, not a measurement of
+        it. 6,642 images — 18.6% — arrive at a route whose candidate set cannot contain the right
+        answer, and are lost before any classifier runs.</figcaption>
+      </figure>
+
+      <p>That 18.6% is the structural price of the architecture, bounding what classifier
+      work can recover. Gate quality was worth a submission because each point of gate accuracy
+      rescues images from that band, lifting both routes at once rather than trading between them.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== 5 RESULTS ===== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">05</span><b>Results</b></div>
+    <div class="col">
+      <div class="kicker">Section five</div>
+      <h2>Where the 5.96 points came from.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <figure>
+      <img src="design_assets/climb.png" alt="Overall accuracy across every scored submission">
+      <figcaption><b>Figure 6.</b> Every scored submission in order. The operating point stops
+      moving at v50; everything after v56 came from ranking quality rather than from the
+      threshold.</figcaption>
+    </figure>
+  </div></div>
+
+  <div class="grid">
+    <div class="rail"><b>The trade</b></div>
+    <div class="col">
+      <p>Almost every lever moved accuracy from one side of the split to the other at roughly four
+      to one, set by the metric weights. Retrieval buys accuracy on species without photographs;
+      routing more images to the closed-set branch buys accuracy on the others. Plotted against both
+      axes at once, the exception becomes visible.</p>
+
+      <figure>
+        <img src="design_assets/trade.png" alt="Submissions in trained versus novel accuracy space">
+        <figcaption><b>Figure 7.</b> Each submission in both accuracies at once, over a field of
+        constant overall score. Most moves slide along a contour. The learned gate crosses
+        them.</figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<div class="opener">
+  <div class="grid">
+    <div class="rail"><span class="n">05</span><b>The ledger</b></div>
+    <div class="col">
+      <table>
+        <thead><tr><th>id</th><th>change</th><th class="n">photo'd</th><th class="n">none</th><th class="n">overall</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">v22</td><td>closed-set, shift-robust ensemble</td><td class="n">—</td><td class="n">—</td><td class="n">45.39</td></tr>
+          <tr><td class="mono">v31</td><td>routing fraction f = 0.72, per image</td><td class="n">—</td><td class="n">—</td><td class="n">47.69</td></tr>
+          <tr><td class="mono">v33</td><td>Sinkhorn on the retrieval route</td><td class="n">78.20</td><td class="n">8.51</td><td class="n">47.78</td></tr>
+          <tr><td class="mono">v36</td><td>corrected augmentation, TaxaBind</td><td class="n">78.95</td><td class="n">10.42</td><td class="n">49.04</td></tr>
+          <tr><td class="mono">v46</td><td>external bank merged on both legs</td><td class="n">78.95</td><td class="n">14.55</td><td class="n">50.84</td></tr>
+          <tr><td class="mono">v50</td><td>routing fraction f = 0.60</td><td class="n">76.31</td><td class="n">19.34</td><td class="n">51.44</td></tr>
+          <tr><td class="mono">v56</td><td>crop views, 336px bank</td><td class="n">75.67</td><td class="n">20.57</td><td class="n">51.62</td></tr>
+          <tr><td class="mono">v77</td><td>learned 12-feature gate</td><td class="n">77.72</td><td class="n">21.96</td><td class="n">53.383</td></tr>
+          <tr><td class="mono">v79</td><td>gate re-weighted, C = 100</td><td class="n">77.45</td><td class="n">22.41</td><td class="n">53.425</td></tr>
+          <tr><td class="mono">v81</td><td>re-ranker, trained on a leaked proxy</td><td class="n">77.45</td><td class="n">22.42</td><td class="n">53.431</td></tr>
+          <tr><td class="mono">v82</td><td>re-ranker, leak closed</td><td class="n">77.45</td><td class="n">22.91</td><td class="n">53.644</td></tr>
+          <tr><td class="mono">v83</td><td>closed-set re-ranker added</td><td class="n">77.54</td><td class="n">22.91</td><td class="n">53.697</td></tr>
+          <tr class="win"><td class="mono">v109</td><td>genus-level hierarchical backoff</td><td class="n">77.61</td><td class="n">22.91</td><td class="n">53.736</td></tr>
+        </tbody>
+        <caption><b>Table 4.</b> The scored ledger, abridged to the thirteen submissions that moved
+        the result. Two further entries cleared the proxy bar and then lost real accuracy; they are
+        in Table 8.</caption>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The ceiling</b></div>
+    <div class="col">
+      <p>A perfect-gate ceiling computed at the v36 configuration, substituting population-level
+      conditional accuracies for the ones actually received, gave 53.5% against 49.0% as routed — so
+      the entire prize then available from solving routing was about four and a half points,
+      requiring a gate AUC near 0.97 against an achievable 0.9084.</p>
+
+      <p>The final 53.736% exceeded that historical target, but by moving the whole system —
+      retrieval bank, learned gate at AUC 0.9314, leak-free re-ranking — rather than by reaching a
+      near-perfect gate at the original operating point. On the project's own transfer accounting,
+      both re-ranking heads now sit within roughly 0.65 overall points of their measured ceilings,
+      which is why per-candidate re-ranking is treated as closed.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================== 6 PROXY ===== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">06</span><b>What the<br>proxy hid</b></div>
+    <div class="col">
+      <div class="kicker">Section six</div>
+      <h2>A held-out set that answered a question we had not asked.</h2>
+      <p class="lede">This is the part of the work we would hand to someone else first.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Two known<br>failures</b></div>
+    <div class="col">
+      <p>Internal measurements use a pseudo-novel split: the 1,159 rarest training species are
+      withheld entirely, and 2,318 of their images are scored against the full candidate list under
+      class-disjoint cross-validation. It is a careful proxy, and it still fails in three distinct
+      ways — two of them well known.</p>
+
+      <p><strong>Magnitude is not preserved.</strong> Transfer ratios across confirmed changes span
+      0.018 to 0.359, a twentyfold range. <strong>Sign is not preserved.</strong> Two changes gained
+      proxy points and lost real ones. Ordering is not preserved either: a simpler unified
+      architecture that discards the routing split was preferred by the proxy at 57.02 against the
+      routed system's 50.71, and lost by at least 1.36 points in reality.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The third<br>failure</b></div>
+    <div class="col">
+      <p><strong>The population is not preserved.</strong> On the proxy, the correct answer is always
+      one of the 1,159 withheld species — 9.1% of the candidate pool — and that subpopulation is
+      identifiable from its own features, because withheld species have training images and therefore
+      distinctive prototype and bank statistics.</p>
+
+      <p>A re-ranker trained on that pool learned to prefer answers from the eligible 9.1%, picking
+      them 53.7% of the time against the fused baseline's 38.4%. It was not ranking evidence. It was
+      detecting the shape of the holdout.</p>
+
+      <figure>
+        <img src="design_assets/gap.png" alt="Proxy gain against real gain, before and after the fix">
+        <figcaption><b>Figure 8.</b> The same two re-rankers, drawn on one scale. The real gains are
+        almost invisible beside the proxy gains, which is the finding; the magnified strip repeats
+        them at twenty times rather than silently rescaling the bars above.</figcaption>
+      </figure>
+
+      <p>Class-disjoint cross-validation does not catch this. Splitting <em>which</em> withheld
+      species land in each fold still leaves every fold's answer inside the same 9.1% subpopulation.
+      The defence that protects against memorising a class does nothing against identifying a
+      population.</p>
+    </div>
+  </div>
+</div>
+
+<div class="opener sec6-p2">
+  <div class="grid">
+    <div class="rail"><span class="n">06</span><b>The fix</b></div>
+    <div class="col">
+      <div class="note" style="margin-top:0;">
+        <span class="lab">The fix, and what it cost on paper</span>
+        <p>Restrict the candidate pool so that every candidate is eligible to be the answer, and
+        replace raw score levels with within-query percentile ranks so the features cannot encode
+        pool size. The proxy gain falls from <span class="tnum">+13.374</span> to
+        <span class="tnum">+8.154</span>. The real gain rises from <span class="tnum">+0.006</span>
+        to <span class="tnum">+0.213</span> — a 35× better-transferring signal from a
+        smaller-looking number.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The rule</b></div>
+    <div class="col">
+      <p>Two independent components let us test whether the <em>kind</em> of a change, rather than
+      the size of its proxy gain, predicts what the real evaluation will say.</p>
+
+      <figure>
+        <img src="design_assets/transfer.png" alt="Proxy gain against real gain for every confirmed change">
+        <figcaption><b>Figure 9.</b> Every confirmed change, proxy against real. The crosses are the
+        two that gained on the proxy and lost in reality.</figcaption>
+      </figure>
+
+      <table>
+        <thead><tr><th>change</th><th>kind</th><th class="n">proxy</th><th class="n">real</th></tr></thead>
+        <tbody>
+          <tr class="win"><td>routing gate, ten new features</td><td>new information</td><td class="n">—</td><td class="n">+1.767</td></tr>
+          <tr><td>the same twelve, re-weighted</td><td>re-weighting</td><td class="n">—</td><td class="n">+0.042</td></tr>
+          <tr class="win"><td>genus-level sibling similarity</td><td>new information</td><td class="n">+0.101</td><td class="n">+0.039</td></tr>
+          <tr class="bad"><td>closed-set fusion weights re-tuned</td><td>re-weighting</td><td class="n">+1.34</td><td class="n">−0.17</td></tr>
+        </tbody>
+        <caption><b>Table 5.</b> Two matched pairs, confirmed independently. Adding features to the
+        gate decomposed into +1.082 from better routing and +0.686 from better conditional accuracy,
+        both positive. Re-weighting the same features gained +0.481 on routing and gave back −0.439
+        on conditional accuracy, netting +0.042.</caption>
+      </table>
+
+      <div class="pull">Interventions that add information the system did not have compound.
+      Interventions that only re-weight what it already has <em>give it back.</em></div>
+
+      <p>The practical consequence is a budgeting rule. A proxy gain from a change that supplies
+      evidence the system did not previously have is worth a submission. A proxy gain from a change
+      that only redistributes weight over evidence it already had is not, however large the proxy
+      number looks. Under this rule the two reversals in Table 8 would not have been submitted.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================== 7 FAILURES ==== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">07</span><b>What failed</b></div>
+    <div class="col">
+      <div class="kicker">Section seven</div>
+      <h2>Twenty-four measured negative results.</h2>
+      <p class="lede">The ideas that sounded most promising are the ones that failed hardest.
+      The system that survived is unglamorous by comparison.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Scale of<br>the losses</b></div>
+    <div class="col">
+      <figure>
+        <img src="design_assets/negatives.png" alt="The largest measured negative results">
+        <figcaption><b>Figure 10.</b> The five largest same-baseline losses, and the one change where
+        the proxy and the real evaluation disagreed about direction.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Encoders</b></div>
+    <div class="col">
+      <p>Eight frozen backbones were compared on the same held-out proxy. Domain pretraining
+      dominates scale by a wide margin — a general-purpose SigLIP2 SO400M reaches 5.13 where the
+      adopted biology encoder reaches 21.53 — but the more useful observation is the last row.</p>
+
+      <figure>
+        <img src="design_assets/encoders.png" alt="Encoder comparison on the held-out proxy">
+        <figcaption><b>Figure 11.</b> Correcting the augmentation geometry of the adopted encoder
+        (Section 2) moved it further than any substitution of frozen backbone. The choice of encoder
+        family mattered; the choice among biology encoders mattered much less than the framing they
+        were trained under.</figcaption>
+      </figure>
+    </div>
+  </div>
+</div>
+
+<div class="opener sec7-p2">
+  <div class="grid">
+    <div class="rail"><span class="n">07</span><b>The adapter<br>inversion</b></div>
+    <div class="col">
+      <p>One negative result deserves separate mention, because the obvious reading of it is wrong in
+      an instructive way. Seven adapters for the external-prototype encoder were scored standalone.
+      Ranked by raw score, the best reaches 15.53 while the adopted one reaches only 14.50 — yet
+      fused into the system the first contributes +0.00 and the second +0.43.</p>
+
+      <table>
+        <thead><tr><th>variant</th><th class="n">base</th><th class="n">best</th><th class="n">Δ own</th><th class="n">fused</th></tr></thead>
+        <tbody>
+          <tr><td>name text</td><td class="n">15.36</td><td class="n">15.53</td><td class="n">+0.17</td><td class="n">+0.00</td></tr>
+          <tr><td>full-slice, warm init</td><td class="n">13.76</td><td class="n">15.01</td><td class="n">+1.25</td><td class="n">—</td></tr>
+          <tr><td>full-slice, cold init</td><td class="n">14.15</td><td class="n">14.80</td><td class="n">+0.65</td><td class="n">—</td></tr>
+          <tr><td>rank-32</td><td class="n">14.15</td><td class="n">14.67</td><td class="n">+0.52</td><td class="n">—</td></tr>
+          <tr class="win"><td>taxonomic context — adopted</td><td class="n">13.76</td><td class="n">14.50</td><td class="n">+0.74</td><td class="n">+0.43</td></tr>
+          <tr><td>hard-negative mining</td><td class="n">13.76</td><td class="n">14.06</td><td class="n">+0.30</td><td class="n">—</td></tr>
+          <tr><td>no external photographs</td><td class="n">13.76</td><td class="n">13.63</td><td class="n">−0.13</td><td class="n">—</td></tr>
+        </tbody>
+        <caption><b>Table 6.</b> Ranking by <em>best</em> puts the name-text variant first. Ranking
+        by improvement over each run's own baseline puts the adopted variant first — and only the
+        latter agrees with the fused contribution.</caption>
+      </table>
+
+      <p>The two were trained against different text targets and so started from different baselines,
+      15.36 and 13.76. Measured as improvement over its own starting point the ordering reverses,
+      +0.17 against +0.74, which agrees with the fused result. The lesson is narrower and more useful
+      than "component scores mislead": a raw score compared across differently-initialised runs
+      misleads, and the delta recovers the right answer where the level does not.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>The full<br>catalogue</b></div>
+    <div class="col">
+      <table>
+        <thead><tr><th>attempt</th><th class="n">result</th></tr></thead>
+        <tbody>
+          <tr><td>General backbone, SigLIP2 SO400M</td><td class="n">5.13 vs 21.53</td></tr>
+          <tr><td>BioTrove-CLIP, two variants</td><td class="n">0.00 / 0.04</td></tr>
+          <tr><td>Common-name and generic-ensemble prompts</td><td class="n">8.89 / 22.00 vs 26.62</td></tr>
+          <tr><td>LLM-compressed trait text / raw descriptions</td><td class="n">17.08 / 7.51 vs 23.38</td></tr>
+          <tr><td>Hard two-stage family narrowing</td><td class="n">−20 points</td></tr>
+          <tr><td>VLM top-K rerank, Qwen2.5-VL and DeepSeek</td><td class="n">−16.0 / −11.33</td></tr>
+          <tr><td>CORAL / quantile-gate domain adaptation</td><td class="n">harness valid, no lift</td></tr>
+          <tr><td>Unsupervised embedding whitening</td><td class="n">at or below baseline</td></tr>
+          <tr><td>HistGradientBoosting vs. logistic re-ranker</td><td class="n">−0.008 / +0.003</td></tr>
+          <tr><td>Seen-route new-evidence sweep, 31 mechanisms</td><td class="n">1 survivor</td></tr>
+          <tr><td>Sinkhorn re-added atop the re-ranked route</td><td class="n">untested since v81</td></tr>
+          <tr class="bad"><td>Soft, non-hard routing</td><td class="n">proxy +1.9, real fell</td></tr>
+        </tbody>
+        <caption><b>Table 7.</b> Selected measured negative results, twelve of twenty-four. The full
+        text-representation ablation is unchanged from the earlier configuration and omitted for
+        space.</caption>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================================================== 8 LIMITS ==== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">08</span><b>Limits</b></div>
+    <div class="col">
+      <div class="kicker">Section eight</div>
+      <h2>Where this report should not be trusted.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <table>
+      <thead><tr><th style="width:36mm">risk</th><th style="width:18mm">level</th><th>what it means for the numbers here</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Adaptation to the evaluation set</td><td><span class="chip h">High</span></td>
+          <td>Thirty sequential leaderboard evaluations with no Ladder-style protection. The routing
+          fraction and the Sinkhorn temperature were set from real feedback, and the augmentation
+          correction was derived by measuring the evaluation images themselves. This touches every
+          real number in the report.</td>
+        </tr>
+        <tr>
+          <td>Domain gap in the bank</td><td><span class="chip m">Medium</span></td>
+          <td>The audit bounds near-duplication at 8.9% of the retrieval gain. It does not show that
+          bank photographs and evaluation images share a distribution — they demonstrably do not, and
+          that gap is why proxy measurements on this branch mislead.</td>
+        </tr>
+        <tr>
+          <td>Sequential tuning</td><td><span class="chip m">Medium</span></td>
+          <td>Routing fraction, fusion weights and bank weight were tuned one at a time against a
+          proxy that Section 6 shows is unreliable on exactly those axes. The final configuration is
+          not claimed to be jointly optimal.</td>
+        </tr>
+        <tr>
+          <td>No significance testing</td><td><span class="chip m">Medium</span></td>
+          <td>Every real number is one evaluation of one configuration. The final change nets an
+          estimated 14 images out of 35,665. Any row below 0.1 points should be read as directional
+          at best; McNemar needs a discordant-pair split by direction that the labels do not give us.</td>
+        </tr>
+        <tr>
+          <td>Undiscovered proxy leaks</td><td><span class="chip m">Medium</span></td>
+          <td>We found one population leak and closed it. The learned gate and both re-rankers are
+          still fit on a proxy, and we cannot rule out a different leak in the same features.</td>
+        </tr>
+        <tr>
+          <td>Component count</td><td><span class="chip m">Medium</span></td>
+          <td>Three closed-set encoders, six text legs, two image banks, two prototype sets, two
+          normalizations, a learned gate and two re-rankers — more interacting parts than the
+          configuration it replaced, not fewer. A chronological ledger is not a factorial experiment.</td>
+        </tr>
+        <tr>
+          <td>Single benchmark</td><td><span class="chip m">Medium</span></td>
+          <td>One dataset, one taxonomic domain, one encoder family. The transfer rule of Section 6
+          is the finding we would most expect to generalize and the one we can least demonstrate
+          generalizes.</td>
+        </tr>
+        <tr>
+          <td>Batch coupling</td><td><span class="chip l">Low</span></td>
+          <td>Transductive at five points, bounded by measurement at 0.63 overall points; the
+          Sinkhorn step's own contribution is +0.09, inside the noise band above.</td>
+        </tr>
+        <tr>
+          <td>Unmeasured cost</td><td><span class="chip l">Low</span></td>
+          <td>Throughput, memory and energy were never measured. A real gap in the reporting, but
+          not a threat to the accuracy numbers.</td>
+        </tr>
+      </tbody>
+      <caption><b>Table 8.</b> Severity is taken from this report's own hedging rather than assigned
+      independently: High is the risk we name as most serious, Medium covers bounded or
+      unmeasured-magnitude caveats, Low covers the measured-small and the reporting-only.</caption>
+    </table>
+  </div></div>
+</div>
+
+<!-- ================================================ 9 REPRODUCE ===== -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">09</span><b>Reproducing<br>the result</b></div>
+    <div class="col">
+      <div class="kicker">Section nine</div>
+      <h2>The exact chain, in order.</h2>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Build</b></div>
+    <div class="col">
+      <p>Each stage reads the previous stage's output. Run from the repository root in the
+      <span class="mono">onet</span> environment.</p>
+<pre><span class="c"># retrain the genus re-ranker, then build the final submission</span>
+python research/genus_rerank_v103_train.py
+python builders/build_v81_rerank.py
+python builders/build_v82_rerank_leakfree.py
+python builders/build_v83_rerank_both.py
+python builders/build_v109_genus_gamble.py   <span class="c"># 53.736%</span></pre>
+
+      <div class="note warn">
+        <span class="lab">One reproducibility gap, stated</span>
+        <p>Builders from v81 onward consume <span class="mono">outputs/learned_gate_v79.pkl</span>,
+        a refit of the v77 gate at a different regularisation strength. The committed training
+        script hard-codes the original value, so that exact file cannot be regenerated from the
+        repository as it stands. The pickle is included. Everything else in the chain rebuilds
+        from source.</p>
+      </div>
+
+      <p>A compliance fallback is kept alongside it. If the transductive steps are ever challenged,
+      <span class="mono">build_v31_strict_singlepipeline.py</span> reproduces a fully per-image
+      variant of the same architecture, scoring 47.69%.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>Closing</b></div>
+    <div class="col">
+      <p>The system reached 53.736% by correcting a framing mismatch, giving unphotographed species
+      pictures to be compared against, and learning the routing decision instead of deriving it. The
+      result we would hand to someone else is smaller and duller than any of those: under a tight
+      evaluation budget, check what population your held-out set draws its answers from before you
+      trust a number measured on it, and spend your submissions on changes that add evidence rather
+      than changes that re-weight it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================== APPENDIX A ======= -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">A</span><b>Appendix</b></div>
+    <div class="col">
+      <div class="kicker">Appendix A</div>
+      <h2>Final configuration &amp; routing.</h2>
+    </div>
+  </div>
+
+  <div class="grid"><div class="full">
+    <table>
+      <thead><tr><th>component</th><th>setting</th><th>component</th><th>setting</th></tr></thead>
+      <tbody>
+        <tr><td>closed-set backbone</td><td class="mono">BioCLIP-2.5 ViT-H/14 ×3</td>
+            <td>routing gate</td><td class="mono">12-feature logistic, f = 0.60</td></tr>
+        <tr><td>ensemble weights</td><td class="mono">1.0 / 2.5 / 2.5</td>
+            <td>gate threshold</td><td class="mono">rank quantile, not confidence</td></tr>
+        <tr><td>prototype backbone</td><td class="mono">BioCLIP 2 ViT-L/14</td>
+            <td>retrieval re-ranker</td><td class="mono">34 features, leak-free pool</td></tr>
+        <tr><td>external bank</td><td class="mono">117,225 photos / 7,364 species</td>
+            <td>closed-set re-ranker</td><td class="mono">32 features, leak-free pool</td></tr>
+        <tr><td>bank embedded</td><td class="mono">101,545</td>
+            <td>genus backoff</td><td class="mono">sibling pool, weight 3.0</td></tr>
+        <tr><td>bank scoring</td><td class="mono">mean of top-4 cosines</td>
+            <td>Sinkhorn</td><td class="mono">τ = 1.8, 60 iterations</td></tr>
+        <tr><td>text legs</td><td class="mono">6, including TaxaBind</td>
+            <td>inference views</td><td class="mono">7 per image</td></tr>
+      </tbody>
+      <caption><b>Table 9.</b> The evaluated configuration behind 53.736%.</caption>
+    </table>
+  </div></div>
+
+  <div class="grid">
+    <div class="rail"><b>A.1<br>Routing</b></div>
+    <div class="col">
+      <h4>The entire routing decision, as executed</h4>
+<pre>Z = standardize(X, torch.full((X.shape[0],), 1.0 / X.shape[0]))
+combined = torch.tensor(
+    gate['model'].predict_proba(Z.numpy())[:, 1],
+    dtype=torch.float32).to(dev)
+
+k_seen = int(round(SEEN_FRAC * len(all_files)))     <span class="c"># f = 0.60</span>
+thr = torch.topk(combined, k_seen).values.min()
+route_seen = combined &gt;= thr                        <span class="c"># quantile, not confidence</span>
+
+pred_idx[route_seen] = kept_idx[
+    seen_block[route_seen].argmax(1)]               <span class="c"># over 5,795</span>
+idx_uns = (~route_seen).nonzero(as_tuple=True)[0]
+pred_idx[idx_uns] = other_idx[
+    sinkhorn(text_unseen_only[idx_uns], tau=TAU)
+        .argmax(1)]                                 <span class="c"># over 11,598</span></pre>
+      <p style="font-family:'UI',sans-serif; font-size:7pt; color:var(--muted);">
+      From <span class="mono">builders/build_v77_learned_gate.py</span>. A logistic classifier's
+      probability, thresholded at the f = 0.60 sample quantile, then two disjoint argmaxes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================== APPENDIX B ======= -->
+<div class="opener">
+  <div class="grid"><div class="rail"><span class="n">B</span><b>Appendix</b></div>
+    <div class="col">
+      <div class="kicker">Appendix B</div>
+      <h2>The leak-free candidate pool.</h2>
+      <p class="lede">The pool-size invariant feature transformation that eliminated cross-validation subpopulation leakage.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="rail"><b>B.1<br>The leak-free<br>pool</b></div>
+    <div class="col">
+      <h4>Candidate pool restriction &amp; percentile ranks</h4>
+<pre><span class="c"># restrict the holdout pool to the 1,159 pseudo classes ONLY,</span>
+<span class="c"># so every candidate is eligible and the shortcut carries</span>
+<span class="c"># zero information</span>
+pool = torch.tensor(sorted(D.ci[c] for c in D.pseudo))
+
+def pool_features(legs, topk, n_photos, fused):
+    """Pool-size-invariant version of the v81 features."""
+    nq, k = topk.shape
+    C = fused.shape[1]              <span class="c"># 1,159 here, 11,598 real</span>
+    for name in LEGS:
+        M = legs[name]
+        v = torch.gather(M, 1, topk)
+        cols += [v - M.max(1, keepdim=True).values,
+                 (v - M.mean(1, keepdim=True))
+                   / (M.std(1, keepdim=True) + 1e-6)]
+        r = ...                     <span class="c"># percentile rank, not raw rank</span>
+        cols.append(r / C)          <span class="c"># pool-size invariant</span></pre>
+      <p style="font-family:'UI',sans-serif; font-size:7pt; color:var(--muted);">
+      From <span class="mono">research/rerank_leakfree_v82.py</span>. Every rank feature becomes a
+      percentile, so training on a 1,159-class pool and scoring an 11,598-class one are the same
+      computation.</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

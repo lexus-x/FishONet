@@ -15,10 +15,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import OUT  # noqa: E402
 
 UA = {'User-Agent': 'onet-cv4e-research/1.0'}
-urls = json.load(open(os.path.join(OUT, 'inat_image_urls.json')))
-dl_dir = os.path.join(OUT, 'inat_images')
+urls = json.load(open(os.environ.get('INAT_URLS', os.path.join(OUT, 'inat_image_urls.json'))))
+dl_dir = os.environ.get('INAT_DIR', os.path.join(OUT, 'inat_images'))
 os.makedirs(dl_dir, exist_ok=True)
-files_out = os.path.join(OUT, 'inat_image_files.json')
+files_out = os.environ.get('INAT_FILES', os.path.join(OUT, 'inat_image_files.json'))
 files = json.load(open(files_out)) if os.path.exists(files_out) else {}
 
 jobs = []

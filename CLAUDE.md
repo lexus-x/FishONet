@@ -2,7 +2,9 @@
 
 CV4Ecology 2026 fish open-set recognition. **Read `HANDOFF.md` first — it is the source of truth.**
 **Read `COMPETITION_RULES.md` before any experiment or submission — never violate it.**
-`README.md` is the short entry; do **not** read `archive/legacy/` unless excavating history.
+`README.md` is the short entry. `archive/` (legacy v20–v30 code, pre-v50 zips/scripts) was moved out
+of the repo to `~/onet_precleanup_backup_20260905/` during the 2026-09-05 audit cleanup — not
+present in the working tree; ignore unless the user restores it for history-excavation.
 
 ## Environment
 
@@ -26,13 +28,26 @@ python src/sanity.py # verify torch + CUDA + BioCLIP
 ## Rebuild the best submission
 
 ```bash
-conda activate onet && python builders/build_v77_learned_gate.py     # best confirmed real 53.3828683583345% (f=0.60)
-conda activate onet && python research/learned_gate_v77.py           #   ^ retrains outputs/learned_gate_v77.pkl first
-conda activate onet && python builders/build_v56_overlap_336.py      # prior 51.61643067433057% (f=0.60)
-conda activate onet && python builders/build_v50_chase53.py          # prior 51.44259077526987%
-conda activate onet && python builders/build_v46_lora_tol_denser.py  # prior 50.83975886723678%
-conda activate onet && python builders/build_v43_bioclip2_dual.py          # prior 50.75564278704613%
+conda activate onet && python research/genus_rerank_v103_train.py      #   ^ retrains outputs/rerank_seen_genus_v103.pkl first
+conda activate onet && python builders/build_v109_genus_gamble.py      # BEST confirmed real 53.73615589513528% (f=0.60) — final submission
+conda activate onet && python builders/build_v83_rerank_both.py        #   ^ v109 reads this build's prediction json as an input
+conda activate onet && python builders/build_v82_rerank_leakfree.py    #   ^ v83 reads this one's pkl
+conda activate onet && python builders/build_v81_rerank.py
+conda activate onet && python builders/build_v77_learned_gate.py       # prior best confirmed real 53.3828683583345% (f=0.60)
+conda activate onet && GATE_C=100 GATE_TAG=v79 python research/learned_gate_v77.py
+                                                                         #   ^ v81+ consume outputs/learned_gate_v79.pkl (same 12
+                                                                         #   features, C=100 refit). VERIFIED bit-identical to the
+                                                                         #   deployed pkl (coef + intercept exact, 2026-09-07).
+                                                                         #   Plain `python research/learned_gate_v77.py` still
+                                                                         #   writes the C=1.0 v77 artifact, unchanged.
+conda activate onet && python builders/build_v56_overlap_336.py        # prior 51.61643067433057% (f=0.60)
 ```
+
+Milestones v31–v50 were moved to `builders/legacy_archive/` in an earlier reorg — not part of the
+v109 dependency chain above, kept for historical reference only. **Exception:
+`builders/legacy_archive/build_v31_strict_singlepipeline.py` is the designated compliance fallback**
+(COMPETITION_RULES.md §4.1) if organizers ever challenge the Sinkhorn/transductive step anywhere in
+the winning chain.
 
 ## Rules of engagement
 
@@ -57,8 +72,10 @@ conda activate onet && python builders/build_v43_bioclip2_dual.py          # pri
 - Encoder / `b` levers stay closed (VLM rerank, external images, trait text, general CLIP, v34 recover,
  unified single-head 2-stage ≤49.4%) — HANDOFF §4/§8. But v77 gained **without** a new encoder: it read
  evidence the pipeline already computed and the gate had never looked at. **Look there first.**
- Best real: **53.69690172437964%** (`submissions/submission_v83_rerank_both_f60.zip`, both heads re-ranked);
- v82 53.64362820692555%, v81 53.43053413710921%, v79 53.42492639842983%, v77 53.3828683583345%, v56 51.61643067433057%.
+ Best real: **53.73615589513528%** (`submissions/submission_v109_genus_gamble.zip`, v83 + genus-level
+ hierarchical backoff on the seen route — new-evidence lever, +0.039pt over v83; unseen route untouched).
+ v83 53.69690172437964%, v82 53.64362820692555%, v81 53.43053413710921%, v79 53.42492639842983%,
+ v77 53.3828683583345%, v56 51.61643067433057%.
 - **The pseudo-novel holdout LEAKS for per-candidate learning (v81, 2026-08-29).** Gold is always one
  of the 1,159 rarest *training* classes = 9.1% of the pool, and that subpopulation is identifiable
  from the features. A top-20 re-ranker learned "prefer gold-eligible" (picks it 53.7% vs the fusion's
